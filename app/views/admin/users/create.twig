@@ -1,0 +1,67 @@
+{% extends "layouts.single" %}
+
+{% block title %}Create a new user{% endblock %}
+
+{% block content %}
+  <header class="page-header">
+    <hgroup>
+      <h1 class="heading-large">Create a new user</h1>
+    </hgroup>
+  </header>
+
+  <article>
+    {% autoescape false %}
+      {{ form_open() }}
+        <div class="row">
+          <div class="form-group col-md-5">
+            {{ form_label('userid', 'User ID', {'id': 'userid-label', 'class': 'control-label'}) }}
+            {{ form_text('userid', input.old('userid'), {'id': 'userid', 'class': 'form-control'}) }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-5">
+            {{ form_label('fullname', 'Full name', {'id': 'fullname-label', 'class': 'control-label'}) }}
+            {{ form_text('fullname', input.old('fullname'), {'id': 'fullname', 'class': 'form-control'}) }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-5">
+            {{ form_label('email', 'Email address', {'id': 'email-label', 'class': 'control-label'}) }}
+            {{ form_email('email', input.old('email'), {'id': 'email', 'class': 'form-control'}) }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-5">
+            {{ form_label('password', 'Password', {'id': 'password-label', 'class': 'control-label'}) }}
+            {{ form_password('password', {'id': 'password', 'class': 'form-control'}) }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-5">
+            {{ form_label('password_confirmation', 'Repeat Password', {'id': 'password_confirmation-label', 'class': 'control-label'}) }}
+            {{ form_password('password_confirmation', {'id': 'password_confirmation', 'class': 'form-control'}) }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-5">
+            {{ form_label('user-role', 'User role', {'id': 'user-role-label', 'class': 'control-label'}) }}
+            {{ form_select('user-role',
+              {'': '', 'Admin': 'Admin', 'Course Organiser': 'Course Organiser', 'Tutor': 'Tutor', 'Student': 'Student'},
+              null, {'id': 'user-role', 'class': 'form-control chosen-select'})
+            }}
+          </div>
+        </div>
+
+        <div class="well">
+          {{ form_button('Create user', {'type': 'submit', 'class': 'btn btn-primary'}) }}
+          or <a href="{{ route('admin.users.index') }}">cancel</a>
+        </div>
+      {{ form_close() }}
+    {% endautoescape %}
+  </article>
+{% endblock %}

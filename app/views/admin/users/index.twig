@@ -10,7 +10,7 @@
             Search for user
           </label>
           <div class="row">
-            <div class="col-xs-7 search-box">
+            <div class="col-xs-8 search-box">
               <input name="search" type="search" id="search" class="form-control">
             </div>
             <div class="col-xs-2 search-btn">
@@ -24,6 +24,7 @@
             Filter by user role
           </label>
           <select class="chosen-select" data-placeholder="Select a role">
+            <option></option>
             <option value="Admin">Admin</option>
             <option value="Course Organiser">Course Organiser</option>
             <option value="Tutor">Tutor</option>
@@ -34,7 +35,7 @@
       
       <hr>
       
-      <a href="#" class="btn btn-primary">Create a new user</a>
+      <a href="{{ route('admin.users.create') }}" class="btn btn-primary">Create a new user</a>
       <a href="#" class="btn btn-warning btn-vblock">Batch import</a>
       
   </div>

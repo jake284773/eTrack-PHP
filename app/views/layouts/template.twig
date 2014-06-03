@@ -37,7 +37,7 @@
             <li><a href="#">Subject Sectors</a></li>
             <li><a href="#">Courses</a></li>
             <li><a href="#">Units</a></li>
-            <li><a href="{{ route('adminUsersIndex') }}">Users</a></li>
+            <li><a href="{{ route('admin.users.index') }}">Users</a></li>
           {% endif %}
         </ul>
 
@@ -51,7 +51,7 @@
     </div>
   </div>
 
-  <div class="container">
+  <div class="{% block containertype %}container{% endblock %}">
     {% block main %}{% endblock %}
   </div>
 

@@ -13,7 +13,7 @@
  * @property DateTime $marking_deadline
  * @property-read \Illuminate\Database\Eloquent\Collection|Criteria[] $criteria
  */
-class Assignment extends Eloquent {
+class Assignment extends BaseModel {
 
     /**
      * The database table used by the model.
@@ -21,13 +21,6 @@ class Assignment extends Eloquent {
      * @var string
      */
     protected $table = 'assignment';
-
-    /**
-     * Disable timestamp management.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
     public function unit()
     {

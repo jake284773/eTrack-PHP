@@ -13,7 +13,7 @@
  *
  * @author Jake Moreman <mail@jakemoreman.co.uk>
  */
-class Unit extends Eloquent {
+class Unit extends BaseModel {
 
     /**
      * The database table used by the model.
@@ -21,13 +21,6 @@ class Unit extends Eloquent {
      * @var string
      */
     protected $table = 'unit';
-
-    /**
-     * Disable timestamp management.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
     public function subject_sector()
     {

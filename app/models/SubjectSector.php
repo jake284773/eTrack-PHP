@@ -6,7 +6,7 @@
  * @property float $id
  * @property string $name
  */
-class SubjectSector extends Eloquent {
+class SubjectSector extends BaseModel {
 
     /**
      * The database table used by the model.
@@ -14,12 +14,5 @@ class SubjectSector extends Eloquent {
      * @var string
      */
     protected $table = 'subject_sector';
-
-    /**
-     * Disable timestamp management.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
 } 

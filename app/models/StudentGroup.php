@@ -8,7 +8,7 @@
  * @property-read User $tutor
  * @property \Illuminate\Database\Eloquent\Collection|Students[] $students
  */
-class StudentGroup extends Eloquent {
+class StudentGroup extends BaseModel {
 
     /**
      * The database table used by the model.
@@ -16,13 +16,6 @@ class StudentGroup extends Eloquent {
      * @var string
      */
     protected $table = 'student_group';
-
-    /**
-     * Disable timestamp management.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
     public function course()
     {

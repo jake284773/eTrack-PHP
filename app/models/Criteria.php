@@ -9,7 +9,7 @@
  *
  * @author Jake Moreman <mail@jakemoreman.co.uk>
  */
-class Criteria extends Eloquent {
+class Criteria extends BaseModel {
 
     /**
      * The database table used by the model.
@@ -17,13 +17,6 @@ class Criteria extends Eloquent {
      * @var string
      */
     protected $table = 'criteria';
-
-    /**
-     * Disable timestamp management.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
     /**
      * Retrieve a criteria record with a composite primary key.

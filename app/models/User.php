@@ -14,19 +14,7 @@ use Illuminate\Auth\Reminders\RemindableInterface;
  * @property string $role
  *
  */
-class User extends Eloquent implements UserInterface, RemindableInterface {
-
-    /**
-     * The supported roles that a user can have.
-     *
-     * @var array
-     */
-    protected $roles = array(
-        'Admin',
-        'Course Organiser',
-        'Tutor',
-        'Student'
-    );
+class User extends BaseModel implements UserInterface, RemindableInterface {
 
 	/**
 	 * The database table used by the model.
@@ -36,13 +24,6 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	protected $table = 'user';
 
     /**
-     * Disable timestamp management.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
-
-	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
 	 * @var array

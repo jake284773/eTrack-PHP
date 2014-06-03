@@ -16,7 +16,7 @@
  * @property-read Faculty $faculty
  *
  */
-class Course extends Eloquent {
+class Course extends BaseModel {
 
     /**
      * The database table used by the model.
@@ -24,13 +24,6 @@ class Course extends Eloquent {
      * @var string
      */
     protected $table = 'course';
-
-    /**
-     * Disable timestamp management.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
     public function units()
     {

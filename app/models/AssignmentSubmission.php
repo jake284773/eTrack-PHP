@@ -9,7 +9,7 @@
  * @property DateTime $submission_date
  *
  */
-class AssignmentSubmission extends Eloquent {
+class AssignmentSubmission extends BaseModel {
 
     /**
      * The database table used by the model.
@@ -17,13 +17,6 @@ class AssignmentSubmission extends Eloquent {
      * @var string
      */
     protected $table = 'student_assignment';
-
-    /**
-     * Disable timestamp management.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
     /**
      * Retrieve a assignment submission record with the composite primary key.

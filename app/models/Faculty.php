@@ -8,7 +8,7 @@
  * @property-read \Illuminate\Database\Eloquent\Collection|Course[] $courses
  *
  */
-class Faculty extends Eloquent {
+class Faculty extends BaseModel {
 
     /**
      * The database table used by the model.
@@ -16,13 +16,6 @@ class Faculty extends Eloquent {
      * @var string
      */
     protected $table = 'faculty';
-
-    /**
-     * Disable timestamp management.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
     public function courses()
     {

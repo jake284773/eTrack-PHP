@@ -1,6 +1,6 @@
 <?php
 
-class StudentAssessment extends Eloquent {
+class StudentAssessment extends BaseModel {
 
     /**
      * The database table used by the model.
@@ -8,13 +8,6 @@ class StudentAssessment extends Eloquent {
      * @var string
      */
     protected $table = 'criteria_student_assessment';
-
-    /**
-     * Disable timestamp management.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
     protected $statuses = array(
         'NYA' => 'Not yet submitted',

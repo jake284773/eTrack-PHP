@@ -12,7 +12,7 @@
  * @property integer $predicted_ucas_tariff_score
  *
  */
-class Enrolment extends Eloquent {
+class Enrolment extends BaseModel {
 
     /**
      * The database table used by the model.
@@ -20,13 +20,6 @@ class Enrolment extends Eloquent {
      * @var string
      */
     protected $table = 'course_student';
-
-    /**
-     * Disable timestamp management.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
 
     public function scopeCompositeKey($query, $courseId, $studentUserId)
     {

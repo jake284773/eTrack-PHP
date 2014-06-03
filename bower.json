@@ -1,0 +1,33 @@
+{
+  "name": "eTrack",
+  "version": "0.0.1",
+  "authors": [
+    "Jake Moreman <mail@jakemoreman.co.uk>"
+  ],
+  "description": "A web application for tracking the academic progress of students studying for BTEC qualifications.",
+  "main": "public/index.php",
+  "keywords": [
+    "eTrack",
+    "BTEC",
+    "student",
+    "tracker",
+    "web",
+    "application"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-sass-official": "~3.1.1+2",
+    "chosen": "https://github.com/harvesthq/chosen/releases/download/v1.1.0/chosen_v1.1.0.zip",
+    "html5shiv": "~3.7.2",
+    "respond": "~1.4.2",
+    "jquery": "1.7.2"
+  }
+}

@@ -1,0 +1,17 @@
+/bootstrap/compiled.php
+/vendor
+composer.phar
+composer.lock
+.env.*.php
+.env.php
+.DS_Store
+Thumbs.db
+node_modules/
+bower_components/
+.sass-cache/
+.idea
+public/stylesheets
+public/fonts
+public/images
+public/javascript
+app/database/seeds/*.php

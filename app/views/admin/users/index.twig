@@ -1,0 +1,84 @@
+{% extends "layouts.list-sidebar" %}
+
+{% block title %}Manage user accounts{% endblock %}
+
+{% block sidebar %}
+  <div class="well">
+      <form action="#" method="post">
+        <div class="form-group">
+          <label for="search" id="search-label" class="form-label">
+            Search for user
+          </label>
+          <div class="row">
+            <div class="col-xs-8 search-box">
+              <input name="search" type="search" id="search" class="form-control">
+            </div>
+            <div class="col-xs-2 search-btn">
+              <button type="button" class="btn btn-primary">Search</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="filter-role" id="filter-role-label" class="form-label">
+            Filter by user role
+          </label>
+          <select class="chosen-select" data-placeholder="Select a role">
+            <option value="Admin">Admin</option>
+            <option value="Course Organiser">Course Organiser</option>
+            <option value="Tutor">Tutor</option>
+            <option value="Student">Student</option>
+          </select>
+        </div>
+      </form>
+      
+      <hr>
+      
+      <a href="#" class="btn btn-primary">Create a new user</a>
+      <a href="#" class="btn btn-warning btn-vblock">Batch import</a>
+      
+  </div>
+{% endblock %}
+
+{% block content %}
+  <header class="page-header">
+    <hgroup>
+      <h1 class="heading-large">Manage user accounts</h1>
+    </hgroup>
+  </header>
+
+  <article>
+    <table class="table table-borders table-responsive">
+      <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Email address</th>
+        <th>Full name</th>
+        <th>User role</th>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      {% for user in users %}
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.full_name }}</td>
+          <td>{{ user.role }}</td>
+          <td>
+            <button type="button" class="btn btn-default btn-sm">Edit</button>
+            <button type="button" class="btn btn-danger btn-sm">Delete</button>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="text-center">
+      {% autoescape false %}
+        {{ users.links() }}
+      {% endautoescape %}
+    </div>
+  </article>
+{% endblock %}

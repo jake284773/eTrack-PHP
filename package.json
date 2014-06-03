@@ -1,0 +1,36 @@
+{
+  "name": "eTrack",
+  "version": "0.0.1",
+  "description": "A web application for tracking the academic progress of students studying for BTEC qualifications.",
+  "main": "public/index.php",
+  "scripts": {
+    "test": "phpunit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jmoreman/etrack.git"
+  },
+  "keywords": [
+    "eTrack",
+    "BTEC",
+    "student",
+    "tracker",
+    "web",
+    "application"
+  ],
+  "author": "Jake Moreman",
+  "license": "MIT",
+  "readmeFilename": "readme.md",
+  "bugs": {
+    "url": "https://github.com/jmoreman/etrack/issues"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.4",
+    "grunt-contrib-concat": "^0.4.0",
+    "grunt-contrib-copy": "^0.5.0",
+    "grunt-contrib-sass": "^0.7.3",
+    "grunt-contrib-uglify": "^0.4.0",
+    "grunt-contrib-watch": "^0.6.0",
+    "grunt-sass": "^0.12.1"
+  }
+}

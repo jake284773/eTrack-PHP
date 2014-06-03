@@ -11,9 +11,9 @@
 |
 */
 
-Route::get('/user/login', array('as' => 'login', 'uses' => 'UserController@login'));
-Route::post('/user/login', array('as' => 'auth', 'uses' => 'UserController@authenticate'));
-Route::get('/user/logout', array('as' => 'logout', 'uses' => 'UserController@logout'));
+Route::get('user/login', array('as' => 'login', 'uses' => 'UserController@login'));
+Route::post('user/login', array('as' => 'auth', 'uses' => 'UserController@authenticate'));
+Route::get('user/logout', array('as' => 'logout', 'uses' => 'UserController@logout'));
 
 Route::group(array('before' => 'auth'), function ()
 {
@@ -23,7 +23,7 @@ Route::group(array('before' => 'auth'), function ()
 
 Route::group(array('before' => 'auth|admin', 'prefix' => 'admin', 'namespace' => 'eTrack\Controllers\Admin'), function ()
 {
-    Route::get('/users', array('as' => 'adminUsersIndex', 'uses' => 'UserController@index'));
+    Route::resource('users', 'UserController');
 });
 
 

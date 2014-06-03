@@ -4,39 +4,36 @@
 
 {% block sidebar %}
   <div class="well">
-      <form action="#" method="post">
+    <h4 class="page-title-no-top">Filter list by:</h4>
+    {% autoescape false %}
+      {{ form_open({'route': 'admin.users.index', 'method': 'get'}) }}
         <div class="form-group">
-          <label for="search" id="search-label" class="form-label">
-            Search for user
-          </label>
+          {{ form_label('search', 'Search for a user', {'id': 'search-label', 'class': 'form-label'}) }}
           <div class="row">
             <div class="col-xs-8 search-box">
-              <input name="search" type="search" id="search" class="form-control">
+              {{ form_input('search', 'search', input_get('search'), {'id': 'search', 'class': 'form-control'}) }}
             </div>
             <div class="col-xs-2 search-btn">
-              <button type="button" class="btn btn-primary">Search</button>
+              {{ form_button('Search', {'class': 'btn btn-primary', 'type': 'submit'}) }}
             </div>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="filter-role" id="filter-role-label" class="form-label">
-            Filter by user role
-          </label>
-          <select class="chosen-select" data-placeholder="Select a role">
-            <option></option>
-            <option value="Admin">Admin</option>
-            <option value="Course Organiser">Course Organiser</option>
-            <option value="Tutor">Tutor</option>
-            <option value="Student">Student</option>
-          </select>
+          {{ form_label('role', 'Filter by user role', {'id': 'role-label', 'class': 'form-label'}) }}
+          {{ form_select('role',
+          {'': 'All roles', 'Admin': 'Admin', 'Course Organiser': 'Course Organiser', 'Tutor': 'Tutor', 'Student': 'Student'},
+          input_get('role'), {'id': 'user-role', 'class': 'form-control chosen-select', 'onchange': 'this.form.submit()'})
+          }}
         </div>
-      </form>
+    {{  form_close() }}
+    <a href="{{ route('admin.users.index') }}">Reset all fields</a>
+  {% endautoescape %}
       
-      <hr>
-      
-      <a href="{{ route('admin.users.create') }}" class="btn btn-primary">Create a new user</a>
-      <a href="#" class="btn btn-warning btn-vblock">Batch import</a>
+  <hr>
+
+  <a href="{{ route('admin.users.create') }}" class="btn btn-primary">Create a new user</a>
+  <a href="#" class="btn btn-warning btn-vblock disabled">Batch import</a>
       
   </div>
 {% endblock %}
@@ -44,7 +41,13 @@
 {% block content %}
   <header class="page-header">
     <hgroup>
-      <h1 class="heading-large">Manage user accounts</h1>
+      {% if session_has('successMessage') %}
+        <div class="alert alert-success">
+          {{ session_get('successMessage') }}
+        </div>
+      {% endif %}
+
+      <h1 class="heading-large">Manage user accounts <span class="label label-default pull-right">{{ userCount }}</span></h1>
     </hgroup>
   </header>
 
@@ -61,24 +64,28 @@
       </thead>
 
       <tbody>
-      {% for user in users %}
-        <tr>
-          <td>{{ user.id }}</td>
-          <td>{{ user.email }}</td>
-          <td>{{ user.full_name }}</td>
-          <td>{{ user.role }}</td>
-          <td>
-            <button type="button" class="btn btn-default btn-sm">Edit</button>
-            <button type="button" class="btn btn-danger btn-sm">Delete</button>
-          </td>
-        </tr>
-      {% endfor %}
+      {% if users is not empty %}
+        {% for user in users %}
+          <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.full_name }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+              <button type="button" class="btn btn-default btn-sm disabled">Edit</button>
+              <button type="button" class="btn btn-danger btn-sm disabled">Delete</button>
+            </td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr><td colspan="5">No users have been found.</td></tr>
+      {% endif %}
       </tbody>
     </table>
 
     <div class="text-center">
       {% autoescape false %}
-        {{ users.links() }}
+        {{ users.appends(input_all()).links() }}
       {% endautoescape %}
     </div>
   </article>

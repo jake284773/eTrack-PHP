@@ -10,8 +10,22 @@
   </header>
 
   <article>
+    {% if errors is not empty %}
+      <div class="alert alert-danger">
+        <h4>There was a problem submitting the form</h4>
+
+        <p>Because of the following problems:</p>
+
+        <ol>
+          {% for error in errors.all %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ol>
+      </div>
+    {% endif %}
+
     {% autoescape false %}
-      {{ form_open() }}
+      {{ form_open({'route': 'admin.users.store'}) }}
         <div class="row">
           <div class="form-group col-md-5">
             {{ form_label('userid', 'User ID', {'id': 'userid-label', 'class': 'control-label'}) }}
@@ -52,7 +66,7 @@
             {{ form_label('user-role', 'User role', {'id': 'user-role-label', 'class': 'control-label'}) }}
             {{ form_select('user-role',
               {'': '', 'Admin': 'Admin', 'Course Organiser': 'Course Organiser', 'Tutor': 'Tutor', 'Student': 'Student'},
-              null, {'id': 'user-role', 'class': 'form-control chosen-select'})
+              null, {'id': 'user-role', 'class': 'form-control chosen-select', 'data-placeholder': 'Choose a role'})
             }}
           </div>
         </div>

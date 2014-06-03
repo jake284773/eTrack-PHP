@@ -42,3 +42,18 @@
   padding-left: 30px;
   padding-right: 0;
 }
+
+.navbar-nav {
+  font-size: 14px;
+}
+
+.navbar-nav.navbar-right:last-child {
+  @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+    margin-right: -44px;
+  }
+}
+
+.navbar-inverse .navbar-toggle {
+  border-color: #fff;
+  color: #fff;
+}

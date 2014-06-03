@@ -9,8 +9,8 @@
   </header>
 
   {% if session_has('authError') %}
-    <div class="validation-summary">
-      <h1 class="error-heading">There was a problem submitting the form</h1>
+    <div class="alert alert-danger">
+      <h4>There was a problem submitting the form</h4>
 
       {{ session_get('authError') }}
     </div>

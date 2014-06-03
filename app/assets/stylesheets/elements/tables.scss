@@ -76,3 +76,9 @@ thead .table-header-secondary td {
 .table-hover .selected-row:hover td {
   background-color: #fffbcc; /* yellow highlight */
 }
+
+.table-responsive {
+  @media(max-width: $screen-xs-max) {
+    display: block;
+  }
+}

@@ -83,4 +83,11 @@ class UserController extends \BaseController {
             ->with('successMessage', 'Created new user');
     }
 
+    public function edit($userId)
+    {
+        $user = User::find($userId);
+
+        return View::make('admin.users.edit', array('user' => $user));
+    }
+
 }

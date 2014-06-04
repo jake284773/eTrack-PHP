@@ -31,7 +31,8 @@ module.exports = function(grunt) {
                     'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/button.js',
                     'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tooltip.js',
                     'bower_components/chosen/chosen.jquery.js',
-                    'app/assets/javascripts/chosen-config.js'
+                    'app/assets/javascripts/chosen-config.js',
+                    'app/assets/javascripts/application.js'
                 ],
                 dest: 'public/javascript/main.js'
             },

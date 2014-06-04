@@ -1,6 +1,7 @@
 <?php namespace eTrack\Controllers\Admin;
 
 use eTrack\Validation\Forms\Admin\Users\CreateValidator;
+use eTrack\Validation\Forms\Admin\Users\EditValidator;
 use eTrack\Validation\FormValidationException;
 use Input;
 use Hash;
@@ -15,9 +16,15 @@ class UserController extends \BaseController {
      */
     protected $createFormValidator;
 
-    public function __construct(CreateValidator $createValidator)
+    /**
+     * @var eTrack\Validation\Forms\Admin\Users\EditValidator
+     */
+    protected $editFormValidator;
+
+    public function __construct(CreateValidator $createValidator, EditValidator $editValidator)
     {
         $this->createFormValidator = $createValidator;
+        $this->editFormValidator = $editValidator;
     }
 
     public function index()
@@ -88,6 +95,44 @@ class UserController extends \BaseController {
         $user = User::find($userId);
 
         return View::make('admin.users.edit', array('user' => $user));
+    }
+
+    public function update($userId)
+    {
+        $formAttributes = array(
+            'user_id'               => Input::get('id'),
+            'full_name'             => Input::get('full_name'),
+            'email_address'         => Input::get('email'),
+            'password'              => Input::get('password'),
+            'password_confirmation' => Input::get('password_confirmation'),
+            'user_role'             => Input::get('role')
+        );
+
+        try {
+            $this->editFormValidator->validate($formAttributes);
+        } catch (FormValidationException $ex) {
+            return Redirect::back()
+                ->withInput(Input::except(array('password', 'password_confirmation')))
+                ->withErrors($ex->getErrors());
+        }
+
+        $user = User::find($userId);
+
+        $user->full_name = $formAttributes['full_name'];
+        $user->email = $formAttributes['email_address'];
+        $user->password = Hash::make($formAttributes['password']);
+        $user->role = $formAttributes['user_role'];
+
+        $user->save();
+
+        return Redirect::route('admin.users.index')
+            ->with('successMessage', 'Updated user account');
+    }
+
+    public function delete($userId)
+    {
+        $user = User::find($userId);
+        $user->delete();
     }
 
 }

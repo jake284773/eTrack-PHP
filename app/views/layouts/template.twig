@@ -33,11 +33,6 @@
         <ul class="nav navbar-nav">
           {% if auth_check() and auth_user().role == "Admin" %}
             <li><a href="{{ route('home') }}">Home</a></li>
-            <li><a href="#">Faculties</a></li>
-            <li><a href="#">Subject Sectors</a></li>
-            <li><a href="#">Courses</a></li>
-            <li><a href="#">Units</a></li>
-            <li><a href="{{ route('admin.users.index') }}">Users</a></li>
           {% endif %}
         </ul>
 

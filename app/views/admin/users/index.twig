@@ -47,6 +47,12 @@
         </div>
       {% endif %}
 
+      {% if session_has('errorMessage') %}
+        <div class="alert alert-danger">
+          {{ session_get('errorMessage') }}
+        </div>
+      {% endif %}
+
       <h1 class="heading-large">Manage user accounts <span class="label label-default pull-right">{{ userCount }}</span></h1>
     </hgroup>
   </header>
@@ -73,7 +79,7 @@
             <td>{{ user.role }}</td>
             <td>
               <a href="{{ route('admin.users.edit', user.id) }}" class="btn btn-default btn-sm">Edit</a>
-              <button type="button" class="btn btn-danger btn-sm disabled">Delete</button>
+              <a href="{{ route('admin.users.delete_confirm', user.id) }}" data-toggle="modal" data-target="#web-modal" class="btn btn-danger btn-sm">Delete</a>
             </td>
           </tr>
         {% endfor %}

@@ -3,6 +3,8 @@
 use eTrack\Validation\Forms\Admin\Users\CreateValidator;
 use eTrack\Validation\Forms\Admin\Users\EditValidator;
 use eTrack\Validation\FormValidationException;
+use Illuminate\Database\QueryException;
+use Request;
 use Input;
 use Hash;
 use User;
@@ -129,10 +131,31 @@ class UserController extends \BaseController {
             ->with('successMessage', 'Updated user account');
     }
 
-    public function delete($userId)
+    public function deleteConfirm($userId)
     {
         $user = User::find($userId);
-        $user->delete();
+
+        if (Request::ajax())
+        {
+            return View::make('admin.users.delete.modal', array('user' => $user));
+        }
+
+        return View::make('admin.users.delete.fallback', array('user' => $user));
+    }
+
+    public function destroy($userId)
+    {
+        try {
+            $user = User::find($userId);
+            $user->delete();
+        } catch (QueryException $ex) {
+            return Redirect::route('admin.users.index')
+                ->with('errorMessage', 'Unable to delete user');
+        }
+
+        return Redirect::route('admin.users.index')
+            ->with('successMessage', 'Deleted user');
+
     }
 
 }

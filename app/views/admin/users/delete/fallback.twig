@@ -1,0 +1,45 @@
+{% extends "layouts.single" %}
+
+{% block title %}Delete user ({{ user.id }}){% endblock %}
+
+{% block content %}
+  <header class="page-header">
+    <hgroup>
+      <h1 class="heading-large">Delete user ({{ user.id }})</h1>
+    </hgroup>
+  </header>
+
+  <article>
+    <p>Are you sure you want to delete the user holding the ID of {{ user.id }}?</p>
+    <p>Please check the details as shown in the table before continuing:</p>
+
+    <table class="table">
+      <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Email address</th>
+        <th>Full name</th>
+        <th>User role</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.full_name }}</td>
+        <td>{{ user.role }}</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="well">
+      {% autoescape false %}
+        {{ form_open({'route': ['admin.users.destroy', user.id], 'method': 'delete'}) }}
+          {{ form_button('Delete user', {'type': 'submit', 'class': 'btn btn-danger'}) }}
+          <a class="btn btn-default" href="{{ route('admin.users.index') }}">Cancel</a>
+        {{ form_close() }}
+      {% endautoescape %}
+    </div>
+  </article>
+{% endblock %}

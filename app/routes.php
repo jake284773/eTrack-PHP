@@ -24,6 +24,7 @@ Route::group(array('before' => 'auth'), function ()
 Route::group(array('before' => 'auth|admin', 'prefix' => 'admin', 'namespace' => 'eTrack\Controllers\Admin'), function ()
 {
     Route::resource('users', 'UserController');
+    Route::get('users/delete/{id}', array('as' => 'admin.users.delete_confirm', 'uses' => 'UserController@deleteConfirm'));
 });
 
 

@@ -23,8 +23,11 @@ Route::group(array('before' => 'auth'), function ()
 
 Route::group(array('before' => 'auth|admin', 'prefix' => 'admin', 'namespace' => 'eTrack\Controllers\Admin'), function ()
 {
-    Route::resource('users', 'UserController');
     Route::get('users/delete/{id}', array('as' => 'admin.users.delete_confirm', 'uses' => 'UserController@deleteConfirm'));
+    Route::get('users/import', array('as' => 'admin.users.import.step1', 'uses' => 'UserController@importStep1'));
+    Route::post('users/import', array('as' => 'admin.users.import.step1.store', 'uses' => 'UserController@importStep1Store'));
+    Route::get('users/import/step2', array('as' => 'admin.users.import.step2', 'uses' => 'UserController@importStep2'));
+    Route::resource('users', 'UserController');
 });
 
 

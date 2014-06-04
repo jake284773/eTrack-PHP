@@ -1,0 +1,78 @@
+{% extends "layouts.single" %}
+
+{% block title %}Batch import{% endblock %}
+{% block mainclass %}col-md-10{% endblock %}
+
+{% block content %}
+  <header class="page-header">
+    <hgroup>
+      <h1 class="heading-large">Batch import</h1>
+    </hgroup>
+  </header>
+
+  <article>
+    <div class="row">
+      <div class="col-md-9">
+        {% if errors is not empty %}
+          <div class="alert alert-danger">
+            <h4>There was a problem submitting the form</h4>
+
+            <p>Because of the following problems:</p>
+
+            <ol>
+              {% for error in errors.all %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ol>
+          </div>
+        {% endif %}
+
+        {% if session_has('errorMessage') %}
+          <div class="alert alert-danger">
+            {{ session_get('errorMessage') }}
+          </div>
+        {% endif %}
+
+        <div class="alert alert-info">
+          <h4>Please review the processed imported data.</h4>
+
+          <p>It hasn't been saved to the database yet.</p>
+
+          <hr>
+
+          <p>If you are unhappy with it, click <strong>cancel</strong> at the bottom of the page to
+            cancel this transaction. Otherwise click the <strong>continue</strong> button.</p>
+
+          <hr>
+
+          <p>You will get the opportunity to print out the generated passwords later to give to the
+            new user.</p>
+        </div>
+      </div>
+    </div>
+
+    <table class="table table-responsive table-bordered">
+      <thead>
+        <tr>
+          <th>User ID</th>
+          <th>Email address</th>
+          <th>Password (generated)</th>
+          <th>Full name</th>
+          <th>User role</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for user in users %}
+          <tr>
+            <td>{{ user['id'] }}</td>
+            <td>{{ user['email'] }}</td>
+            <td>{{ user['password'] }}</td>
+            <td>{{ user['full_name'] }}</td>
+            <td>{{ user['role'] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </article>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "layouts.single" %}
+
+{% block title %}Batch import{% endblock %}
+
+{% block content %}
+  <header class="page-header">
+    <hgroup>
+      <h1 class="heading-large">Batch import</h1>
+    </hgroup>
+  </header>
+
+  <article>
+    {% if errors is not empty %}
+      <div class="alert alert-danger">
+        <h4>There was a problem submitting the form</h4>
+
+        <p>Because of the following problems:</p>
+
+        <ol>
+          {% for error in errors.all %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ol>
+      </div>
+    {% endif %}
+
+    {% autoescape false %}
+      {{ form_open({'files': true}) }}
+        <div class="row">
+          <div class="form-group col-md-5">
+            {{ form_label('file', 'CSV file to upload', {'id': 'file-label', 'class': 'control-label'}) }}
+            {{ form_file('file', {'id': 'file', 'class': 'form-control'}) }}
+          </div>
+        </div>
+
+        <div class="well">
+          {{ form_button('Upload and continue', {'type': 'submit', 'class': 'btn btn-primary'}) }}
+          or <a href="{{ route('admin.users.index') }}">cancel</a>
+        </div>
+      {{ form_close() }}
+    {% endautoescape %}
+  </article>
+{% endblock %}

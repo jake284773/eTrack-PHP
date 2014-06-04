@@ -2,14 +2,20 @@
 
 use eTrack\Validation\Forms\Admin\Users\CreateValidator;
 use eTrack\Validation\Forms\Admin\Users\EditValidator;
+use eTrack\Validation\Forms\Admin\Users\Import\Step1Validator;
 use eTrack\Validation\FormValidationException;
+use Goodby\CSV\Import\Standard\Interpreter;
+use Goodby\CSV\Import\Standard\LexerConfig;
+use Goodby\CSV\Import\Standard\Lexer as Lexer;
 use Illuminate\Database\QueryException;
 use Request;
 use Input;
 use Hash;
 use User;
 use View;
+use Session;
 use Redirect;
+use Str;
 
 class UserController extends \BaseController {
 
@@ -23,10 +29,17 @@ class UserController extends \BaseController {
      */
     protected $editFormValidator;
 
-    public function __construct(CreateValidator $createValidator, EditValidator $editValidator)
+    /**
+     * @var eTrack\Validation\Forms\Admin\Users\Import\Step1Validator
+     */
+    protected $importStep1FormValidator;
+
+    public function __construct(CreateValidator $createValidator, EditValidator $editValidator,
+        Step1Validator $step1Validator)
     {
         $this->createFormValidator = $createValidator;
         $this->editFormValidator = $editValidator;
+        $this->importStep1FormValidator = $step1Validator;
     }
 
     public function index()
@@ -156,6 +169,78 @@ class UserController extends \BaseController {
         return Redirect::route('admin.users.index')
             ->with('successMessage', 'Deleted user');
 
+    }
+
+    public function importStep1()
+    {
+        return View::make('admin.users.import.step1');
+    }
+
+    public function importStep1Store()
+    {
+        $formAttributes = array(
+            'file' => Input::get('file'),
+        );
+
+        try {
+            $this->importStep1FormValidator->validate($formAttributes);
+        } catch (FormValidationException $ex) {
+            return Redirect::back()
+                ->withInput()
+                ->withErrors($ex->getErrors());
+        }
+
+        if (Input::hasFile('file'))
+        {
+            $file = Input::file('file');
+            $filePath = public_path().'/uploads/';
+            $uploadSuccess = $file->move($filePath, 'user_import.csv');
+
+            if ($uploadSuccess)
+            {
+                $importedData = array();
+
+                $csvImportConfig = new LexerConfig();
+                $csvImportLexer = new Lexer($csvImportConfig);
+                $csvImportInterpreter = new Interpreter();
+
+                $csvImportInterpreter->addObserver(function(array $row) use (&$importedData)
+                {
+                    $randomPassword = Str::random();
+
+                    $importedData[] = array(
+                        'id'        => $row[0],
+                        'full_name' => $row[1],
+                        'email'     => $row[2],
+                        'role'      => $row[3],
+                        'password'  => $randomPassword,
+                        'password_confirmation' => $randomPassword,
+                    );
+                });
+
+                $csvImportLexer->parse($filePath.'user_import.csv', $csvImportInterpreter);
+
+                // Delete uploaded file as we don't need it anymore
+                unlink($filePath.'user_import.csv');
+
+                Session::put('user_import_data', $importedData);
+
+                // Free up memory by removing the imported data array
+                unset($importedData);
+
+                return Redirect::route('admin.users.import.step2');
+            }
+        }
+
+        return Redirect::back()
+            ->with('errorMessage', 'File didn\'t upload properly');
+    }
+
+    public function importStep2()
+    {
+        $users = Session::get('user_import_data');
+
+        return View::make('admin.users.import.step2', array('users' => $users));
     }
 
 }

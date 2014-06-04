@@ -3,10 +3,12 @@
    ========================================================================== */
 
 .navbar .container .navbar-brand {
+  background: url("../images/logo.png") 0 5px / 40px 40px no-repeat;
   color: #fff;
   font-family: $font-family-gill-sans;
   font-size: 20px;
   margin-left: 0;
+  padding-left: 2.5em;
   min-height: 37px;
 
   .lte-ie8 & {

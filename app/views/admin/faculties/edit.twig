@@ -1,0 +1,55 @@
+{% extends "layouts.single" %}
+
+{% block title %}Editing faculty ({{ faculty.id }}){% endblock %}
+
+{% block content %}
+  <header class="page-header">
+    <ol class="breadcrumb">
+      <li><a href="{{ route('home') }}">Home</a></li>
+      <li><a href="{{ route('admin.faculties.index') }}">Faculties</a></li>
+      <li class="active">{{ block('title') }}</li>
+    </ol>
+    <hgroup>
+      <h1 class="heading-large">{{ block('title') }}</h1>
+    </hgroup>
+  </header>
+
+  <article>
+    {% if errors is not empty %}
+      <div class="alert alert-danger">
+        <h4>There was a problem submitting the form</h4>
+
+        <p>Because of the following problems:</p>
+
+        <ol>
+          {% for error in errors.all %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ol>
+      </div>
+    {% endif %}
+
+    {% autoescape false %}
+      {{ form_model(faculty, {'route': ['admin.faculties.update', faculty.id], 'method': 'put'}) }}
+        <div class="row">
+          <div class="form-group col-md-5">
+            {{ form_label('id', 'Faculty code', {'id': 'faculty_id-label', 'class': 'control-label'}) }}
+            <p class="form-control-static">{{ faculty.id }}</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+            {{ form_label('name', 'Faculty name', {'id': 'faculty_name-label', 'class': 'control-label'}) }}
+            {{ form_text('name', null, {'id': 'faculty_name', 'class': 'form-control'}) }}
+          </div>
+        </div>
+
+        <div class="well">
+          {{ form_button('Update faculty', {'type': 'submit', 'class': 'btn btn-primary'}) }}
+          or <a href="{{ route('admin.faculties.index') }}">cancel</a>
+        </div>
+      {{ form_close() }}
+    {% endautoescape %}
+  </article>
+{% endblock %}

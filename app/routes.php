@@ -33,6 +33,7 @@ Route::group(array('before' => 'auth|admin', 'prefix' => 'admin', 'namespace' =>
     Route::get('users/import/print', array('as' => 'admin.users.import.print', 'uses' => 'UserController@importPrint'));
     Route::resource('users', 'UserController');
 
+    Route::get('faculties/delete/{id}', array('as' => 'admin.faculties.delete_confirm', 'uses' => 'FacultyController@deleteConfirm'));
     Route::resource('faculties', 'FacultyController');
 });
 

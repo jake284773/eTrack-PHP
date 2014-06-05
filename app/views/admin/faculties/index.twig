@@ -27,7 +27,12 @@
         </div>
       {% endif %}
 
-      <h1 class="heading-large">{{ block('title') }} <span class="label label-default pull-right"></span></h1>
+      <h1 class="heading-large">
+          {{ block('title') }}
+          <span class="pull-right">
+          <a href="{{ route('admin.faculties.create') }}" class="btn btn-primary btn-sm">Create a new faculty</a>
+        </span>
+      </h1>
     </hgroup>
   </header>
 
@@ -48,6 +53,7 @@
             <td><a href="{{ route('admin.faculties.show', faculty.id) }}">{{ faculty.name }}</a></td>
             <td>
               <a href="{{ route('admin.faculties.edit', faculty.id) }}" class="btn btn-default btn-sm">Edit</a>
+              <a href="{{ route('admin.faculties.delete_confirm', faculty.id) }}" data-toggle="modal" data-target="#web-modal" class="btn btn-danger btn-sm">Delete</a>
             </td>
           </tr>
         {% else %}

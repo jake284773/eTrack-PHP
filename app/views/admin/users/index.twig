@@ -40,6 +40,10 @@
 
 {% block content %}
   <header class="page-header">
+    <ol class="breadcrumb">
+      <li><a href="{{ route('home') }}">Home</a></li>
+      <li class="active">Users</li>
+    </ol>
     <hgroup>
       {% if session_has('successMessage') %}
         <div class="alert alert-success">

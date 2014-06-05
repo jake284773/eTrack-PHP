@@ -4,6 +4,11 @@
 
 {% block content %}
   <header class="page-header section-heading">
+    <ol class="breadcrumb">
+      <li><a href="{{ route('home') }}">Home</a></li>
+      <li><a href="{{ route('admin.users.index') }}">Users</a></li>
+      <li class="active">{{ block('title') }}</li>
+    </ol>
     <hgroup>
       <h2>
           <span class="section-marker">Step 1 of 3</span>

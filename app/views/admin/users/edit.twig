@@ -4,6 +4,11 @@
 
 {% block content %}
   <header class="page-header">
+    <ol class="breadcrumb">
+      <li><a href="{{ route('home') }}">Home</a></li>
+      <li><a href="{{ route('admin.users.index') }}">Users</a></li>
+      <li class="active">{{ block('title') }}</li>
+    </ol>
     <hgroup>
       <h1 class="heading-large">Editing user ({{ user.id }})</h1>
     </hgroup>

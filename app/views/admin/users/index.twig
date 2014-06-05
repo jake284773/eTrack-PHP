@@ -76,7 +76,6 @@
       </thead>
 
       <tbody>
-      {% if users is not empty %}
         {% for user in users %}
           <tr>
             <td>{{ user.id }}</td>
@@ -88,10 +87,9 @@
               <a href="{{ route('admin.users.delete_confirm', user.id) }}" data-toggle="modal" data-target="#web-modal" class="btn btn-danger btn-sm">Delete</a>
             </td>
           </tr>
-        {% endfor %}
-      {% else %}
-        <tr><td colspan="5">No users have been found.</td></tr>
-      {% endif %}
+        {% else %}
+          <tr><td colspan="5">No users have been found.</td></tr>
+      {% endfor %}
       </tbody>
     </table>
 

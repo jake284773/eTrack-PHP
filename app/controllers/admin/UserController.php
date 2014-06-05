@@ -16,6 +16,7 @@ use View;
 use Session;
 use Redirect;
 use Str;
+use PDF;
 
 class UserController extends \BaseController {
 
@@ -241,6 +242,19 @@ class UserController extends \BaseController {
         $users = Session::get('user_import_data');
 
         return View::make('admin.users.import.step2', array('users' => $users));
+    }
+
+    public function importPrint()
+    {
+        if (! Session::has('user_import_data'))
+        {
+            App::abort(404);
+        }
+
+        $users = Session::get('user_import_data');
+
+        $pdf = PDF::loadView('admin.users.import.print', array('users' => $users));
+        return $pdf->stream();
     }
 
 }

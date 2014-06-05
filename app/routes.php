@@ -27,6 +27,7 @@ Route::group(array('before' => 'auth|admin', 'prefix' => 'admin', 'namespace' =>
     Route::get('users/import', array('as' => 'admin.users.import.step1', 'uses' => 'UserController@importStep1'));
     Route::post('users/import', array('as' => 'admin.users.import.step1.store', 'uses' => 'UserController@importStep1Store'));
     Route::get('users/import/step2', array('as' => 'admin.users.import.step2', 'uses' => 'UserController@importStep2'));
+    Route::get('users/import/print', array('as' => 'admin.users.import.print', 'uses' => 'UserController@importPrint'));
     Route::resource('users', 'UserController');
 });
 

@@ -29,12 +29,12 @@
     {{  form_close() }}
     <a href="{{ route('admin.users.index') }}">Reset all fields</a>
   {% endautoescape %}
-      
+
   <hr>
 
   <a href="{{ route('admin.users.create') }}" class="btn btn-primary">Create a new user</a>
   <a href="{{ route('admin.users.import.step1') }}" class="btn btn-warning btn-vblock">Batch import</a>
-      
+
   </div>
 {% endblock %}
 
@@ -44,6 +44,12 @@
       {% if session_has('successMessage') %}
         <div class="alert alert-success">
           {{ session_get('successMessage') }}
+        </div>
+      {% endif %}
+
+      {% if session_has('infoMessage') %}
+        <div class="alert alert-info">
+          {{ session_get('infoMessage') }}
         </div>
       {% endif %}
 

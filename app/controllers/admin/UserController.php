@@ -17,6 +17,8 @@ use Session;
 use Redirect;
 use Str;
 use PDF;
+use DB;
+use App;
 
 class UserController extends \BaseController {
 
@@ -215,7 +217,6 @@ class UserController extends \BaseController {
                         'email'     => $row[2],
                         'role'      => $row[3],
                         'password'  => $randomPassword,
-                        'password_confirmation' => $randomPassword,
                     );
                 });
 
@@ -239,9 +240,62 @@ class UserController extends \BaseController {
 
     public function importStep2()
     {
+        if (! Session::has('user_import_data'))
+        {
+            App::abort(404);
+        }
+
         $users = Session::get('user_import_data');
 
         return View::make('admin.users.import.step2', array('users' => $users));
+    }
+
+    public function importStep2Store()
+    {
+        $users = Session::get('user_import_data');
+
+        switch (Input::get('submit'))
+        {
+            case 'accept':
+                if (DB::table('user')->insert($users))
+                {
+                    return Redirect::route('admin.users.import.step3');
+                }
+
+                return Redirect::route('admin.users.import.step3')
+                    ->with('errorMessage', 'Unable to add user records to database.');
+                ;;
+            case 'cancel':
+                Session::forget('user_import_data');
+                return Redirect::route('admin.users.index')
+                    ->with('infoMessage', 'Batch import cancelled');
+                ;;
+            default:
+                App::abort(404);
+        }
+    }
+
+    public function importStep3()
+    {
+        if (! Session::has('user_import_data'))
+        {
+            App::abort(404);
+        }
+
+        $users = Session::get('user_import_data');
+
+        return View::make('admin.users.import.step3', array('users' => $users));
+    }
+
+    public function importStep3Store()
+    {
+        if (Input::get('submit') === 'complete')
+        {
+            Session::forget('user_import_data');
+            return Redirect::route('admin.users.index');
+        }
+
+        return App::abort(404);
     }
 
     public function importPrint()

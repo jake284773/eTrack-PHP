@@ -1,11 +1,14 @@
-{% extends "layouts.single" %}
+{% extends "layouts.transaction" %}
 
 {% block title %}Batch import{% endblock %}
 
 {% block content %}
-  <header class="page-header">
+  <header class="page-header section-heading">
     <hgroup>
-      <h1 class="heading-large">Batch import</h1>
+      <h2>
+          <span class="section-marker">Section 1</span>
+          <span class="section-title">Data upload</span>
+      </h2>
     </hgroup>
   </header>
 
@@ -24,6 +27,16 @@
       </div>
     {% endif %}
 
+    <div class="alert alert-info">
+      <h4>Guidance</h4>
+
+      <p>The CSV file should contain <strong>4</strong> columns:</p>
+
+      <p><pre>user id,email,full name,role</pre></p>
+
+    <p>The file should <strong>not</strong> contain the column names.</p>
+    </div>
+
     {% autoescape false %}
       {{ form_open({'files': true}) }}
         <div class="row">
@@ -40,4 +53,10 @@
       {{ form_close() }}
     {% endautoescape %}
   </article>
+{% endblock %}
+
+{% block transactionsteps %}
+  <li class="active">Data upload</li>
+  <li>Check processed data</li>
+  <li>Confirm and Print</li>
 {% endblock %}

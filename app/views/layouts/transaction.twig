@@ -1,0 +1,17 @@
+{% extends "layouts.template" %}
+{% block main %}
+  <div class="row">
+
+    <sidebar class="{% block sidebarclass %}transaction-sidebar{% endblock %}">
+      <h2>{{ block('title') }}</h2>
+
+      <ol>
+        {% block transactionsteps %}{% endblock %}
+      </ol>
+    </sidebar>
+
+    <div class="{% block mainclass %}col-md-7 col-md-offset-1{% endblock %}">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+{% endblock %}

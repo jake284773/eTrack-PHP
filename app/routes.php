@@ -32,6 +32,8 @@ Route::group(array('before' => 'auth|admin', 'prefix' => 'admin', 'namespace' =>
     Route::post('users/import/step3', array('as' => 'admin.users.import.step3.store', 'uses' => 'UserController@importStep3Store'));
     Route::get('users/import/print', array('as' => 'admin.users.import.print', 'uses' => 'UserController@importPrint'));
     Route::resource('users', 'UserController');
+
+    Route::resource('faculties', 'FacultyController');
 });
 
 

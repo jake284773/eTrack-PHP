@@ -1,0 +1,59 @@
+{% extends "layouts.single" %}
+
+{% block title %}Manage faculties{% endblock %}
+
+{% block content %}
+  <header class="page-header">
+    <ol class="breadcrumb">
+      <li><a href="{{ route('home') }}">Home</a></li>
+      <li class="active">Faculties</li>
+    </ol>
+    <hgroup>
+      {% if session_has('successMessage') %}
+        <div class="alert alert-success">
+          {{ session_get('successMessage') }}
+        </div>
+      {% endif %}
+
+      {% if session_has('infoMessage') %}
+        <div class="alert alert-info">
+          {{ session_get('infoMessage') }}
+        </div>
+      {% endif %}
+
+      {% if session_has('errorMessage') %}
+        <div class="alert alert-danger">
+          {{ session_get('errorMessage') }}
+        </div>
+      {% endif %}
+
+      <h1 class="heading-large">{{ block('title') }} <span class="label label-default pull-right"></span></h1>
+    </hgroup>
+  </header>
+
+  <article>
+    <table class="table table-borders table-responsive">
+      <thead>
+      <tr>
+        <th>Faculty code</th>
+        <th>Faculty name</th>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody>
+        {% for faculty in faculties %}
+          <tr>
+            <td><a href="{{ route('admin.faculties.show', faculty.id) }}">{{ faculty.id }}</a></td>
+            <td><a href="{{ route('admin.faculties.show', faculty.id) }}">{{ faculty.name }}</a></td>
+            <td>
+              <a href="{{ route('admin.faculties.edit', faculty.id) }}" class="btn btn-default btn-sm">Edit</a>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="5">No faculties have been found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </article>
+{% endblock %}

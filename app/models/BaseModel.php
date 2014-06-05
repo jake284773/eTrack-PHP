@@ -15,4 +15,4 @@ class BaseModel extends Eloquent {
      * @var bool
      */
     public $incrementing = false;
-} 
+}

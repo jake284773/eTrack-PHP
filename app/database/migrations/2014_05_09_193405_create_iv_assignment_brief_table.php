@@ -27,7 +27,7 @@ class CreateIvAssignmentBriefTable extends Migration {
             $table->string('assignment_id', 15);
             $table->string('assessor_user_id', 25);
             $table->string('iv_user_id', 25);
-            $table->boolean('for_whole_part_unit');
+            $table->boolean('for_whole_or_part_of_unit');
             $table->boolean('q1');
             $table->text('q1_comment');
             $table->boolean('q2');
@@ -55,6 +55,18 @@ class CreateIvAssignmentBriefTable extends Migration {
             $table->boolean('approved');
             $table->text('action_required');
             $table->text('action_taken');
+
+            $table->foreign('assignment_id')
+                ->references('id')
+                ->on('assignment');
+
+            $table->foreign('assessor_user_id')
+                ->references('id')
+                ->on('user');
+
+            $table->foreign('iv_user_id')
+                ->references('id')
+                ->on('user');
         });
     }
 

@@ -37,4 +37,7 @@ Route::group(array('before' => 'auth|admin', 'prefix' => 'admin', 'namespace' =>
     Route::resource('faculties', 'FacultyController');
 });
 
-
+App::missing(function($exception)
+{
+    return Response::view('errors.404', array(), 404);
+});

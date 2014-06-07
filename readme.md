@@ -2,7 +2,7 @@
 ## eTrack
 
 eTrack is a web application for tracking the academic progress of students who
-are studying BTEC qualfications and certain OCR qualifications.
+are studying BTEC and Cambridge Technical qualifications.
 
 ### Features
 

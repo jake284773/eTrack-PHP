@@ -4,6 +4,7 @@ use Faculty;
 use View;
 use Request;
 use Redirect;
+use Illuminate\Database\QueryException;
 
 class FacultyController extends \BaseController {
 
@@ -57,7 +58,6 @@ class FacultyController extends \BaseController {
 
         return Redirect::route('admin.faculties.index')
             ->with('successMessage', 'Deleted faculty');
-
     }
 
 }

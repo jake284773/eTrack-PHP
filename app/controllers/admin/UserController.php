@@ -112,6 +112,10 @@ class UserController extends \BaseController {
     {
         $user = User::find($userId);
 
+        if (! $user) {
+            return App::abort(404);
+        }
+
         return View::make('admin.users.edit', array('user' => $user));
     }
 
@@ -169,7 +173,8 @@ class UserController extends \BaseController {
                 ->with('errorMessage', 'Unable to delete user');
         }
 
-        return Redirect::route('admin.users.index')
+        return Redirect::back()
+            ->withInput()
             ->with('successMessage', 'Deleted user');
 
     }

@@ -35,6 +35,8 @@ Route::group(array('before' => 'auth|admin', 'prefix' => 'admin', 'namespace' =>
 
     Route::get('faculties/delete/{id}', array('as' => 'admin.faculties.delete_confirm', 'uses' => 'FacultyController@deleteConfirm'));
     Route::resource('faculties', 'FacultyController');
+
+    Route::resource('subjectsectors', 'SubjectSectorController');
 });
 
 App::missing(function($exception)

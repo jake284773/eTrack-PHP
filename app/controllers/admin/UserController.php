@@ -38,7 +38,7 @@ class UserController extends \BaseController {
     protected $importStep1FormValidator;
 
     public function __construct(CreateValidator $createValidator, EditValidator $editValidator,
-        Step1Validator $step1Validator)
+                                Step1Validator $step1Validator)
     {
         $this->createFormValidator = $createValidator;
         $this->editFormValidator = $editValidator;

@@ -36,6 +36,7 @@ Route::group(array('before' => 'auth|admin', 'prefix' => 'admin', 'namespace' =>
     Route::get('faculties/delete/{id}', array('as' => 'admin.faculties.delete_confirm', 'uses' => 'FacultyController@deleteConfirm'));
     Route::resource('faculties', 'FacultyController');
 
+    Route::get('subjectsectors/delete/{id}', array('as' => 'admin.subjectsectors.delete_confirm', 'uses' => 'SubjectSectorController@deleteConfirm'));
     Route::resource('subjectsectors', 'SubjectSectorController');
 });
 

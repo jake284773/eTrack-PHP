@@ -1,7 +1,7 @@
 <?php namespace eTrack\Controllers\Admin;
 
-use eTrack\Validation\Forms\Admin\Faculties\CreateValidator;
-use eTrack\Validation\Forms\Admin\Faculties\EditValidator;
+use eTrack\Validation\Forms\Admin\Units\CreateValidator;
+use eTrack\Validation\Forms\Admin\Units\EditValidator;
 use eTrack\Validation\FormValidationException;
 use Faculty;
 use View;
@@ -30,9 +30,9 @@ class FacultyController extends \BaseController {
 
     public function index()
     {
-        $faculties = Faculty::all();
+        $units = Unit::all();
 
-        return View::make('admin.faculties.index', array('faculties' => $faculties));
+        return View::make('admin.units.index', array('units' => $units));
     }
 
     public function create()

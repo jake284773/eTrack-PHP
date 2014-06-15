@@ -3,7 +3,8 @@
 /**
  * Unit model
  *
- * @property string $code
+ * @property string $id
+ * @property integer $number
  * @property string $name
  * @property integer $credit_value
  * @property integer $glh
@@ -32,13 +33,13 @@ class Unit extends BaseModel {
         return $this->hasMany('Criteria');
     }
 
-    public function getNumberAttribute()
-    {
-        if ($this->unit_number) {
-            return $this->unit_number;
-        }
+//     public function getNumberAttribute()
+//     {
+//         if ($this->unit_number) {
+//             return $this->unit_number;
+//         }
 
-        return ucfirst($this->number);
-    }
+//         return ucfirst($this->number);
+//     }
 
-} 
+}

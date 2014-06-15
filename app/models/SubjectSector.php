@@ -15,4 +15,16 @@ class SubjectSector extends BaseModel {
      */
     protected $table = 'subject_sector';
 
-} 
+    public function courses()
+    {
+        return $this->hasMany('Course');
+    }
+
+    public function units()
+    {
+        return $this->hasMany('Unit')
+          ->orderBy('number', 'asc')
+          ->orderBy('id', 'asc');
+    }
+
+}

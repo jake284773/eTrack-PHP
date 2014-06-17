@@ -14,7 +14,11 @@
  * @property-read User $courseOrganiser
  * @property-read SubjectSector $subjectSector
  * @property-read Faculty $faculty
- *
+ * @property string $type
+ * @property float $subject_sector_id
+ * @property string $faculty_id
+ * @property string $course_organiser_user_id
+ * @property-read \User $course_organiser
  */
 class Course extends BaseModel {
 

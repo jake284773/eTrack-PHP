@@ -5,6 +5,7 @@
  *
  * @property string $id
  * @property-read Unit $unit
+ * @property string $unit_id
  * @property string $brief
  * @property string $status
  * @property DateTime $available_date
@@ -12,6 +13,7 @@
  * @property DateTime $marking_start_date
  * @property DateTime $marking_deadline
  * @property-read \Illuminate\Database\Eloquent\Collection|Criteria[] $criteria
+ * @property-read \Illuminate\Database\Eloquent\Collection|\AssignmentSubmission[] $submissions
  */
 class Assignment extends BaseModel {
 

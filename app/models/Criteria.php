@@ -6,7 +6,8 @@
  * @property string $id
  * @property Unit $unit The unit which this criteria belongs to
  * @property string $type Type of criteria (Pass, Merit, Distinction)
- *
+ * @property string $unit_id
+ * @method static \Criteria compositeKey($id, $unitId)
  * @author Jake Moreman <mail@jakemoreman.co.uk>
  */
 class Criteria extends BaseModel {

@@ -6,7 +6,6 @@
  * @property string $id
  * @property string $name
  * @property-read \Illuminate\Database\Eloquent\Collection|Course[] $courses
- *
  */
 class Faculty extends BaseModel {
 

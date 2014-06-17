@@ -1,5 +1,22 @@
 <?php
 
+/**
+ * StudentAssessment
+ *
+ * @property string $student_assignment_assignment_id
+ * @property string $student_assignment_student_user_id
+ * @property string $criteria_id
+ * @property string $criteria_unit_id
+ * @property string $assessor_user_id
+ * @property string $moderator_user_id
+ * @property string $assessment_status
+ * @property string $last_updated
+ * @property-read \Assignment $assignment
+ * @property-read \Student $student
+ * @property-read \User $assessor
+ * @property-read \User $moderator
+ * @method static \StudentAssessment compositeKey($studentUserId, $criteriaId, $criteriaUnitId) 
+ */
 class StudentAssessment extends BaseModel {
 
     /**

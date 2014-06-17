@@ -7,6 +7,8 @@
  * @property-read Course $course
  * @property-read User $tutor
  * @property \Illuminate\Database\Eloquent\Collection|Students[] $students
+ * @property string $course_id
+ * @property string $tutor_user_id
  */
 class StudentGroup extends BaseModel {
 

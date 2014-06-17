@@ -12,7 +12,7 @@ use Illuminate\Auth\Reminders\RemindableInterface;
  * @property string $remember_token
  * @property string $full_name
  * @property string $role
- *
+ * @property string $id
  */
 class User extends BaseModel implements UserInterface, RemindableInterface {
 

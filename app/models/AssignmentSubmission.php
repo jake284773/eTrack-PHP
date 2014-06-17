@@ -7,7 +7,9 @@
  * @property-read Student $student
  * @property DateTime $special_deadline
  * @property DateTime $submission_date
- *
+ * @property string $assignment_id
+ * @property string $student_user_id
+ * @method static \AssignmentSubmission compositeKey($assignmentId, $studentUserId) 
  */
 class AssignmentSubmission extends BaseModel {
 

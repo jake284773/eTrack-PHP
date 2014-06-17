@@ -10,7 +10,10 @@
  * @property string $target_grade
  * @property integer $final_ucas_tariff_score
  * @property integer $predicted_ucas_tariff_score
- *
+ * @property string $course_id
+ * @property string $student_user_id
+ * @property-read \Student $student
+ * @method static \Enrolment compositeKey($courseId, $studentUserId) 
  */
 class Enrolment extends BaseModel {
 

@@ -5,6 +5,8 @@
  *
  * @property float $id
  * @property string $name
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Course[] $courses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Unit[] $units
  */
 class SubjectSector extends BaseModel {
 

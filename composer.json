@@ -10,7 +10,8 @@
         "barryvdh/laravel-dompdf": "v0.3.1"
     },
     "require-dev": {
-      "barryvdh/laravel-debugbar": "1.*"
+      "barryvdh/laravel-debugbar": "1.*",
+      "barryvdh/laravel-ide-helper": "1.*"
     },
     "autoload": {
         "classmap": [

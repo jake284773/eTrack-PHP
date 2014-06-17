@@ -5,8 +5,8 @@ module.exports = function(grunt) {
         sass: {
             default: {
                 options: {
-                    style: 'compressed',
-                    loadPath: [
+                    outputStyle: 'compressed',
+                    includePaths: [
                         'bower_components/bootstrap-sass-official/vendor/assets/stylesheets/',
                         'bower_components/chosen/'
                     ]
@@ -74,6 +74,20 @@ module.exports = function(grunt) {
                     filter: 'isFile'
                 }]
             },
+            octicons: {
+                files: [{
+                    expand: true,
+                    src: [
+                        'bower_components/octicons/octicons/octicons.eot',
+                        'bower_components/octicons/octicons/octicons.svg',
+                        'bower_components/octicons/octicons/octicons.ttf',
+                        'bower_components/octicons/octicons/octicons.woff'
+                    ],
+                    dest: './public/fonts',
+                    flatten: true,
+                    filter: 'isFile'
+                }]
+            },
             images: {
                 files: [{
                     expand: true,
@@ -106,7 +120,7 @@ module.exports = function(grunt) {
 
     // Plugin loading
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-sass');
+    grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-concat');
@@ -115,6 +129,7 @@ module.exports = function(grunt) {
     grunt.registerTask('default', ['build','watch']);
     grunt.registerTask('build', [
         'copy:glyphicons',
+        'copy:octicons',
         'copy:images',
         'concat:js_main',
         'uglify:main',

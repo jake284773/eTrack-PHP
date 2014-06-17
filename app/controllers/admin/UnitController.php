@@ -1,32 +1,34 @@
 <?php namespace eTrack\Controllers\Admin;
 
+use App;
 use eTrack\Validation\Forms\Admin\Units\CreateValidator;
 use eTrack\Validation\Forms\Admin\Units\EditValidator;
 use eTrack\Validation\FormValidationException;
 use Faculty;
+use Unit;
 use View;
 use Request;
 use Redirect;
 use Input;
 use Illuminate\Database\QueryException;
 
-class FacultyController extends \BaseController {
+class UnitController extends \BaseController {
 
-    /**
-     * @var eTrack\Validation\Forms\Admin\Faculties\CreateValidator
-     */
-    protected $createFormValidator;
-
-    /**
-     * @var eTrack\Validation\Forms\Admin\Faculties\EditValidator
-     */
-    protected $editFormValidator;
-
-    public function __construct(CreateValidator $createValidator, EditValidator $editValidator)
-    {
-        $this->createFormValidator = $createValidator;
-        $this->editFormValidator = $editValidator;
-    }
+//    /**
+//     * @var \eTrack\Validation\Forms\Admin\Units\CreateValidator
+//     */
+//    protected $createFormValidator;
+//
+//    /**
+//     * @var \eTrack\Validation\Forms\Admin\Units\EditValidator
+//     */
+//    protected $editFormValidator;
+//
+//    public function __construct(CreateValidator $createValidator, EditValidator $editValidator)
+//    {
+//        $this->createFormValidator = $createValidator;
+//        $this->editFormValidator = $editValidator;
+//    }
 
     public function index()
     {

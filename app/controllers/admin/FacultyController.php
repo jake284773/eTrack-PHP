@@ -13,12 +13,12 @@ use Illuminate\Database\QueryException;
 class FacultyController extends \BaseController {
 
     /**
-     * @var eTrack\Validation\Forms\Admin\Faculties\CreateValidator
+     * @var \eTrack\Validation\Forms\Admin\Faculties\CreateValidator
      */
     protected $createFormValidator;
 
     /**
-     * @var eTrack\Validation\Forms\Admin\Faculties\EditValidator
+     * @var \eTrack\Validation\Forms\Admin\Faculties\EditValidator
      */
     protected $editFormValidator;
 

@@ -12,6 +12,16 @@ use Illuminate\Database\QueryException;
 
 class SubjectSectorController extends \BaseController {
 
+    /**
+     * @var \eTrack\Validation\Forms\Admin\SubjectSectors\CreateValidator
+     */
+    private $createFormValidator;
+
+    /**
+     * @var \eTrack\Validation\Forms\Admin\SubjectSectors\EditValidator
+     */
+    private $editFormValidator;
+
     public function __construct(CreateValidator $createValidator, EditValidator $editValidator)
     {
         $this->createFormValidator = $createValidator;

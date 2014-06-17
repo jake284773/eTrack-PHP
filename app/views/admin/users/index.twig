@@ -11,10 +11,10 @@
           {{ form_label('search', 'Search for a user', {'id': 'search-label', 'class': 'form-label'}) }}
           <div class="row">
             <div class="col-xs-8 search-box">
-              {{ form_input('search', 'search', input_get('search'), {'id': 'search', 'class': 'form-control'}) }}
+              {{ form_input('search', 'search', input_get('search'), {'id': 'search', 'class': 'form-control', 'placeholder': 'Search'}) }}
             </div>
             <div class="col-xs-2 search-btn">
-              {{ form_button('Search', {'class': 'btn btn-primary', 'type': 'submit'}) }}
+              {{ form_button('<span class="octicon octicon-search"></span> Search', {'class': 'btn btn-primary', 'type': 'submit'}) }}
             </div>
           </div>
         </div>
@@ -32,8 +32,8 @@
 
   <hr>
 
-  <a href="{{ route('admin.users.create') }}" class="btn btn-primary">Create a new user</a>
-  <a href="{{ route('admin.users.import.step1') }}" class="btn btn-warning btn-vblock">Batch import</a>
+  <a href="{{ route('admin.users.create') }}" class="btn btn-primary"><span class="octicon octicon-plus"></span> Create a new user</a>
+  <a href="{{ route('admin.users.import.step1') }}" class="btn btn-warning btn-vblock"><span class="octicon octicon-cloud-upload"></span> Batch import</a>
 
   </div>
 {% endblock %}
@@ -87,8 +87,8 @@
             <td>{{ user.full_name }}</td>
             <td>{{ user.role }}</td>
             <td>
-              <a href="{{ route('admin.users.edit', user.id) }}" class="btn btn-default btn-sm">Edit</a>
-              <a href="{{ route('admin.users.delete_confirm', user.id) }}" data-toggle="modal" data-target="#web-modal" class="btn btn-danger btn-sm">Delete</a>
+              <a href="{{ route('admin.users.edit', user.id) }}" class="btn btn-default btn-sm"><span class="octicon octicon-pencil"></span> Edit</a>
+              <a href="{{ route('admin.users.delete_confirm', user.id) }}" data-toggle="modal" data-target="#web-modal" class="btn btn-danger btn-sm"><span class="octicon octicon-x"></span> Delete</a>
             </td>
           </tr>
         {% else %}

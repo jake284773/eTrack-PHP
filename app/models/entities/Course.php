@@ -1,4 +1,4 @@
-<?php
+<?php namespace eTrack\Models\Entities;
 
 /**
  * Course model
@@ -18,9 +18,10 @@
  * @property float $subject_sector_id
  * @property string $faculty_id
  * @property string $course_organiser_user_id
- * @property-read \User $course_organiser
+ * @property-read User $course_organiser
  */
-class Course extends BaseModel {
+class Course extends BaseModel
+{
 
     /**
      * The database table used by the model.
@@ -34,8 +35,7 @@ class Course extends BaseModel {
         $units = $this->belongsToMany('Unit', 'course_unit')
             ->withPivot('unit_number');
 
-        foreach ($units as $unit)
-        {
+        foreach ($units as $unit) {
             if ($unit->pivot->unit_number) {
                 $unit->number = $unit->pivot->unit_number;
             }

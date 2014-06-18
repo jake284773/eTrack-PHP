@@ -1,4 +1,6 @@
-<?php
+<?php namespace eTrack\Models\Entities;
+
+use DateTime;
 
 /**
  * Assignment submission model
@@ -9,9 +11,10 @@
  * @property DateTime $submission_date
  * @property string $assignment_id
  * @property string $student_user_id
- * @method static \AssignmentSubmission compositeKey($assignmentId, $studentUserId) 
+ * @method static AssignmentSubmission compositeKey($assignmentId, $studentUserId)
  */
-class AssignmentSubmission extends BaseModel {
+class AssignmentSubmission extends BaseModel
+{
 
     /**
      * The database table used by the model.

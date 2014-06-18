@@ -3,7 +3,7 @@
 use eTrack\Validation\Forms\Admin\Faculties\CreateValidator;
 use eTrack\Validation\Forms\Admin\Faculties\EditValidator;
 use eTrack\Validation\FormValidationException;
-use Faculty;
+use eTrack\Models\Entities\Faculty;
 use View;
 use Request;
 use Redirect;

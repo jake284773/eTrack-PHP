@@ -1,4 +1,4 @@
-<?php
+<?php namespace eTrack\Models\Entities;
 
 /**
  * Unit model
@@ -11,10 +11,11 @@
  * @property integer $level
  * @property-read SubjectSector $subject_sector
  * @property-read \Illuminate\Database\Eloquent\Collection|Criteria[] $criteria
- * @author Jake Moreman <mail@jakemoreman.co.uk>
  * @property float $subject_sector_id
+ * @author Jake Moreman <mail@jakemoreman.co.uk>
  */
-class Unit extends BaseModel {
+class Unit extends BaseModel
+{
 
     /**
      * The database table used by the model.

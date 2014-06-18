@@ -1,7 +1,7 @@
-<?php
+<?php namespace eTrack\Models\Entities;
 
 /**
- * StudentAssessment
+ * Student Assessment
  *
  * @property string $student_assignment_assignment_id
  * @property string $student_assignment_student_user_id
@@ -11,13 +11,14 @@
  * @property string $moderator_user_id
  * @property string $assessment_status
  * @property string $last_updated
- * @property-read \Assignment $assignment
- * @property-read \Student $student
- * @property-read \User $assessor
- * @property-read \User $moderator
- * @method static \StudentAssessment compositeKey($studentUserId, $criteriaId, $criteriaUnitId) 
+ * @property-read Assignment $assignment
+ * @property-read Student $student
+ * @property-read User $assessor
+ * @property-read User $moderator
+ * @method static StudentAssessment compositeKey($studentUserId, $criteriaId, $criteriaUnitId)
  */
-class StudentAssessment extends BaseModel {
+class StudentAssessment extends BaseModel
+{
 
     /**
      * The database table used by the model.

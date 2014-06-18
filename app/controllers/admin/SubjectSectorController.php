@@ -3,7 +3,7 @@
 use eTrack\Validation\Forms\Admin\SubjectSectors\CreateValidator;
 use eTrack\Validation\Forms\Admin\SubjectSectors\EditValidator;
 use eTrack\Validation\FormValidationException;
-use SubjectSector;
+use eTrack\Models\Entities\SubjectSector;
 use View;
 use Request;
 use Redirect;

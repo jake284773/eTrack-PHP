@@ -1,10 +1,10 @@
-<?php
+<?php namespace eTrack\Models\Entities;
 
 /**
  * Enrolment model
  *
  * @property-read Course $course
- * @propety-read St
+ * @property-read Student $student
  * @property string $final_grade
  * @property string $predicted_grade
  * @property string $target_grade
@@ -12,10 +12,10 @@
  * @property integer $predicted_ucas_tariff_score
  * @property string $course_id
  * @property string $student_user_id
- * @property-read \Student $student
- * @method static \Enrolment compositeKey($courseId, $studentUserId) 
+ * @method static Enrolment compositeKey($courseId, $studentUserId)
  */
-class Enrolment extends BaseModel {
+class Enrolment extends BaseModel
+{
 
     /**
      * The database table used by the model.

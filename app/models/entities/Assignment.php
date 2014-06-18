@@ -1,4 +1,6 @@
-<?php
+<?php namespace eTrack\Models\Entities;
+
+use DateTime;
 
 /**
  * Assignment model
@@ -13,9 +15,10 @@
  * @property DateTime $marking_start_date
  * @property DateTime $marking_deadline
  * @property-read \Illuminate\Database\Eloquent\Collection|Criteria[] $criteria
- * @property-read \Illuminate\Database\Eloquent\Collection|\AssignmentSubmission[] $submissions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\eTrack\Models\Entities\AssignmentSubmission[] $submissions
  */
-class Assignment extends BaseModel {
+class Assignment extends BaseModel
+{
 
     /**
      * The database table used by the model.
@@ -33,10 +36,9 @@ class Assignment extends BaseModel {
     {
         return Criteria::where('assignment_id', $this->id)
             ->select('criteria.id', 'criteria.type')
-            ->join('assignment_criteria', function($join)
-            {
+            ->join('assignment_criteria', function ($join) {
                 $join->on('criteria.id', '=', 'assignment_criteria.criteria_id')
-                     ->on('criteria.unit_id', '=', 'assignment_criteria.criteria_unit_id');
+                    ->on('criteria.unit_id', '=', 'assignment_criteria.criteria_unit_id');
             })
             ->orderBy('type', 'desc');
     }

@@ -1,10 +1,13 @@
-<?php
+<?php namespace eTrack\Models\Entities;
+
+use Eloquent;
 
 /**
  * BaseModel
  *
  */
-class BaseModel extends Eloquent {
+abstract class BaseModel extends Eloquent
+{
 
     /**
      * Disable timestamp management.

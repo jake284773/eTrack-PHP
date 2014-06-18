@@ -1,4 +1,4 @@
-<?php
+<?php namespace eTrack\Models\Entities;
 
 /**
  * Unit criteria model
@@ -7,10 +7,11 @@
  * @property Unit $unit The unit which this criteria belongs to
  * @property string $type Type of criteria (Pass, Merit, Distinction)
  * @property string $unit_id
- * @method static \Criteria compositeKey($id, $unitId)
+ * @method static Criteria compositeKey($id, $unitId)
  * @author Jake Moreman <mail@jakemoreman.co.uk>
  */
-class Criteria extends BaseModel {
+class Criteria extends BaseModel
+{
 
     /**
      * The database table used by the model.

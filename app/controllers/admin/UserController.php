@@ -11,7 +11,7 @@ use Illuminate\Database\QueryException;
 use Request;
 use Input;
 use Hash;
-use User;
+use eTrack\Models\Entities\User;
 use View;
 use Session;
 use Redirect;

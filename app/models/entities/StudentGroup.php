@@ -1,4 +1,4 @@
-<?php
+<?php namespace eTrack\Models\Entities;
 
 /**
  * Student group model
@@ -6,11 +6,12 @@
  * @property string $id
  * @property-read Course $course
  * @property-read User $tutor
- * @property \Illuminate\Database\Eloquent\Collection|Students[] $students
+ * @property \Illuminate\Database\Eloquent\Collection|Student[] $students
  * @property string $course_id
  * @property string $tutor_user_id
  */
-class StudentGroup extends BaseModel {
+class StudentGroup extends BaseModel
+{
 
     /**
      * The database table used by the model.

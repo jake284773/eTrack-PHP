@@ -1,4 +1,4 @@
-<?php
+<?php namespace eTrack\Models\Entities;
 
 /**
  * Faculty model
@@ -7,7 +7,8 @@
  * @property string $name
  * @property-read \Illuminate\Database\Eloquent\Collection|Course[] $courses
  */
-class Faculty extends BaseModel {
+class Faculty extends BaseModel
+{
 
     /**
      * The database table used by the model.

@@ -1,11 +1,12 @@
 <?php namespace eTrack\Controllers\Admin;
 
 use App;
-use eTrack\Validation\Forms\Admin\Units\CreateValidator;
-use eTrack\Validation\Forms\Admin\Units\EditValidator;
+//use eTrack\Validation\Forms\Admin\Units\CreateValidator;
+//use eTrack\Validation\Forms\Admin\Units\EditValidator;
 use eTrack\Validation\FormValidationException;
-use Faculty;
-use Unit;
+use eTrack\Models\Entities\Faculty;
+use eTrack\Models\Entities\SubjectSector;
+use eTrack\Models\Entities\Unit;
 use View;
 use Request;
 use Redirect;
@@ -32,9 +33,32 @@ class UnitController extends \BaseController {
 
     public function index()
     {
-        $units = Unit::all();
+        $searchString = '%'.Input::get('search').'%';
+        $selectedSubjectSector = '%'.Input::get('subjectsector').'%';
 
-        return View::make('admin.units.index', array('units' => $units));
+        $units = Unit::select('unit.id as id', 'number', 'unit.name as name',
+            'credit_value', 'glh', 'level', 'subject_sector.name as subject_sector_name')
+            ->join('subject_sector', 'unit.subject_sector_id', '=', 'subject_sector.id')
+            ->orderBy('subject_sector.name')
+            ->orderBy('unit.number')
+            ->where('subject_sector_id', 'LIKE', $selectedSubjectSector)
+            ->where(function($query) use($searchString)
+            {
+                $query->where('unit.id', 'LIKE', $searchString)
+                    ->orWhere('unit.number', 'LIKE', $searchString)
+                    ->orWhere('unit.name', 'LIKE', $searchString);
+            });
+
+        $subjectSectors = SubjectSector::allWithUnits()->get();
+        $subjectSectorsForm = array('' => 'All subject sectors');
+
+        foreach($subjectSectors as $subjectSector)
+        {
+            $subjectSectorsForm[(string) $subjectSector->id] = $subjectSector->name;
+        }
+
+        return View::make('admin.units.index', array('units' => $units->paginate(15),
+            'subjectSectorsForm' => $subjectSectorsForm));
     }
 
     public function create()

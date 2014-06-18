@@ -38,6 +38,9 @@ Route::group(array('before' => 'auth|admin', 'prefix' => 'admin', 'namespace' =>
 
     Route::get('subjectsectors/delete/{id}', array('as' => 'admin.subjectsectors.delete_confirm', 'uses' => 'SubjectSectorController@deleteConfirm'));
     Route::resource('subjectsectors', 'SubjectSectorController');
+
+    Route::get('units/delete/{id}', array('as' => 'admin.units.delete_confirm', 'uses' => 'UnitConntroller@deleteConfirm'));
+    Route::resource('units', 'UnitController');
 });
 
 App::missing(function($exception)

@@ -27,9 +27,9 @@ class CreateCriteriaStudentAssessmentTable extends Migration {
             $table->string("criteria_id", 4);
             $table->string("criteria_unit_id", 12);
             $table->string("assessor_user_id", 25);
-            $table->string("moderator_user_id", 25);
+            $table->string("moderator_user_id", 25)->nullable();
             $table->string("assessment_status", 3);
-            $table->timestamp("last_updated");
+            $table->timestamps();
 
             $table->foreign(["student_assignment_assignment_id",
                     "student_assignment_student_user_id"],

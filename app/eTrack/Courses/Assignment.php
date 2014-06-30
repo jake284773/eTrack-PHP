@@ -1,6 +1,7 @@
-<?php namespace eTrack\Models;
+<?php namespace eTrack\Courses;
 
 use DateTime;
+use eTrack\Core\Entity;
 
 /**
  * Assignment model
@@ -29,7 +30,7 @@ class Assignment extends Entity
 
     public function unit()
     {
-        return $this->belongsTo('eTrack\Models\Entities\Unit');
+        return $this->belongsTo('eTrack\Courses\Unit');
     }
 
     public function criteria()
@@ -45,7 +46,7 @@ class Assignment extends Entity
 
     public function submissions()
     {
-        return $this->hasMany('eTrack\Models\Entities\AssignmentSubmission');
+        return $this->hasMany('eTrack\Courses\AssignmentSubmission');
     }
 
 }

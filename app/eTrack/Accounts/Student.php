@@ -1,4 +1,6 @@
-<?php namespace eTrack\Models;
+<?php namespace eTrack\Accounts;
+
+use eTrack\Courses\Course;
 
 /**
  * Student

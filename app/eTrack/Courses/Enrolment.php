@@ -1,4 +1,7 @@
-<?php namespace eTrack\Models;
+<?php namespace eTrack\Courses;
+
+use eTrack\Accounts\Student;
+use eTrack\Core\Entity;
 
 /**
  * Enrolment model
@@ -33,12 +36,12 @@ class Enrolment extends Entity
 
     public function course()
     {
-        return $this->belongsTo('eTrack\Models\Entities\Course');
+        return $this->belongsTo('eTrack\Courses\Course');
     }
 
     public function student()
     {
-        return $this->hasOne('eTrack\Models\Entities\Student', 'student_user_id');
+        return $this->hasOne('eTrack\Accounts\Student', 'student_user_id');
     }
 
 }

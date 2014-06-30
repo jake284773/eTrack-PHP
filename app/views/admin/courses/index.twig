@@ -56,8 +56,7 @@
         <td><a href="{{ route('admin.courses.show', course.id) }}">{{ course.name }}</a></td>
         <td>{{ course.level }}</td>
         <td>{{ course.type }}</td>
-        <td><a
-              href="{{ route('admin.subjectsectors.show', course.subject_sector.id) }}">{{ course.subject_sector.name }}</a>
+        <td><a href="{{ route('admin.subjectsectors.show', course.subject_sector.id) }}">{{ course.subject_sector.name }}</a>
         </td>
         <td><a href="{{ route('admin.faculties.show', course.faculty.id) }}">{{ course.faculty.name }}</a></td>
         <td>{{ course.course_organiser.full_name }}</td>

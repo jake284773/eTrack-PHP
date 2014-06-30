@@ -97,6 +97,7 @@ class Course extends Entity
     public function units()
     {
         $units = $this->belongsToMany('eTrack\Courses\Unit', 'course_unit')
+            ->orderBy('number')
             ->withPivot('unit_number');
 
         foreach ($units as $unit) {
@@ -122,23 +123,27 @@ class Course extends Entity
     {
         return $this->belongsTo('eTrack\SubjectSectors\SubjectSector');
     }
-//
-//    public function enrollments()
-//    {
-//        return $this->hasMany('eTrack\Models\Entities\Enrolment');
-//    }
-//
-//    public function students()
-//    {
-//        $pivotAttributes = ['final_grade', 'predicted_grade', 'target_grade'];
-//
-//        if ($this->level === 3) {
-//            $pivotAttributes[] = 'final_ucas_tariff_score';
-//            $pivotAttributes[] = 'predicted_ucas_tariff_score';
-//        }
-//
-//        return $this->belongsToMany('eTrack\Accounts\Student', 'course_student', 'course_id', 'student_user_id')
-//            ->withPivot($pivotAttributes);
-//    }
+
+    public function student_groups()
+    {
+        return $this->hasMany('eTrack\Courses\StudentGroup');
+    }
+
+
+    public function enrollments()
+    {
+        return $this->hasMany('eTrack\Courses\Enrolment');
+    }
+
+    public function students()
+    {
+        $pivotAttributes = [
+            'final_grade', 'predicted_grade', 'target_grade',
+            'final_ucas_tariff_score', 'predicted_ucas_tariff_score'
+        ];
+
+        return $this->belongsToMany('eTrack\Accounts\Student', 'course_student', 'course_id', 'student_user_id')
+            ->withPivot($pivotAttributes);
+    }
 
 }

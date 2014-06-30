@@ -1,4 +1,8 @@
-<?php namespace eTrack\Models;
+<?php namespace eTrack\Courses;
+
+use eTrack\Accounts\Student;
+use eTrack\Accounts\User;
+use eTrack\Core\Entity;
 
 /**
  * Student group model
@@ -22,17 +26,17 @@ class StudentGroup extends Entity
 
     public function course()
     {
-        return $this->belongsTo('eTrack\Models\Entities\Course');
+        return $this->belongsTo('eTrack\Courses\Course');
     }
 
     public function students()
     {
-        return $this->belongsToMany('User',
+        return $this->belongsToMany('eTrack\Accounts\Student',
             'student_group_student', null, 'student_user_id');
     }
 
     public function tutor()
     {
-        return $this->belongsTo('eTrack\Models\Entities\User', 'tutor_user_id');
+        return $this->belongsTo('eTrack\Accounts\User', 'tutor_user_id');
     }
 }

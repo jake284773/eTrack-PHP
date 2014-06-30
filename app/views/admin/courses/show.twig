@@ -1,0 +1,144 @@
+{% extends "layouts.single" %}
+
+{% block title %}{{ course.name }} ({{ course.id }}){% endblock %}
+{% block mainclass %}col-md-12{% endblock %}
+
+{% block content %}
+  <header>
+    <ol class="breadcrumb">
+      <li><a href="{{ route('home') }}">Home</a></li>
+      <li><a href="{{ route('admin.courses.index') }}">Courses</a></li>
+      <li class="active">{{ course.name }}</li>
+    </ol>
+    {% if session_has('successMessage') %}
+      <div class="alert alert-success">
+        {{ session_get('successMessage') }}
+      </div>
+    {% endif %}
+
+    {% if session_has('infoMessage') %}
+      <div class="alert alert-info">
+        {{ session_get('infoMessage') }}
+      </div>
+    {% endif %}
+
+    {% if session_has('errorMessage') %}
+      <div class="alert alert-danger">
+        {{ session_get('errorMessage') }}
+      </div>
+    {% endif %}
+
+    <h1 class="page-header">
+      {{ block('title') }}
+      <span class="pull-right">
+          <a href="{{ route('admin.courses.edit', course.id) }}" class="btn btn-default btn-sm">Edit</a>
+          <a href="{{ route('admin.courses.delete_confirm', course.id) }}" data-toggle="modal"
+             data-target="#web-modal" class="btn btn-danger btn-sm">Delete</a>
+      </span>
+    </h1>
+  </header>
+
+  <h3>Course info</h3>
+
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="list-group list-group-compact">
+        <li class="list-group-item"><strong>Course code:</strong> {{ course.id }}</li>
+        <li class="list-group-item"><strong>Pathway:</strong> {{ course.pathway ?: 'N/A' }}</li>
+        <li class="list-group-item"><strong>Qualification level:</strong> {{ course.level }}</li>
+        <li class="list-group-item"><strong>Course type:</strong> {{ course.type }}</li>
+        <li class="list-group-item"><strong>Subject sector:</strong> {{ course.subject_sector.name }}</li>
+        <li class="list-group-item"><strong>Faculty:</strong> {{ course.faculty.name }}</li>
+      </ul>
+    </div>
+  </div>
+
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#units" data-toggle="tab">Units</a></li>
+    <li><a href="#students" data-toggle="tab">Students</a></li>
+    <li><a href="#groups" data-toggle="tab">Student Groups</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane active" id="units">
+      <table class="table table-responsive">
+        <thead>
+        <tr>
+          <th>Unit ID</th>
+          <th>Unit number</th>
+          <th>Unit name</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for unit in course.units %}
+          <tr>
+            <td>{{ unit.id }}</td>
+            <td>{{ unit.number }}</td>
+            <td>{{ unit.name }}</td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="3">No units were found.</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tab-pane" id="students">
+      <table class="table table-responsive table-bordered">
+        <thead>
+        <tr>
+          <th>Student</th>
+          <th>Final grade</th>
+          <th>Predicted grade</th>
+          <th>Target grade</th>
+          {% if course.level == 3 %}
+            <th>Final UCAS Tariff Score</th>
+            <th>Predicted UCAS Tariff Score</th>
+          {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+          {% for student in course.students %}
+          <tr>
+            <td>{{ student.full_name }} ({{ student.id }})</td>
+            <td>{{ student.pivot.final_grade }}</td>
+            <td>{{ student.pivot.predicted_grade }}</td>
+            <td>{{ student.pivot.target_grade }}</td>
+            {% if course.level == 3 %}
+              <td>{{ student.pivot.final_ucas_tariff_score }}</td>
+              <td>{{ student.pivot.predicted_ucas_tariff_score }}</td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tab-pane" id="groups">
+      <table class="table table-responsive">
+        <thead>
+        <tr>
+          <th>Group code</th>
+          <th>Tutor</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for group in course.student_groups %}
+          <tr>
+            <td>{{ group.id }}</td>
+            <td>{{ group.tutor.full_name }}</td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="3">No student groups were found.</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

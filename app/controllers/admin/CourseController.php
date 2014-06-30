@@ -1,10 +1,10 @@
 <?php namespace eTrack\Controllers\Admin;
 
-use eTrack\Controllers\BaseController;
+use eTrack\Controllers\RestController;
 use eTrack\Courses\CourseRepository;
 use View;
 
-class CourseController extends BaseController {
+class CourseController extends RestController {
 
     private $courseRepository;
 
@@ -15,9 +15,44 @@ class CourseController extends BaseController {
 
     public function index()
     {
-        $courses = $this->courseRepository->getAllPaginated();
+        $courses = $this->courseRepository->paginatedAllRelated();
 
         return View::make('admin.courses.index', ['courses' => $courses]);
+    }
+
+    public function create()
+    {
+
+    }
+
+    public function store()
+    {
+
+    }
+
+    public function show($id)
+    {
+
+    }
+
+    public function edit($id)
+    {
+
+    }
+
+    public function update($id)
+    {
+
+    }
+
+    public function deleteConfirm($id)
+    {
+
+    }
+
+    public function destroy($id)
+    {
+
     }
 
 } 

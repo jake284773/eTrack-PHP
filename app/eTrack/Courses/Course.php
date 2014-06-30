@@ -118,7 +118,7 @@ class Course extends Entity
         return $this->belongsTo('eTrack\Faculties\Faculty');
     }
 
-    public function subjectSector()
+    public function subject_sector()
     {
         return $this->belongsTo('eTrack\SubjectSectors\SubjectSector');
     }

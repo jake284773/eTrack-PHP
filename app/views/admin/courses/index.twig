@@ -61,7 +61,6 @@
         <td><a href="{{ route('admin.faculties.show', course.faculty.id) }}">{{ course.faculty.name }}</a></td>
         <td>{{ course.course_organiser.full_name }}</td>
         <td>
-          <a href="{{ route('admin.courses.edit', course.id) }}" class="btn btn-default btn-sm">Edit</a>
           <a href="{{ route('admin.courses.delete_confirm', course.id) }}" data-toggle="modal"
              data-target="#web-modal" class="btn btn-danger btn-sm">Delete</a>
         </td>

@@ -121,6 +121,21 @@ class Unit extends Entity
         return $this->hasMany('eTrack\Courses\Criteria');
     }
 
+    public function passCriteria()
+    {
+        return $this->hasMany('eTrack\Courses\Criteria')->where('type', 'Pass');
+    }
+
+    public function meritCriteria()
+    {
+        return $this->hasMany('eTrack\Courses\Criteria')->where('type', 'Merit');
+    }
+
+    public function distinctionCriteria()
+    {
+        return $this->hasMany('eTrack\Courses\Criteria')->where('type', 'Distinction');
+    }
+
     public function delete()
     {
         return DB::transaction(function () {

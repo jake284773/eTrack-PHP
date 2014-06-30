@@ -1,4 +1,8 @@
-<?php namespace eTrack\Models;
+<?php namespace eTrack\Courses;
+
+use eTrack\Accounts\Student;
+use eTrack\Accounts\User;
+use eTrack\Core\Entity;
 
 /**
  * Student Assessment
@@ -28,17 +32,17 @@ class StudentAssessment extends Entity
     protected $table = 'criteria_student_assessment';
 
     protected $statuses = [
-        'NYA' => 'Not yet submitted',
-        'AM' => 'Submitted awaiting marking',
-        'ALM' => 'Submitted, awaiting overdue marking',
-        'A' => 'Achieved',
-        'L' => 'Late, not yet submitted',
-        'LA' => 'Late, submitted awaiting marking',
-        'R1' => 'Referral 1',
+        'NYA'  => 'Not yet submitted',
+        'AM'   => 'Submitted awaiting marking',
+        'ALM'  => 'Submitted, awaiting overdue marking',
+        'A'    => 'Achieved',
+        'L'    => 'Late, not yet submitted',
+        'LA'   => 'Late, submitted awaiting marking',
+        'R1'   => 'Referral 1',
         'R1AM' => 'Referral 1 resubmitted, awaiting marking',
-        'R2' => 'Referral 2',
+        'R2'   => 'Referral 2',
         'R2AM' => 'Referral 2 resubmitted, awaiting marking',
-        'R3' => 'Referral 3',
+        'R3'   => 'Referral 3',
         'R3AM' => 'Referral 3 resubmitted, awaiting marking',
     ];
 
@@ -50,24 +54,30 @@ class StudentAssessment extends Entity
             ->where('criteria_unit_id', $criteriaUnitId);
     }
 
+    public function criteria()
+    {
+        return $this->hasOne('eTrack\Courses\Criteria', 'id', 'criteria_id')
+            ->where('unit_id', $this->criteria_unit_id);
+    }
+
     public function assignment()
     {
-        return $this->belongsTo('eTrack\Models\Entities\Assignment', 'student_assignment_assignment_id');
+        return $this->belongsTo('eTrack\Courses\Assignment', 'student_assignment_assignment_id');
     }
 
     public function student()
     {
-        return $this->belongsTo('eTrack\Models\Entities\Student', 'student_assignment_student_user_id');
+        return $this->belongsTo('eTrack\Accounts\Student', 'student_assignment_student_user_id');
     }
 
     public function assessor()
     {
-        return $this->belongsTo('eTrack\Models\Entities\User', 'assessor_user_id');
+        return $this->belongsTo('eTrack\Accounts\User', 'assessor_user_id');
     }
 
     public function moderator()
     {
-        return $this->belongsTo('eTrack\Models\Entities\User', 'moderator_user_id');
+        return $this->belongsTo('eTrack\Accounts\User', 'moderator_user_id');
     }
 
 }

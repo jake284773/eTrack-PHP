@@ -39,4 +39,9 @@ class Criteria extends Entity
             ->where('id', $id)
             ->where('unit_id', $unitId);
     }
+
+    public function scopeType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
 }

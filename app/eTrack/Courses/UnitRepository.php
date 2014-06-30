@@ -54,4 +54,18 @@ class UnitRepository extends EloquentRepository
         return $this->model->with('subject_sector')->findOrFail($id);
     }
 
+    public function criteriaCount($id, $type = 'All')
+    {
+        $validTypes = ['All', 'Pass', 'Merit', 'Distinction'];
+
+        if (! in_array($type, $validTypes))
+            throw new \InvalidArgumentException();
+
+        if ($type = 'All') {
+            return $this->model->find($id)->criteria()->get()->count();
+        }
+
+        return $this->model->find($id)->criteria()->where('type', $type)->get()->count();
+    }
+
 } 

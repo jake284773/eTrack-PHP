@@ -1,5 +1,7 @@
 <?php namespace eTrack\SubjectSectors;
 use eTrack\Core\Entity;
+use eTrack\Courses\Course;
+use eTrack\Courses\Unit;
 
 /**
  * Subject sector model

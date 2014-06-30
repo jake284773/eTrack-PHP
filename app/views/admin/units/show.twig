@@ -109,8 +109,8 @@
           <tbody>
           {% for course in unit.courses %}
             <tr>
-              <td>{{ course.id }}</td>
-              <td>{{ course.name }}</td>
+              <td><a href="{{ route('admin.courses.show', course.id) }}">{{ course.id }}</a></td>
+              <td><a href="{{ route('admin.courses.show', course.id) }}">{{ course.name }}</a></td>
               <td>{{ course.course_organiser.full_name }}</td>
             </tr>
           {% else %}

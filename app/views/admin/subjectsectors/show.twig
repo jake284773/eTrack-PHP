@@ -59,8 +59,8 @@
           <tbody>
             {% for course in subjectSector.courses %}
               <tr>
-                <td>{{ course.id }}</td>
-                <td>{{ course.name }}</td>
+                <td><a href="{{ route('admin.courses.show', course.id) }}">{{ course.id }}</a></td>
+                <td><a href="{{ route('admin.courses.show', course.id) }}">{{ course.name }}</a></td>
                 <td>{{ course.course_organiser.full_name }}</td>
               </tr>
             {% else %}
@@ -83,9 +83,9 @@
           <tbody>
             {% for unit in subjectSector.units %}
               <tr>
-                <td>{{ unit.id }}</td>
-                <td>{{ unit.number }}</td>
-                <td>{{ unit.name }}</td>
+                <td><a href="{{ route('admin.units.show', unit.id) }}">{{ unit.id }}</a></td>
+                <td><a href="{{ route('admin.units.show', unit.id) }}">{{ unit.number }}</a></td>
+                <td><a href="{{ route('admin.units.show', unit.id) }}">{{ unit.name }}</a></td>
               </tr>
             {% else %}
               <tr><td colspan="3">No units were found.</td></tr>

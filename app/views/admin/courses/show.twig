@@ -111,6 +111,12 @@
               <td>{{ student.pivot.predicted_ucas_tariff_score }}</td>
             {% endif %}
           </tr>
+          {% else %}
+            {% if course.level == 3 %}
+              <tr><td colspan="6">No students could be found.</td></tr>
+            {% else %}
+              <tr><td colspan="4">No students could be found.</td></tr>
+            {% endif %}
           {% endfor %}
         </tbody>
       </table>

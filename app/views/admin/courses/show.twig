@@ -128,7 +128,7 @@
         <tbody>
         {% for group in course.student_groups %}
           <tr>
-            <td>{{ group.id }}</td>
+            <td><a href="{{ route('admin.courses.student_groups.show', [course.id, group.id]) }}">{{ group.id }}</a></td>
             <td>{{ group.tutor.full_name }}</td>
           </tr>
         {% else %}

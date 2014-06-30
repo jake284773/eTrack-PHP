@@ -1,38 +1,29 @@
 <?php namespace eTrack\Controllers\Admin;
 
-use eTrack\Validation\Forms\Admin\SubjectSectors\CreateValidator;
-use eTrack\Validation\Forms\Admin\SubjectSectors\EditValidator;
-use eTrack\Validation\FormValidationException;
-use eTrack\Models\Entities\SubjectSector;
+use App;
+use eTrack\Controllers\BaseController;
+use eTrack\SubjectSectors\SubjectSectorRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use View;
 use Request;
 use Redirect;
 use Input;
 use Illuminate\Database\QueryException;
 
-class SubjectSectorController extends \BaseController {
+class SubjectSectorController extends BaseController {
 
-    /**
-     * @var \eTrack\Validation\Forms\Admin\SubjectSectors\CreateValidator
-     */
-    private $createFormValidator;
+    protected $subjectSectorRepository;
 
-    /**
-     * @var \eTrack\Validation\Forms\Admin\SubjectSectors\EditValidator
-     */
-    private $editFormValidator;
-
-    public function __construct(CreateValidator $createValidator, EditValidator $editValidator)
+    public function __construct(SubjectSectorRepository $subjectSectorRepository)
     {
-        $this->createFormValidator = $createValidator;
-        $this->editFormValidator = $editValidator;
+        $this->subjectSectorRepository = $subjectSectorRepository;
     }
 
     public function index()
     {
-        $subjectSectors = SubjectSector::all();
+        $subjectSectors = $this->subjectSectorRepository->getAll();
 
-        return View::make('admin.subjectsectors.index', array('subjectSectors' => $subjectSectors));
+        return View::make('admin.subjectsectors.index', ['subjectSectors' => $subjectSectors]);
     }
 
     public function create()
@@ -42,23 +33,11 @@ class SubjectSectorController extends \BaseController {
 
     public function store()
     {
-        $formAttributes = array(
-            'subject_sector_id' => Input::get('id'),
-            'subject_sector_name' => Input::get('name'),
-        );
+        $subjectSector = $this->subjectSectorRepository->getNew(Input::all());
 
-        try {
-            $this->createFormValidator->validate($formAttributes);
-        } catch (FormValidationException $ex) {
-            return Redirect::back()
-                ->withInput()
-                ->withErrors($ex->getErrors());
+        if (! $subjectSector->isValid()) {
+            return Redirect::back()->withInput()->withErrors($subjectSector->getErrors());
         }
-
-        $subjectSector = new SubjectSector();
-
-        $subjectSector->id = $formAttributes['subject_sector_id'];
-        $subjectSector->name = $formAttributes['subject_sector_name'];
 
         $subjectSector->save();
 
@@ -68,60 +47,73 @@ class SubjectSectorController extends \BaseController {
 
     public function show($id)
     {
-        $subjectSector = SubjectSector::with('courses', 'courses.course_organiser', 'units')->where('id', $id)->firstOrFail();
-
-        return View::make('admin.subjectsectors.show', array('subjectSector' => $subjectSector));
+        try {
+            $subjectSector = $this->subjectSectorRepository->getWithRelated($id);
+            return View::make('admin.subjectsectors.show', ['subjectSector' => $subjectSector]);
+        } catch (ModelNotFoundException $e) {
+            App::abort(404);
+            return false;
+        }
     }
 
     public function edit($id)
     {
-        $subjectSector = SubjectSector::find($id);
-
-        return View::make('admin.subjectsectors.edit', array('subjectSector' => $subjectSector));
+        try {
+            $subjectSector = $this->subjectSectorRepository->requireById($id);
+            return View::make('admin.subjectsectors.edit', ['subjectSector' => $subjectSector]);
+        } catch (ModelNotFoundException $e) {
+            App::abort(404);
+            return false;
+        }
     }
 
     public function update($id)
     {
-        $formAttributes = array(
-            'subject_sector_name' => Input::get('name'),
-        );
-
         try {
-            $this->editFormValidator->validate($formAttributes);
-        } catch (FormValidationException $ex) {
-            return Redirect::back()
-                ->withInput()
-                ->withErrors($ex->getErrors());
+            $subjectSector = $this->subjectSectorRepository->requireById($id);
+            $subjectSector->fill(Input::all());
+
+            if (!$subjectSector->isValid()) {
+                return Redirect::back()->withInput()->withErrors($subjectSector->getErrors());
+            }
+
+            $subjectSector->save();
+
+            return Redirect::route('admin.subjectsectors.index')
+                ->with('successMessage', 'Updated subject sector successfully');
+        } catch (ModelNotFoundException $e) {
+            App::abort(404);
+            return false;
         }
-
-        $subjectSector = SubjectSector::find($id);
-
-        $subjectSector->name = $formAttributes['subject_sector_name'];
-
-        $subjectSector->save();
-
-        return Redirect::route('admin.subjectsectors.index')
-            ->with('successMessage', 'Updated subject sector');
     }
 
     public function deleteConfirm($id)
     {
-        $subjectSector = SubjectSector::find($id);
+        try {
+            $subjectSector = $this->subjectSectorRepository->requireById($id);
 
-        if (Request::ajax())
-        {
-            return View::make('admin.subjectsectors.delete.modal', array('subjectSector' => $subjectSector));
+            if (Request::ajax()) {
+                return View::make('admin.subjectsectors.delete.modal',
+                    ['subjectSector' => $subjectSector]);
+            }
+
+            return View::make('admin.subjectsectors.delete.fallback',
+                ['subjectSector' => $subjectSector]);
+        } catch (ModelNotFoundException $e) {
+            App::abort(404);
+            return false;
         }
-
-        return View::make('admin.subjectsectors.delete.fallback', array('subjectSector' => $subjectSector));
     }
 
     public function destroy($id)
     {
         try {
-            $subjectSector = SubjectSector::find($id);
+            $subjectSector = $this->subjectSectorRepository->requireById($id);
             $subjectSector->delete();
-        } catch (QueryException $ex) {
+        } catch(ModelNotFoundException $e) {
+            App::abort(404);
+            return false;
+        } catch (QueryException $e) {
             return Redirect::route('admin.subjectsectors.index')
                 ->with('errorMessage', 'Unable to delete subject sector');
         }

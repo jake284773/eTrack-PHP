@@ -1,0 +1,12 @@
+{% extends "layouts.template-login" %}
+{% block main %}
+  <div class="row">
+    <div class="{% block mainclass %}col-md-7{% endblock %}">
+      {% block content %}{% endblock %}
+    </div>
+
+    <sidebar class="{% block sidebarclass %}col-md-3 col-md-offset-2{% endblock %}">
+      {% block sidebar %}{% endblock %}
+    </sidebar>
+  </div>
+{% endblock %}

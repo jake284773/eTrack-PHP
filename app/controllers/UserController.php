@@ -1,4 +1,10 @@
-<?php
+<?php namespace eTrack\Controllers;
+
+use Auth;
+use Input;
+use Redirect;
+use Session;
+use View;
 
 class UserController extends BaseController {
 
@@ -9,10 +15,10 @@ class UserController extends BaseController {
 
     public function authenticate()
     {
-        $credentials = array(
+        $credentials = [
             'id' => Input::get('userid'),
             'password' => Input::get('password')
-        );
+        ];
 
         if (Auth::attempt($credentials)) {
             return Redirect::intended('/');

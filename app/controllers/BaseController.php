@@ -1,6 +1,11 @@
-<?php
+<?php namespace eTrack\Controllers;
 
-class BaseController extends Controller {
+abstract class BaseController extends \Controller {
+
+    public function __construct()
+    {
+        $this->beforeFilter('csrf', ['on' => 'post']);
+    }
 
 	/**
 	 * Setup the layout used by the controller.
@@ -11,7 +16,7 @@ class BaseController extends Controller {
 	{
 		if ( ! is_null($this->layout))
 		{
-			$this->layout = View::make($this->layout);
+			$this->layout = \View::make($this->layout);
 		}
 	}
 

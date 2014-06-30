@@ -9,12 +9,10 @@
       <li><a href="{{ route('admin.users.index') }}">Users</a></li>
       <li class="active">{{ block('title') }}</li>
     </ol>
-    <hgroup>
-      <h1 class="heading-large">Create a new user</h1>
-    </hgroup>
+
+    <h1 class="heading-large">Create a new user</h1>
   </header>
 
-  <article>
     {% if errors is not empty %}
       <div class="alert alert-danger">
         <h4>There was a problem submitting the form</h4>
@@ -33,22 +31,22 @@
       {{ form_open({'route': 'admin.users.store'}) }}
         <div class="row">
           <div class="form-group col-md-5">
-            {{ form_label('userid', 'User ID', {'id': 'userid-label', 'class': 'control-label'}) }}
-            {{ form_text('userid', input.old('userid'), {'id': 'userid', 'class': 'form-control'}) }}
+            {{ form_label('id', 'User ID', {'id': 'user_id-label', 'class': 'control-label'}) }}
+            {{ form_text('id', input_old('user_id'), {'id': 'user_id', 'class': 'form-control'}) }}
           </div>
         </div>
 
         <div class="row">
           <div class="form-group col-md-5">
-            {{ form_label('fullname', 'Full name', {'id': 'fullname-label', 'class': 'control-label'}) }}
-            {{ form_text('fullname', input.old('fullname'), {'id': 'fullname', 'class': 'form-control'}) }}
+            {{ form_label('full_name', 'Full name', {'id': 'full_name-label', 'class': 'control-label'}) }}
+            {{ form_text('full_name', input_old('full_name'), {'id': 'full_name', 'class': 'form-control'}) }}
           </div>
         </div>
 
         <div class="row">
           <div class="form-group col-md-5">
             {{ form_label('email', 'Email address', {'id': 'email-label', 'class': 'control-label'}) }}
-            {{ form_email('email', input.old('email'), {'id': 'email', 'class': 'form-control'}) }}
+            {{ form_email('email', input_old('email'), {'id': 'email', 'class': 'form-control'}) }}
           </div>
         </div>
 
@@ -68,11 +66,15 @@
 
         <div class="row">
           <div class="form-group col-md-5">
-            {{ form_label('user-role', 'User role', {'id': 'user-role-label', 'class': 'control-label'}) }}
-            {{ form_select('user-role',
-              {'': '', 'Admin': 'Admin', 'Course Organiser': 'Course Organiser', 'Tutor': 'Tutor', 'Student': 'Student'},
-              null, {'id': 'user-role', 'class': 'form-control chosen-select', 'data-placeholder': 'Choose a role'})
-            }}
+            {{ form_label('role', 'User role', {'id': 'role-label', 'class': 'control-label'}) }}
+            {% for role in roles %}
+              <div class="radio">
+                <label class="radio">
+                  {{ form_radio('role', role, input_old('role') == role) }}
+                  {{ role }}
+                </label>
+              </div>
+            {% endfor %}
           </div>
         </div>
 

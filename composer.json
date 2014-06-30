@@ -4,14 +4,16 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "laravel/framework": "4.1.*",
-        "rcrowe/twigbridge": "0.5.3",
-        "goodby/csv": "1.1.0",
-        "barryvdh/laravel-dompdf": "v0.3.1"
+        "laravel/framework": "4.2.*",
+        "rcrowe/twigbridge": "0.6.*@dev",
+        "goodby/csv": "1.*",
+        "barryvdh/laravel-dompdf": "0.3.*"
     },
     "require-dev": {
-      "barryvdh/laravel-debugbar": "1.*",
-      "barryvdh/laravel-ide-helper": "1.*"
+        "barryvdh/laravel-debugbar": "1.*",
+        "barryvdh/laravel-ide-helper": "1.*",
+        "phpunit/phpunit": "3.7.*",
+        "mockery/mockery": "0.9.1"
     },
     "autoload": {
         "classmap": [
@@ -20,9 +22,11 @@
             "app/models",
             "app/database/migrations",
             "app/database/seeds",
-            "app/tests/TestCase.php",
-            "app/validation"
-        ]
+            "app/tests/TestCase.php"
+        ],
+        "psr-0": {
+            "eTrack\\": "app/"
+        }
     },
     "scripts": {
         "post-install-cmd": [

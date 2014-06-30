@@ -11,14 +11,14 @@
 |
 */
 
-ClassLoader::addDirectories(array(
+ClassLoader::addDirectories([
 
 	app_path().'/commands',
 	app_path().'/controllers',
 	app_path().'/models',
 	app_path().'/database/seeds',
 
-));
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -64,7 +64,7 @@ App::error(function(Exception $exception, $code)
 
 App::down(function()
 {
-	return Response::view('errors.maintenance', array(), 503);
+	return Response::view('errors.maintenance', [], 503);
 });
 
 /*

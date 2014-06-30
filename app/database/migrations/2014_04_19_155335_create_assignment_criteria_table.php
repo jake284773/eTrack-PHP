@@ -29,14 +29,11 @@ class CreateAssignmentCriteriaTable extends Migration {
             $table->foreign("assignment_id")
                 ->references("id")
                 ->on("assignment");
-            $table->foreign("criteria_id")
-                ->references("id")
+            $table->foreign(["criteria_id", "criteria_unit_id"])
+                ->references(["id", "unit_id"])
                 ->on("criteria");
-            $table->foreign("criteria_unit_id", "assignment_criteria_unit_id_foreign")
-                ->references("id")
-                ->on("unit");
 
-            $table->primary(array("assignment_id", "criteria_id", "criteria_unit_id"))
+            $table->primary(["assignment_id", "criteria_id", "criteria_unit_id"])
                 ->index("assignment_criteria_primary");
         });
     }

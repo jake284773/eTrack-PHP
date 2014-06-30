@@ -27,12 +27,13 @@ module.exports = function(grunt) {
                     'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js',
                     'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/dropdown.js',
                     'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/toggle.js',
-                     'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tab.js',
+                    'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tab.js',
                     'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/modal.js',
                     'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/button.js',
                     'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tooltip.js',
                     'bower_components/chosen/chosen.jquery.js',
                     'app/assets/javascripts/chosen-config.js',
+                    'app/assets/javascripts/bootstrap-session-timeout.js',
                     'app/assets/javascripts/application.js'
                 ],
                 dest: 'public/javascript/main.js'
@@ -53,14 +54,12 @@ module.exports = function(grunt) {
             },
             main: {
                 files: {
-                    './public/javascript/main.js':
-                        './public/javascript/main.js'
+                    'public/javascript/main.js': 'public/javascript/main.js'
                 }
             },
             ie: {
                 files: {
-                    './public/javascript/ie.js':
-                        './public/javascript/ie.js'
+                    'public/javascript/ie.js': 'public/javascript/ie.js'
                 }
             }
         },
@@ -69,7 +68,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     src: ['bower_components/bootstrap-sass-official/vendor/assets/fonts/**'],
-                    dest: './public/fonts',
+                    dest: 'public/fonts',
                     flatten: true,
                     filter: 'isFile'
                 }]
@@ -83,7 +82,7 @@ module.exports = function(grunt) {
                         'bower_components/octicons/octicons/octicons.ttf',
                         'bower_components/octicons/octicons/octicons.woff'
                     ],
-                    dest: './public/fonts',
+                    dest: 'public/fonts',
                     flatten: true,
                     filter: 'isFile'
                 }]
@@ -92,7 +91,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     src: ['app/assets/images/**'],
-                    dest: './public/images',
+                    dest: 'public/images',
                     flatten: true,
                     filter: 'isFile'
                 }]
@@ -100,7 +99,7 @@ module.exports = function(grunt) {
         },
         watch: {
             sass: {
-                files: ['./app/assets/stylesheets/**/*.scss'],
+                files: ['app/assets/stylesheets/**/*.scss'],
                 tasks: ['sass'],
                 options: {
                     livereload: 8080

@@ -1,8 +1,7 @@
 <?php namespace eTrack\Controllers\Admin;
 
-use eTrack\Validation\Forms\Admin\Users\CreateValidator;
-use eTrack\Validation\Forms\Admin\Users\EditValidator;
-use eTrack\Validation\Forms\Admin\Users\Import\Step1Validator;
+use eTrack\Accounts\UserRepository;
+use eTrack\Controllers\BaseController;
 use eTrack\Validation\FormValidationException;
 use Goodby\CSV\Import\Standard\Interpreter;
 use Goodby\CSV\Import\Standard\LexerConfig;
@@ -11,7 +10,7 @@ use Illuminate\Database\QueryException;
 use Request;
 use Input;
 use Hash;
-use eTrack\Models\Entities\User;
+use eTrack\Accounts\User;
 use View;
 use Session;
 use Redirect;
@@ -20,87 +19,47 @@ use PDF;
 use DB;
 use App;
 
-class UserController extends \BaseController {
+class UserController extends BaseController {
 
-    /**
-     * @var eTrack\Validation\Forms\Admin\Users\CreateValidator
-     */
-    protected $createFormValidator;
+    protected $userRepository;
 
-    /**
-     * @var eTrack\Validation\Forms\Admin\Users\EditValidator
-     */
-    protected $editFormValidator;
-
-    /**
-     * @var eTrack\Validation\Forms\Admin\Users\Import\Step1Validator
-     */
-    protected $importStep1FormValidator;
-
-    public function __construct(CreateValidator $createValidator, EditValidator $editValidator,
-                                Step1Validator $step1Validator)
+    public function __construct(UserRepository $userRepository)
     {
-        $this->createFormValidator = $createValidator;
-        $this->editFormValidator = $editValidator;
-        $this->importStep1FormValidator = $step1Validator;
+        $this->userRepository = $userRepository;
     }
 
     public function index()
     {
-        $searchString = '%'.Input::get('search').'%';
-        $selectedRole = '%'.Input::get('role').'%';
-
-        $users = User::where('role', 'LIKE', $selectedRole)
-            ->where(function($query) use($searchString)
-            {
-                $query->where('id', 'LIKE', $searchString)
-                ->orWhere('full_name', 'LIKE', $searchString)
-                ->orWhere('email', 'LIKE', $searchString);
-            });
-
-        $userCount = $users->count();
-
-        if ($userCount > 1 or $userCount < 1) {
-            $userCount = $userCount.' users';
+        if (($search = Input::get('search')) && ($role = Input::get('role'))) {
+            $users = $this->userRepository->getPaginatedByRoleAndSearch($role, $search);
+        } elseif ($search = Input::get('search')) {
+            $users = $this->userRepository->getPaginatedBySearch($search);
+        } elseif ($role = Input::get('role')) {
+            $users = $this->userRepository->getPaginatedByRole($role);
         } else {
-            $userCount = $userCount.' user';
+            $users = $this->userRepository->getAllPaginated();
         }
 
-        return View::make('admin.users.index', array('users' => $users->paginate(15),
-            'userCount' => $userCount));
+        $roles = $this->userRepository->getValidRoles();
+
+        return View::make('admin.users.index', ['users' => $users,
+            'roles' => $roles]);
     }
 
     public function create()
     {
-        return View::make('admin.users.create');
+        $roles = $this->userRepository->getValidRoles();
+        return View::make('admin.users.create', ['roles' => $roles]);
     }
 
     public function store()
     {
-        $formAttributes = array(
-            'user_id'               => Input::get('userid'),
-            'full_name'             => Input::get('fullname'),
-            'email_address'         => Input::get('email'),
-            'password'              => Input::get('password'),
-            'password_confirmation' => Input::get('password_confirmation'),
-            'user_role'             => Input::get('user-role')
-        );
+        $user = $this->userRepository->getNew(Input::all());
 
-        try {
-            $this->createFormValidator->validate($formAttributes);
-        } catch (FormValidationException $ex) {
-            return Redirect::back()
-                ->withInput(Input::except(array('password', 'password_confirmation')))
-                ->withErrors($ex->getErrors());
+        if (! $user->isValid())
+        {
+            return Redirect::back()->withInput()->withErrors($user->getErrors());
         }
-
-        $user = new User();
-
-        $user->id = $formAttributes['user_id'];
-        $user->full_name = $formAttributes['full_name'];
-        $user->email = $formAttributes['email_address'];
-        $user->password = Hash::make($formAttributes['password']);
-        $user->role = $formAttributes['user_role'];
 
         $user->save();
 
@@ -108,42 +67,26 @@ class UserController extends \BaseController {
             ->with('successMessage', 'Created new user');
     }
 
-    public function edit($userId)
+    public function edit($id)
     {
-        $user = User::find($userId);
+        $user = $this->userRepository->getById($id);
 
-        if (! $user) {
-            return App::abort(404);
-        }
+        if (! $user) App::abort(404);
 
-        return View::make('admin.users.edit', array('user' => $user));
+        $roles = $this->userRepository->getValidRoles();
+
+        return View::make('admin.users.edit', ['user' => $user, 'roles' => $roles]);
     }
 
-    public function update($userId)
+    public function update($id)
     {
-        $formAttributes = array(
-            'user_id'               => Input::get('id'),
-            'full_name'             => Input::get('full_name'),
-            'email_address'         => Input::get('email'),
-            'password'              => Input::get('password'),
-            'password_confirmation' => Input::get('password_confirmation'),
-            'user_role'             => Input::get('role')
-        );
+        $user = $this->userRepository->getById($id);
+        $user->fill(Input::all());
 
-        try {
-            $this->editFormValidator->validate($formAttributes);
-        } catch (FormValidationException $ex) {
-            return Redirect::back()
-                ->withInput(Input::except(array('password', 'password_confirmation')))
-                ->withErrors($ex->getErrors());
+        if (! $user->isValid())
+        {
+            return Redirect::back()->withInput()->withErrors($user->getErrors());
         }
-
-        $user = User::find($userId);
-
-        $user->full_name = $formAttributes['full_name'];
-        $user->email = $formAttributes['email_address'];
-        $user->password = Hash::make($formAttributes['password']);
-        $user->role = $formAttributes['user_role'];
 
         $user->save();
 
@@ -151,31 +94,28 @@ class UserController extends \BaseController {
             ->with('successMessage', 'Updated user account');
     }
 
-    public function deleteConfirm($userId)
+    public function deleteConfirm($id)
     {
-        $user = User::find($userId);
+        $user = $this->userRepository->getById($id);
 
         if (Request::ajax())
         {
-            return View::make('admin.users.delete.modal', array('user' => $user));
+            return View::make('admin.users.delete.modal', ['user' => $user]);
         }
 
-        return View::make('admin.users.delete.fallback', array('user' => $user));
+        return View::make('admin.users.delete.fallback', ['user' => $user]);
     }
 
-    public function destroy($userId)
+    public function destroy($id)
     {
         try {
-            $user = User::find($userId);
+            $user = $this->userRepository->requireById($id);
             $user->delete();
-        } catch (QueryException $ex) {
-            return Redirect::route('admin.users.index')
-                ->with('errorMessage', 'Unable to delete user');
+        } catch (\Exception $ex) {
+            return Redirect::route('admin.users.index')->with('errorMessage', 'Unable to delete user');
         }
 
-        return Redirect::back()
-            ->withInput()
-            ->with('successMessage', 'Deleted user');
+        return Redirect::back()->withInput()->with('successMessage', 'Deleted user');
 
     }
 
@@ -186,19 +126,7 @@ class UserController extends \BaseController {
 
     public function importStep1Store()
     {
-        $formAttributes = array(
-            'file' => Input::get('file'),
-        );
-
-        try {
-            $this->importStep1FormValidator->validate($formAttributes);
-        } catch (FormValidationException $ex) {
-            return Redirect::back()
-                ->withInput()
-                ->withErrors($ex->getErrors());
-        }
-
-        if (Input::hasFile('file'))
+         if (Input::hasFile('file'))
         {
             $file = Input::file('file');
             $filePath = public_path().'/uploads/';
@@ -206,7 +134,7 @@ class UserController extends \BaseController {
 
             if ($uploadSuccess)
             {
-                $importedData = array();
+                $importedData = [];
 
                 $csvImportConfig = new LexerConfig();
                 $csvImportLexer = new Lexer($csvImportConfig);
@@ -216,13 +144,13 @@ class UserController extends \BaseController {
                 {
                     $randomPassword = Str::random();
 
-                    $importedData[] = array(
+                    $importedData[] = [
                         'id'        => $row[0],
                         'full_name' => $row[1],
                         'email'     => $row[2],
                         'role'      => $row[3],
                         'password'  => $randomPassword,
-                    );
+                    ];
                 });
 
                 $csvImportLexer->parse($filePath.'user_import.csv', $csvImportInterpreter);
@@ -240,7 +168,7 @@ class UserController extends \BaseController {
         }
 
         return Redirect::back()
-            ->with('errorMessage', 'File didn\'t upload properly');
+            ->with('errorMessage', "File didn't upload properly");
     }
 
     public function importStep2()
@@ -252,7 +180,7 @@ class UserController extends \BaseController {
 
         $users = Session::get('user_import_data');
 
-        return View::make('admin.users.import.step2', array('users' => $users));
+        return View::make('admin.users.import.step2', ['users' => $users]);
     }
 
     public function importStep2Store()
@@ -269,12 +197,10 @@ class UserController extends \BaseController {
 
                 return Redirect::route('admin.users.import.step3')
                     ->with('errorMessage', 'Unable to add user records to database.');
-                ;;
             case 'cancel':
                 Session::forget('user_import_data');
                 return Redirect::route('admin.users.index')
                     ->with('infoMessage', 'Batch import cancelled');
-                ;;
             default:
                 App::abort(404);
         }
@@ -289,7 +215,7 @@ class UserController extends \BaseController {
 
         $users = Session::get('user_import_data');
 
-        return View::make('admin.users.import.step3', array('users' => $users));
+        return View::make('admin.users.import.step3', ['users' => $users]);
     }
 
     public function importStep3Store()
@@ -300,7 +226,7 @@ class UserController extends \BaseController {
             return Redirect::route('admin.users.index');
         }
 
-        return App::abort(404);
+        App::abort(404);
     }
 
     public function importPrint()
@@ -312,7 +238,7 @@ class UserController extends \BaseController {
 
         $users = Session::get('user_import_data');
 
-        $pdf = PDF::loadView('admin.users.import.print', array('users' => $users));
+        $pdf = PDF::loadView('admin.users.import.print', ['users' => $users]);
         return $pdf->stream();
     }
 

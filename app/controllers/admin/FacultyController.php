@@ -1,38 +1,35 @@
 <?php namespace eTrack\Controllers\Admin;
 
-use eTrack\Validation\Forms\Admin\Faculties\CreateValidator;
-use eTrack\Validation\Forms\Admin\Faculties\EditValidator;
-use eTrack\Validation\FormValidationException;
-use eTrack\Models\Entities\Faculty;
+use App;
+use eTrack\Controllers\BaseController;
+use eTrack\Faculties\FacultyRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use View;
 use Request;
 use Redirect;
 use Input;
 use Illuminate\Database\QueryException;
 
-class FacultyController extends \BaseController {
+class FacultyController extends BaseController
+{
 
     /**
-     * @var \eTrack\Validation\Forms\Admin\Faculties\CreateValidator
+     * Faculty repository instance
+     *
+     * @var \eTrack\Faculties\FacultyRepository
      */
-    protected $createFormValidator;
+    protected $facultyRepository;
 
-    /**
-     * @var \eTrack\Validation\Forms\Admin\Faculties\EditValidator
-     */
-    protected $editFormValidator;
-
-    public function __construct(CreateValidator $createValidator, EditValidator $editValidator)
+    public function __construct(FacultyRepository $facultyRepository)
     {
-        $this->createFormValidator = $createValidator;
-        $this->editFormValidator = $editValidator;
+        $this->facultyRepository = $facultyRepository;
     }
 
     public function index()
     {
-        $faculties = Faculty::all();
+        $faculties = $this->facultyRepository->getAll();
 
-        return View::make('admin.faculties.index', array('faculties' => $faculties));
+        return View::make('admin.faculties.index', ['faculties' => $faculties]);
     }
 
     public function create()
@@ -42,23 +39,11 @@ class FacultyController extends \BaseController {
 
     public function store()
     {
-        $formAttributes = array(
-            'faculty_code' => Input::get('id'),
-            'faculty_name' => Input::get('name'),
-        );
+        $faculty = $this->facultyRepository->getNew(Input::all());
 
-        try {
-            $this->createFormValidator->validate($formAttributes);
-        } catch (FormValidationException $ex) {
-            return Redirect::back()
-                ->withInput()
-                ->withErrors($ex->getErrors());
+        if (!$faculty->isValid()) {
+            return Redirect::back()->withInput()->withErrors($faculty->getErrors());
         }
-
-        $faculty = new Faculty();
-
-        $faculty->id = $formAttributes['faculty_code'];
-        $faculty->name = $formAttributes['faculty_name'];
 
         $faculty->save();
 
@@ -66,64 +51,57 @@ class FacultyController extends \BaseController {
             ->with('successMessage', 'Created new faculty');
     }
 
-    public function show($id)
-    {
-      $faculty = Faculty::with('courses', 'courses.course_organiser')->where('id', $id)->firstOrFail();
-
-      return View::make('admin.faculties.show', array('faculty' => $faculty));
-    }
-
     public function edit($id)
     {
-        $faculty = Faculty::find($id);
+        $faculty = $this->facultyRepository->getById($id);
 
-        if (! $faculty) {
-            return App::abort(404);
+        if (!$faculty) App::abort(404);
+
+        return View::make('admin.faculties.edit', ['faculty' => $faculty]);
+    }
+
+
+    public function show($id)
+    {
+        try {
+            $faculty = $this->facultyRepository->getWithRelated($id);
+            return View::make('admin.faculties.show', ['faculty' => $faculty]);
+        } catch (ModelNotFoundException $e) {
+            App::abort(404);
+            return false;
         }
-
-        return View::make('admin.faculties.edit', array('faculty' => $faculty));
     }
 
     public function update($id)
     {
-        $formAttributes = array(
-            'faculty_name' => Input::get('name'),
-        );
+        $faculty = $this->facultyRepository->getById($id);
+        $faculty->fill(Input::all());
 
-      try {
-            $this->editFormValidator->validate($formAttributes);
-        } catch (FormValidationException $ex) {
-            return Redirect::back()
-                ->withInput()
-                ->withErrors($ex->getErrors());
+        if (!$faculty->isValid()) {
+            return Redirect::back()->withInput()->withErrors($faculty->getErrors());
         }
-
-        $faculty = Faculty::find($id);
-
-        $faculty->name = $formAttributes['faculty_name'];
 
         $faculty->save();
 
         return Redirect::route('admin.faculties.index')
-            ->with('successMessage', 'Updated faculty');
+            ->with('successMessage', 'Updated faculty successfully');
     }
 
     public function deleteConfirm($id)
     {
-        $faculty = Faculty::find($id);
+        $faculty = $this->facultyRepository->getById($id);
 
-        if (Request::ajax())
-        {
-            return View::make('admin.faculties.delete.modal', array('faculty' => $faculty));
+        if (Request::ajax()) {
+            return View::make('admin.faculties.delete.modal', ['faculty' => $faculty]);
         }
 
-        return View::make('admin.faculties.delete.fallback', array('faculty' => $faculty));
+        return View::make('admin.faculties.delete.fallback', ['faculty' => $faculty]);
     }
 
     public function destroy($id)
     {
         try {
-            $faculty = Faculty::find($id);
+            $faculty = $this->facultyRepository->getById($id);
             $faculty->delete();
         } catch (QueryException $ex) {
             return Redirect::route('admin.faculties.index')

@@ -32,7 +32,7 @@ class CreateStudentGroupStudentTable extends Migration {
 				->references("id")
 				->on("user");
 
-			$table->primary(array("student_group_id", "student_user_id"));
+			$table->primary(["student_group_id", "student_user_id"]);
 		});
 	}
 

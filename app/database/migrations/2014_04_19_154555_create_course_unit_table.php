@@ -33,7 +33,7 @@ class CreateCourseUnitTable extends Migration {
                 ->references("id")
                 ->on("unit");
 
-            $table->primary(array("course_id", "unit_id"));
+            $table->primary(["course_id", "unit_id"]);
         });
     }
 

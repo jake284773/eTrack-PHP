@@ -37,7 +37,7 @@ class CreateCourseStudentTable extends Migration {
 				->references("id")
 				->on("user");
 
-			$table->primary(array("course_id", "student_user_id"));
+			$table->primary(["course_id", "student_user_id"]);
 		});
 	}
 

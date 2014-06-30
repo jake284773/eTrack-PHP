@@ -1,8 +1,12 @@
-<?php
+<?php namespace eTrack\Tests;
 
-class TestCase extends Illuminate\Foundation\Testing\TestCase {
+use Artisan;
 
-	/**
+abstract class TestCase extends \Illuminate\Foundation\Testing\TestCase {
+
+	protected $controllerNamespacePrefix = 'eTrack\Controllers\\';
+
+    /**
 	 * Creates the application.
 	 *
 	 * @return \Symfony\Component\HttpKernel\HttpKernelInterface
@@ -15,5 +19,12 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase {
 
 		return require __DIR__.'/../../bootstrap/start.php';
 	}
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        Artisan::call('migrate', ['seed']);
+    }
 
 }

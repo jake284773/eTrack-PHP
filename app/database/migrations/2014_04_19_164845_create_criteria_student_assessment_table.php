@@ -31,13 +31,13 @@ class CreateCriteriaStudentAssessmentTable extends Migration {
             $table->string("assessment_status", 3);
             $table->timestamp("last_updated");
 
-            $table->foreign(array("student_assignment_assignment_id",
-                    "student_assignment_student_user_id"),
+            $table->foreign(["student_assignment_assignment_id",
+                    "student_assignment_student_user_id"],
                 "student_assignment_foreign")
-                ->references(array("assignment_id", "student_user_id"))
+                ->references(["assignment_id", "student_user_id"])
                 ->on("student_assignment");
-            $table->foreign(array("criteria_id", "criteria_unit_id"))
-                ->references(array("id", "unit_id"))
+            $table->foreign(["criteria_id", "criteria_unit_id"])
+                ->references(["id", "unit_id"])
                 ->on("criteria");
             $table->foreign("assessor_user_id")
                 ->references("id")
@@ -46,12 +46,12 @@ class CreateCriteriaStudentAssessmentTable extends Migration {
                 ->references("id")
                 ->on("user");
 
-            $table->primary(array(
+            $table->primary([
                 "student_assignment_assignment_id",
                 "student_assignment_student_user_id",
                 "criteria_id",
                 "criteria_unit_id"
-                ))->index("criteria_student_assessment_primary");
+                ])->index("criteria_student_assessment_primary");
         });
     }
 

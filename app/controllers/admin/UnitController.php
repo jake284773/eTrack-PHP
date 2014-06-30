@@ -1,163 +1,160 @@
 <?php namespace eTrack\Controllers\Admin;
 
 use App;
-//use eTrack\Validation\Forms\Admin\Units\CreateValidator;
-//use eTrack\Validation\Forms\Admin\Units\EditValidator;
-use eTrack\Validation\FormValidationException;
-use eTrack\Models\Entities\Faculty;
-use eTrack\Models\Entities\SubjectSector;
-use eTrack\Models\Entities\Unit;
+use DB;
+use eTrack\Controllers\BaseController;
+use eTrack\Courses\Criteria;
+use eTrack\Courses\UnitRepository;
+use eTrack\SubjectSectors\SubjectSectorRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use View;
 use Request;
 use Redirect;
 use Input;
-use Illuminate\Database\QueryException;
 
-class UnitController extends \BaseController {
+class UnitController extends BaseController
+{
 
-//    /**
-//     * @var \eTrack\Validation\Forms\Admin\Units\CreateValidator
-//     */
-//    protected $createFormValidator;
-//
-//    /**
-//     * @var \eTrack\Validation\Forms\Admin\Units\EditValidator
-//     */
-//    protected $editFormValidator;
-//
-//    public function __construct(CreateValidator $createValidator, EditValidator $editValidator)
-//    {
-//        $this->createFormValidator = $createValidator;
-//        $this->editFormValidator = $editValidator;
-//    }
+    /**
+     * @var \eTrack\Repositories\UnitRepository
+     */
+    protected $unitRepository;
+
+    protected $subjectSectorRepository;
+
+    public function __construct(UnitRepository $unitRepository, SubjectSectorRepository $subjectSectorRepository)
+    {
+        $this->unitRepository = $unitRepository;
+        $this->subjectSectorRepository = $subjectSectorRepository;
+    }
 
     public function index()
     {
-        $searchString = '%'.Input::get('search').'%';
-        $selectedSubjectSector = '%'.Input::get('subjectsector').'%';
+        $units = $this->unitRepository->getPaginatedBySubjectAndSearch(Input::get('search'),
+            Input::get('subjectsector'));
 
-        $units = Unit::select('unit.id as id', 'number', 'unit.name as name',
-            'credit_value', 'glh', 'level', 'subject_sector.name as subject_sector_name')
-            ->join('subject_sector', 'unit.subject_sector_id', '=', 'subject_sector.id')
-            ->orderBy('subject_sector.name')
-            ->orderBy('unit.number')
-            ->where('subject_sector_id', 'LIKE', $selectedSubjectSector)
-            ->where(function($query) use($searchString)
-            {
-                $query->where('unit.id', 'LIKE', $searchString)
-                    ->orWhere('unit.number', 'LIKE', $searchString)
-                    ->orWhere('unit.name', 'LIKE', $searchString);
-            });
+        $subjectSectors = $this->subjectSectorRepository->getAllWithUnits();
+        $subjectSectorsForm = ['' => 'All subject sectors'];
 
-        $subjectSectors = SubjectSector::allWithUnits()->get();
-        $subjectSectorsForm = array('' => 'All subject sectors');
-
-        foreach($subjectSectors as $subjectSector)
-        {
-            $subjectSectorsForm[(string) $subjectSector->id] = $subjectSector->name;
+        foreach ($subjectSectors as $subjectSector) {
+            $subjectSectorsForm[(string)$subjectSector->id] = $subjectSector->name;
         }
 
-        return View::make('admin.units.index', array('units' => $units->paginate(15),
-            'subjectSectorsForm' => $subjectSectorsForm));
+        return View::make('admin.units.index', [
+            'units' => $units,
+            'subjectSectorsForm' => $subjectSectorsForm
+        ]);
     }
 
     public function create()
     {
-        return View::make('admin.faculties.create');
+        $subjectSectors = $this->subjectSectorRepository->getAllOrdered();
+        $subjectSectorsForm = ['' => ''];
+
+        foreach ($subjectSectors as $subjectSector) {
+            $subjectSectorsForm[(string)$subjectSector->id] = $subjectSector->name;
+        }
+
+        return View::make('admin.units.create', ['subjectSectorsForm' => $subjectSectorsForm]);
     }
 
     public function store()
     {
-        $formAttributes = array(
-            'faculty_code' => Input::get('id'),
-            'faculty_name' => Input::get('name'),
-        );
+        $unit = $this->unitRepository->getNew(Input::all());
 
-        try {
-            $this->createFormValidator->validate($formAttributes);
-        } catch (FormValidationException $ex) {
-            return Redirect::back()
-                ->withInput()
-                ->withErrors($ex->getErrors());
+        if (! $unit->isValid())
+        {
+            return Redirect::back()->withInput()->withErrors($unit->getErrors());
         }
 
-        $faculty = new Faculty();
+        $passCriteria = $this->generateCriteria($unit->number_of_pass_criteria, 'Pass');
+        $meritCriteria = $this->generateCriteria($unit->number_of_merit_criteria, 'Merit');
+        $distinctionCriteria = $this->generateCriteria($unit->number_of_distinction_criteria, 'Distinction');
 
-        $faculty->id = $formAttributes['faculty_code'];
-        $faculty->name = $formAttributes['faculty_name'];
+        try {
+            DB::transaction(function () use ($unit, $passCriteria, $meritCriteria, $distinctionCriteria) {
+                $unit->save();
 
-        $faculty->save();
+                $unit->criteria()->saveMany($passCriteria);
+                $unit->criteria()->saveMany($meritCriteria);
+                $unit->criteria()->saveMany($distinctionCriteria);
+            });
+        } catch (\Exception $e) {
+            return Redirect::back()
+                ->withInput()
+                ->with('errorMessage', 'Unable to save new unit. If the problem persists contact IT services.');
+        }
 
-        return Redirect::route('admin.faculties.index')
-            ->with('successMessage', 'Created new faculty');
+        return Redirect::route('admin.units.index')
+            ->with('successMessage', 'Created new unit');
     }
 
     public function show($id)
     {
-      $faculty = Faculty::with('courses', 'courses.course_organiser')->where('id', $id)->firstOrFail();
-
-      return View::make('admin.faculties.show', array('faculty' => $faculty));
-    }
-
-    public function edit($id)
-    {
-        $faculty = Faculty::find($id);
-
-        if (! $faculty) {
-            return App::abort(404);
+        try {
+            $unit = $this->unitRepository->getWithRelated($id);
+            return View::make('admin.units.show', ['unit' => $unit]);
+        } catch (\Exception $e) {
+            App::abort(404);
+            return false;
         }
-
-        return View::make('admin.faculties.edit', array('faculty' => $faculty));
-    }
-
-    public function update($id)
-    {
-        $formAttributes = array(
-            'faculty_name' => Input::get('name'),
-        );
-
-      try {
-            $this->editFormValidator->validate($formAttributes);
-        } catch (FormValidationException $ex) {
-            return Redirect::back()
-                ->withInput()
-                ->withErrors($ex->getErrors());
-        }
-
-        $faculty = Faculty::find($id);
-
-        $faculty->name = $formAttributes['faculty_name'];
-
-        $faculty->save();
-
-        return Redirect::route('admin.faculties.index')
-            ->with('successMessage', 'Updated faculty');
     }
 
     public function deleteConfirm($id)
     {
-        $faculty = Faculty::find($id);
+        try {
+            $unit = $this->unitRepository->getWithSubjectSector($id);
 
-        if (Request::ajax())
-        {
-            return View::make('admin.faculties.delete.modal', array('faculty' => $faculty));
+            if (Request::ajax()) {
+                return View::make('admin.units.delete.modal', ['unit' => $unit]);
+            }
+
+            return View::make('admin.units.delete.fallback', ['unit' => $unit]);
+        } catch (\Exception $e) {
+            App::abort(404);
+            return false;
         }
-
-        return View::make('admin.faculties.delete.fallback', array('faculty' => $faculty));
     }
 
     public function destroy($id)
     {
         try {
-            $faculty = Faculty::find($id);
-            $faculty->delete();
-        } catch (QueryException $ex) {
-            return Redirect::route('admin.faculties.index')
-                ->with('errorMessage', 'Unable to delete faculty');
+            $unit = $this->unitRepository->getById($id);
+            $unit->delete();
+        } catch (ModelNotFoundException $e) {
+            App::abort(404);
+            return false;
+        } catch (\Exception $e) {
+            return Redirect::route('admin.units.index')
+                ->withInput()
+                ->with('errorMessage', 'Unable to delete unit');
         }
 
-        return Redirect::route('admin.faculties.index')
-            ->with('successMessage', 'Deleted faculty');
+        return Redirect::route('admin.units.index')
+            ->withInput()
+            ->with('successMessage', 'Deleted unit');
+    }
+
+    private function generateCriteria($number, $type)
+    {
+        $validTypes = ['Pass', 'Merit', 'Distinction'];
+
+        if (! in_array($type, $validTypes)) {
+            throw new \InvalidArgumentException();
+        }
+
+        $criteriaArray = [];
+
+        for ($i = 1; $i <= $number; $i++) {
+            $criteria = new Criteria();
+            $criteria->id = substr($type, 0, 1) . $i;
+            $criteria->type = $type;
+
+            $criteriaArray[] = $criteria;
+        }
+
+        return $criteriaArray;
     }
 
 }
+

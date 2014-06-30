@@ -4,7 +4,7 @@
 
 {% block content %}
   <header class="page-header">
-    <hgroup><h1 class="form-title heading-large">Welcome {{ auth_user().full_name }}</h1></hgroup>
+    <hgroup><h1 class="form-title heading-large">Welcome {{ fullName }}</h1></hgroup>
   </header>
 
   <p>What would you like to manage today?</p>
@@ -81,6 +81,34 @@
             <h4 class="list-group-item-heading">Users</h4>
             <p class="list-group-item-text">
               Create, modify and remove students, tutors and course organisers.
+            </p>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-sm-1 col-xs-2">
+            <span class="mega-octicon octicon-file-text"></span>
+          </div>
+          <div class="col-sm-11 col-xs-10">
+            <h4 class="list-group-item-heading">System logs</h4>
+            <p class="list-group-item-text">
+              View the system logs to help with diagnosing faults.
+            </p>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="list-group-item">
+        <div class="row">
+          <div class="col-sm-1 col-xs-2">
+            <span class="mega-octicon octicon-gear"></span>
+          </div>
+          <div class="col-sm-11 col-xs-10">
+            <h4 class="list-group-item-heading">System maintenance</h4>
+            <p class="list-group-item-text">
+              Access the system maintenance control panel.
             </p>
           </div>
         </div>

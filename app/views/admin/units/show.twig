@@ -1,0 +1,126 @@
+{% extends "layouts.single" %}
+
+{% block title %}Unit {{ unit.number }} - {{ unit.name }}{% endblock %}
+{% block mainclass %}col-md-8{% endblock %}
+
+{% block content %}
+  <header class="page-header">
+    <ol class="breadcrumb">
+      <li><a href="{{ route('home') }}">Home</a></li>
+      <li><a href="{{ route('admin.units.index') }}">Units</a></li>
+      <li><a href="{{ route('admin.units.index', {'subjectsector': unit.subject_sector.id}) }}">{{ unit.subject_sector.name }}</a></li>
+      <li class="active">{{ block("title") }}</li>
+    </ol>
+    <hgroup>
+      {% if session_has('successMessage') %}
+        <div class="alert alert-success">
+          {{ session_get('successMessage') }}
+        </div>
+      {% endif %}
+
+      {% if session_has('infoMessage') %}
+        <div class="alert alert-info">
+          {{ session_get('infoMessage') }}
+        </div>
+      {% endif %}
+
+      {% if session_has('errorMessage') %}
+        <div class="alert alert-danger">
+          {{ session_get('errorMessage') }}
+        </div>
+      {% endif %}
+
+      <h1 class="heading-large">
+        {{ block('title') }}
+        <span class="pull-right">
+          <a href="{{ route('admin.units.delete_confirm', unit.id) }}" data-toggle="modal" data-target="#web-modal"
+             class="btn btn-danger btn-sm">Delete</a>
+        </span>
+      </h1>
+    </hgroup>
+  </header>
+
+  <article>
+    <h3>Unit Info</h3>
+
+    <div class="row">
+      <div class="col-md-5">
+        <ul class="list-group list-group-compact">
+          <li class="list-group-item"><strong>Unit ID:</strong> {{ unit.id }}</li>
+          <li class="list-group-item"><strong>Credit value</strong> {{ unit.credit_value }}</li>
+          <li class="list-group-item"><strong>Guided learning hours:</strong> {{ unit.glh }}</li>
+          <li class="list-group-item"><strong>Qualification level:</strong> {{ unit.level }}</li>
+          <li class="list-group-item"><strong>Subject sector:</strong> {{ unit.subject_sector.name }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#criteria" data-toggle="tab">Criteria</a></li>
+      <li><a href="#courses" data-toggle="tab">Courses using this unit</a></li>
+    </ul>
+
+    <div class="tab-content">
+      <div class="tab-pane active" id="criteria">
+        {% if unit.criteria is not empty %}
+          <div class="row text-center">
+          <div class="col-md-2">
+            <h4>Pass</h4>
+            <ul class="list-group list-group-compact">
+              {% for criteria in unit.criteria if criteria.type == 'Pass' %}
+                <li class="list-group-item">{{ criteria.id }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <div class="col-md-2">
+            <h4>Merit</h4>
+            <ul class="list-group list-group-compact">
+              {% for criteria in unit.criteria if criteria.type == 'Merit' %}
+                <li class="list-group-item">{{ criteria.id }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <div class="col-md-2">
+            <h4>Distinction</h4>
+            <ul class="list-group list-group-compact">
+              {% for criteria in unit.criteria if criteria.type == 'Distinction' %}
+                <li class="list-group-item">{{ criteria.id }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% else %}
+          <h4>No criteria could be found.</h4>
+        {% endif %}
+      </div>
+
+      <div class="tab-pane" id="courses">
+        <table class="table table-responsive">
+          <thead>
+          <tr>
+            <th>Course Code</th>
+            <th>Course name</th>
+            <th>Course organiser</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          {% for course in unit.courses %}
+            <tr>
+              <td>{{ course.id }}</td>
+              <td>{{ course.name }}</td>
+              <td>{{ course.course_organiser.full_name }}</td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="3">No courses were found.</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </article>
+{% endblock %}

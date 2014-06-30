@@ -30,7 +30,7 @@ class CreateCriteriaTable extends Migration {
 				->references("id")
 				->on("unit");
 
-			$table->primary(array("id", "unit_id"));
+			$table->primary(["id", "unit_id"]);
 		});
 	}
 

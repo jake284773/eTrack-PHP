@@ -34,7 +34,7 @@ class CreateStudentAssignmentTable extends Migration {
                 ->references("id")
                 ->on("user");
 
-            $table->primary(array("assignment_id", "student_user_id"));
+            $table->primary(["assignment_id", "student_user_id"]);
         });
     }
 

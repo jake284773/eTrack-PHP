@@ -6,32 +6,32 @@
   <div class="well">
     <h4 class="page-title-no-top">Filter list by:</h4>
     {% autoescape false %}
-      {{ form_open({'route': 'admin.units.index', 'method': 'get'}) }}
-        <div class="form-group">
-          {{ form_label('search', 'Search for a unit', {'id': 'search-label', 'class': 'form-label'}) }}
-          <div class="row">
-            <div class="col-xs-8 search-box">
-              {{ form_input('search', 'search', input_get('search'), {'id': 'search', 'class': 'form-control', 'placeholder': 'Search'}) }}
-            </div>
-            <div class="col-xs-2 search-btn">
-              {{ form_button('<span class="octicon octicon-search"></span> Search', {'class': 'btn btn-primary', 'type': 'submit'}) }}
-            </div>
-          </div>
-        </div>
+    {{ form_open({'route': 'admin.units.index', 'method': 'get'}) }}
+    <div class="form-group">
+      {{ form_label('search', 'Search for a unit', {'id': 'search-label', 'class': 'form-label'}) }}
+      <div class="input-group">
+        {{ form_input('search', 'search', input_get('search'), {'id': 'search', 'class': 'form-control', 'placeholder': 'Search'}) }}
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button">
+            <span class="glyphicon glyphicon-search"></span>
+          </button>
+        </span>
+      </div>
+    </div>
 
-        <div class="form-group">
-          {{ form_label('subjectsector', 'Filter by subject sector', {'id': 'subject-label', 'class': 'form-label'}) }}
-          {{ form_select('subjectsector', subjectSectorsForm,
-          input_get('subjectsector'), {'id': 'subject-sector', 'class': 'form-control chosen-select', 'onchange': 'this.form.submit()'})
-          }}
-        </div>
-    {{  form_close() }}
+    <div class="form-group">
+      {{ form_label('subjectsector', 'Filter by subject sector', {'id': 'subject-label', 'class': 'form-label'}) }}
+      {{ form_select('subjectsector', subjectSectorsForm,
+      input_get('subjectsector'), {'id': 'subject-sector', 'class': 'form-control chosen-select', 'onchange': 'this.form.submit()'}) }}
+    </div>
+    {{ form_close() }}
     <a href="{{ route('admin.units.index') }}">Reset all fields</a>
-  {% endautoescape %}
+    {% endautoescape %}
 
-  <hr>
+    <hr>
 
-  <a href="{{ route('admin.units.create') }}" class="btn btn-primary"><span class="octicon octicon-plus"></span> Create a new unit</a>
+    <a href="{{ route('admin.units.create') }}" class="btn btn-primary"><span class="octicon octicon-plus"></span>
+      Create a new unit</a>
 
   </div>
 {% endblock %}
@@ -81,29 +81,31 @@
       </thead>
 
       <tbody>
-        {% for unit in units %}
-          <tr>
-            <td>{{ unit.id }}</td>
-            <td>{{ unit.number }}</td>
-            <td>{{ unit.name }}</td>
-            <td>{{ unit.credit_value }}</td>
-            <td>{{ unit.glh }}</td>
-            <td>{{ unit.level }}</td>
-            <td>{{ unit.subject_sector_name }}</td>
-            <td>
-              <a href="{{ route('admin.units.edit', unit.id) }}" class="btn btn-default btn-sm"><span class="octicon octicon-pencil"></span> Edit</a>
-              <a href="{{ route('admin.units.delete_confirm', unit.id) }}" data-toggle="modal" data-target="#web-modal" class="btn btn-danger btn-sm"><span class="octicon octicon-x"></span> Delete</a>
-            </td>
-          </tr>
-        {% else %}
-          <tr><td colspan="5">No course units have been found.</td></tr>
+      {% for unit in units %}
+        <tr>
+          <td><a href="{{ route('admin.units.show', unit.id) }}">{{ unit.id }}</a></td>
+          <td><a href="{{ route('admin.units.show', unit.id) }}">{{ unit.number }}</a></td>
+          <td><a href="{{ route('admin.units.show', unit.id) }}">{{ unit.name }}</a></td>
+          <td>{{ unit.credit_value }}</td>
+          <td>{{ unit.glh }}</td>
+          <td>{{ unit.level }}</td>
+          <td>{{ unit.subject_sector_name }}</td>
+          <td>
+            <a href="{{ route('admin.units.delete_confirm', unit.id) }}" data-toggle="modal" data-target="#web-modal"
+               class="btn btn-danger btn-sm"><span class="octicon octicon-x"></span> Delete</a>
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="5">No course units have been found.</td>
+        </tr>
       {% endfor %}
       </tbody>
     </table>
 
     <div class="text-center">
       {% autoescape false %}
-        {{ units.appends(input_all()).links() }}
+      {{ units.appends({'search': input_get('search'), 'subjectsector': input_get('subjectsector')}).links() }}
       {% endautoescape %}
     </div>
   </article>

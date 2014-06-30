@@ -1,86 +1,119 @@
 {% extends "layouts.single" %}
 
-{% block title %}Create a new user{% endblock %}
+{% block title %}Create a new unit{% endblock %}
 
 {% block content %}
-  <header class="page-header">
+  <header>
     <ol class="breadcrumb">
       <li><a href="{{ route('home') }}">Home</a></li>
-      <li><a href="{{ route('admin.users.index') }}">Users</a></li>
+      <li><a href="{{ route('admin.units.index') }}">Units</a></li>
       <li class="active">{{ block('title') }}</li>
     </ol>
-    <hgroup>
-      <h1 class="heading-large">Create a new user</h1>
-    </hgroup>
+    <h1 class="page-header">{{ block('title') }}</h1>
   </header>
 
-  <article>
-    {% if errors is not empty %}
-      <div class="alert alert-danger">
-        <h4>There was a problem submitting the form</h4>
+  {% if errors is not empty %}
+    <div class="alert alert-danger">
+      <h4>There was a problem submitting the form</h4>
 
-        <p>Because of the following problems:</p>
+      <p>Because of the following problems:</p>
 
-        <ol>
-          {% for error in errors.all %}
-            <li>{{ error }}</li>
-          {% endfor %}
-        </ol>
-      </div>
-    {% endif %}
+      <ol>
+        {% for error in errors.all %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ol>
+    </div>
+  {% endif %}
 
-    {% autoescape false %}
-      {{ form_open({'route': 'admin.users.store'}) }}
-        <div class="row">
-          <div class="form-group col-md-5">
-            {{ form_label('userid', 'User ID', {'id': 'userid-label', 'class': 'control-label'}) }}
-            {{ form_text('userid', input.old('userid'), {'id': 'userid', 'class': 'form-control'}) }}
-          </div>
-        </div>
+  {% autoescape false %}
+  {{ form_open({'route': 'admin.units.store'}) }}
+  <div class="row">
+    <div class="form-group col-md-5">
+      {{ form_label('id', 'Unit Code', {'id': 'id-label', 'class': 'control-label'}) }}
+      {{ form_text('id', input_old('unit_id'), {'id': 'id', 'class': 'form-control'}) }}
+      <span class="help-block">
+              The unit code must be in the format: "M-502-5415".
+              <br>
+              (<a href="#" data-toggle="modal" data-target="#unit-code-help">More help</a>)
+            </span>
+    </div>
+  </div>
 
-        <div class="row">
-          <div class="form-group col-md-5">
-            {{ form_label('fullname', 'Full name', {'id': 'fullname-label', 'class': 'control-label'}) }}
-            {{ form_text('fullname', input.old('fullname'), {'id': 'fullname', 'class': 'form-control'}) }}
-          </div>
-        </div>
+  <div class="row">
+    <div class="form-group col-md-5">
+      {{ form_label('number', 'Unit number', {'id': 'number-label', 'class': 'control-label'}) }}
+      {{ form_text('number', input_old('number'), {'id': 'number', 'class': 'form-control'}) }}
+    </div>
+  </div>
 
-        <div class="row">
-          <div class="form-group col-md-5">
-            {{ form_label('email', 'Email address', {'id': 'email-label', 'class': 'control-label'}) }}
-            {{ form_email('email', input.old('email'), {'id': 'email', 'class': 'form-control'}) }}
-          </div>
-        </div>
+  <div class="row">
+    <div class="form-group col-md-5">
+      {{ form_label('name', 'Unit name', {'id': 'name-label', 'class': 'control-label'}) }}
+      {{ form_text('name', input_old('name'), {'id': 'name', 'class': 'form-control'}) }}
+    </div>
+  </div>
 
-        <div class="row">
-          <div class="form-group col-md-5">
-            {{ form_label('password', 'Password', {'id': 'password-label', 'class': 'control-label'}) }}
-            {{ form_password('password', {'id': 'password', 'class': 'form-control'}) }}
-          </div>
-        </div>
+  <div class="row">
+    <div class="form-group col-md-5">
+      {{ form_label('credit_value', 'Credit value', {'id': 'credit_value-label', 'class': 'control-label'}) }}
+      {{ form_text('credit_value', input_old('credit_value'), {'id': 'credit_value', 'class': 'form-control'}) }}
+    </div>
+  </div>
 
-        <div class="row">
-          <div class="form-group col-md-5">
-            {{ form_label('password_confirmation', 'Repeat Password', {'id': 'password_confirmation-label', 'class': 'control-label'}) }}
-            {{ form_password('password_confirmation', {'id': 'password_confirmation', 'class': 'form-control'}) }}
-          </div>
-        </div>
+  <div class="row">
+    <div class="form-group col-md-5">
+      {{ form_label('glh', 'Guided learning hours', {'id': 'unit_name-label', 'class': 'control-label'}) }}
+      {{ form_text('glh', input_old('glh'), {'id': 'glh', 'class': 'form-control'}) }}
+    </div>
+  </div>
 
-        <div class="row">
-          <div class="form-group col-md-5">
-            {{ form_label('user-role', 'User role', {'id': 'user-role-label', 'class': 'control-label'}) }}
-            {{ form_select('user-role',
-              {'': '', 'Admin': 'Admin', 'Course Organiser': 'Course Organiser', 'Tutor': 'Tutor', 'Student': 'Student'},
-              null, {'id': 'user-role', 'class': 'form-control chosen-select', 'data-placeholder': 'Choose a role'})
-            }}
-          </div>
-        </div>
+  <div class="row">
+    <div class="form-group col-md-5">
+      {{ form_label('level', 'Qualification Level', {'id': 'level-label', 'class': 'control-label'}) }}
+      <br>
+      <label class="radio-inline">
+        {{ form_radio('level', '2', false) }} 2
+      </label>
+      <label class="radio-inline">
+        {{ form_radio('level', '3', false) }} 3
+      </label>
+    </div>
+  </div>
 
-        <div class="well">
-          {{ form_button('Create user', {'type': 'submit', 'class': 'btn btn-primary'}) }}
-          or <a href="{{ route('admin.users.index') }}">cancel</a>
-        </div>
-      {{ form_close() }}
-    {% endautoescape %}
-  </article>
+  <div class="row">
+    <div class="form-group col-md-6">
+      {{ form_label('subject_sector_id', 'Subject sector', {'id': 'subject_sector-label', 'class': 'form-label'}) }}
+      {{ form_select('subject_sector_id', subjectSectorsForm, input_old('subject_sector_id'), {'id': 'subject_sector',
+      'class': 'form-control chosen-select', 'data-placeholder': 'Select a subject sector'}) }}
+    </div>
+  </div>
+
+  <hr>
+
+  <h3>Criteria</h3>
+
+  <div class="row">
+    <div class="form-group col-md-3">
+      {{ form_label('number_of_pass_criteria', 'No. of Pass criteria', {'id': 'number_of_pass_criteria-label', 'class': 'control-label'}) }}
+      {{ form_text('number_of_pass_criteria', input_old('number_of_pass_criteria'), {'id': 'number_of_pass_criteria', 'class': 'form-control'}) }}
+    </div>
+
+    <div class="form-group col-md-3">
+      {{ form_label('number_of_merit_criteria', 'No. of Merit criteria', {'id': 'number_of_merit_criteria-label', 'class': 'control-label'}) }}
+      {{ form_text('number_of_merit_criteria', input_old('number_of_merit_criteria'), {'id': 'number_of_merit_criteria', 'class': 'form-control'}) }}
+    </div>
+
+    <div class="form-group col-md-3">
+      {{ form_label('number_of_distinction_criteria', 'No. of Distinction Criteria', {'id': 'number_of_distinction_criteria-label', 'class': 'control-label'}) }}
+      {{ form_text('number_of_distinction_criteria', input_old('number_of_distinction_criteria'), {'id': 'number_of_distinction_criteria', 'class': 'form-control'}) }}
+    </div>
+  </div>
+
+  <div class="well">
+    {{ form_button('Create unit', {'type': 'submit', 'class': 'btn btn-primary'}) }}
+    or <a href="{{ route('admin.units.index') }}">cancel</a>
+  </div>
+  {{ form_close() }}
+  {% endautoescape %}
 {% endblock %}

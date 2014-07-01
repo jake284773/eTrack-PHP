@@ -2,10 +2,10 @@
 
 use eTrack\Controllers\BaseController;
 use eTrack\Courses\CourseRepository;
+use eTrack\Courses\GradeCalculators\UnitGradeCalc;
 use eTrack\Courses\StudentAssessmentRepository;
 use eTrack\Courses\StudentUnit;
 use eTrack\Courses\UnitRepository;
-use eTrack\Courses\StudentUnitGradeCalc;
 use View;
 
 class CourseTrackerController extends BaseController
@@ -59,7 +59,7 @@ class CourseTrackerController extends BaseController
         $units = $course->units;
         $students = $course->students;
 
-        $unitGradeCalculator = new StudentUnitGradeCalc($this->unitRepository,
+        $unitGradeCalculator = new UnitGradeCalc($this->unitRepository,
             $this->studentAssessmentRepository);
 
         foreach ($students as $student) {

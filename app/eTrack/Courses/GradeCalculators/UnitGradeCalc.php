@@ -1,6 +1,10 @@
-<?php namespace eTrack\Courses;
+<?php namespace eTrack\Courses\GradeCalculators;
 
-class StudentUnitGradeCalc {
+use eTrack\Courses\Criteria;
+use eTrack\Courses\StudentAssessmentRepository;
+use eTrack\Courses\UnitRepository;
+
+class UnitGradeCalc {
 
     protected $studentAssessmentRepository;
     protected $unitRepository;

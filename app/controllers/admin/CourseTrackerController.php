@@ -1,5 +1,6 @@
 <?php namespace eTrack\Controllers\Admin;
 
+use App;
 use eTrack\Controllers\BaseController;
 use eTrack\Courses\CourseRepository;
 use eTrack\Courses\GradeCalculators\UnitGradeCalc;
@@ -52,6 +53,53 @@ class CourseTrackerController extends BaseController
         }
 
         return View::make('admin.courses.tracker.index', ['course' => $course]);
+    }
+
+    public function unit($courseId, $unitId)
+    {
+        // Display a 404 page if the requested unit isn't part of the requested
+        // course.
+        if (! $this->unitRepository->checkUnitBelongsToCourse($courseId, $unitId)) {
+            App::abort(404);
+        }
+
+        $course = $this->courseRepository->getById($courseId);
+        $unit = $this->unitRepository->getWithCriteriaAndAssessments($unitId);
+
+        $totalPassCriteria = $unit->criteria->filter(function($criteria)
+        {
+            if (substr($criteria->id, 0, 1) == 'P') {
+                return true;
+            }
+
+            return false;
+        })->count();
+
+        $totalMeritCriteria = $unit->criteria->filter(function($criteria)
+        {
+            if (substr($criteria->id, 0, 1) == 'M') {
+                return true;
+            }
+
+            return false;
+        })->count();
+
+        $totalDistinctionCriteria = $unit->criteria->filter(function($criteria)
+        {
+            if (substr($criteria->id, 0, 1) == 'D') {
+                return true;
+            }
+
+            return false;
+        })->count();
+
+        return View::make('admin.courses.tracker.unit',[
+            'course' => $course,
+            'unit' => $unit,
+            'totalPass' => $totalPassCriteria,
+            'totalMerit' => $totalMeritCriteria,
+            'totalDistinction' => $totalDistinctionCriteria,
+        ]);
     }
 
     private function calculateAllUnitGradesForCourse($course)

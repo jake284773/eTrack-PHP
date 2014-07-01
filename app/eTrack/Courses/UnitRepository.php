@@ -1,5 +1,6 @@
 <?php namespace eTrack\Courses;
 
+use DB;
 use eTrack\Core\EloquentRepository;
 
 class UnitRepository extends EloquentRepository
@@ -49,13 +50,25 @@ class UnitRepository extends EloquentRepository
         )->findOrFail($id);
     }
 
-    public function getWithCriteria($id, $type)
+    public function getWithCriteria($id, $type = null)
     {
         return $this->model->with([
-                'criteria' => function ($query) use($type) {
-                        $query->where('type', $type);
+                'criteria' => function ($query) use ($type) {
+                        if ($type) {
+                            $query->where('type', $type);
+                        }
                         $query->orderBy('type', 'desc')->orderBy('id', 'asc');
                     }]
+        )->findOrFail($id);
+    }
+
+    public function getWithCriteriaAndAssessments($id)
+    {
+        return $this->model->with([
+                'criteria' => function ($query) {
+                        $query->orderBy('type', 'desc')->orderBy('id', 'asc');
+                    },
+                'criteria.studentAssessments',]
         )->findOrFail($id);
     }
 
@@ -76,6 +89,23 @@ class UnitRepository extends EloquentRepository
         }
 
         return $this->model->find($id)->criteria()->where('type', $type)->get()->count();
+    }
+
+    /**
+     * Checks whether the specified unit is part of the specified course.
+     *
+     * @param string $courseId The ID of the course to check.
+     * @param string $unitId The ID of the unit to check.
+     * @return bool True if unit exists in course.
+     */
+    public function checkUnitBelongsToCourse($courseId, $unitId)
+    {
+        $unitCount = DB::table('course_unit')->where('course_id', $courseId)
+            ->where('unit_id', $unitId)->count();
+
+        if ($unitCount == 0) return false;
+
+        return true;
     }
 
 } 

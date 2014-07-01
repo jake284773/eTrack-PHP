@@ -31,6 +31,18 @@
 
   <h1 class="page-header">
     {{ block('title') }}
+    <span class="pull-right">
+      <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+          Unit view <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu pull-right" role="menu">
+          {% for unit in course.units %}
+            <li><a href="{{ route('admin.courses.tracker.unit', [course.id, unit.id]) }}">Unit {{ unit.number }} &mdash; {{ unit.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </span>
   </h1>
 </header>
 

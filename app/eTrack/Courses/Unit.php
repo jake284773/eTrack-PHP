@@ -118,7 +118,9 @@ class Unit extends Entity
 
     public function criteria()
     {
-        return $this->hasMany('eTrack\Courses\Criteria');
+        return $this->hasMany('eTrack\Courses\Criteria')
+            ->orderBy(DB::raw('left(`id`, 1)'), 'desc')
+            ->orderBy(DB::raw('left(`id`, 2)'));
     }
 
     public function passCriteria()

@@ -44,4 +44,9 @@ class Criteria extends Entity
     {
         return $query->where('type', $type);
     }
+
+    public function studentAssessments()
+    {
+        return $this->hasMany('eTrack\Courses\StudentAssessment');
+    }
 }

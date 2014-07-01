@@ -1,0 +1,53 @@
+@import '../variables';
+
+.tracker-table {
+  th, td {
+    text-align: center;
+  }
+
+  th:nth-child(1), td:nth-child(1) {
+    border-right: 2px solid #ddd;
+  }
+
+  th:last-child, td:last-child {
+    border-left: 2px solid #ddd;
+  }
+
+  td.criteria-achieved {
+    background: $brand-success !important;
+    color: $brand-success;
+  }
+
+  td.criteria-nya {
+    background: $brand-danger !important;
+  }
+
+  td.criteria-awaitmark {
+    background: $brand-warning !important;
+  }
+
+  td.criteria-ref {
+    background: $brand-primary !important;
+  }
+
+  td.grade-distinction, td.grade-merit, td.grade-pass {
+    font-weight: bold;
+  }
+
+  td.grade-distinction {
+    background: fade-out(#369836, 0.1) !important;
+    text-transform: uppercase;
+  }
+
+  td.grade-merit {
+    background: fade-out(#5cb85c, 0.1) !important;
+  }
+
+  td.grade-pass {
+    background: fade-out(#8ad38a, 0.1) !important;
+  }
+
+  td.grade-nya {
+    background: fade-out($brand-danger, 0.2) !important;
+  }
+}

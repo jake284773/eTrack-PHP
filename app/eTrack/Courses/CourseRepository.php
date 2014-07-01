@@ -31,4 +31,10 @@ class CourseRepository extends EloquentRepository {
             ->where('id', $id)->firstOrFail();
     }
 
+    public function getTrackerRelated($id)
+    {
+        return $this->model->with('units', 'units.studentGrades', 'students')
+            ->where('id', $id)->firstOrFail();
+    }
+
 } 

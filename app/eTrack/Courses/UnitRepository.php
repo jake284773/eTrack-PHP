@@ -49,6 +49,16 @@ class UnitRepository extends EloquentRepository
         )->findOrFail($id);
     }
 
+    public function getWithCriteria($id, $type)
+    {
+        return $this->model->with([
+                'criteria' => function ($query) use($type) {
+                        $query->where('type', $type);
+                        $query->orderBy('type', 'desc')->orderBy('id', 'asc');
+                    }]
+        )->findOrFail($id);
+    }
+
     public function getWithSubjectSector($id)
     {
         return $this->model->with('subject_sector')->findOrFail($id);
@@ -58,7 +68,7 @@ class UnitRepository extends EloquentRepository
     {
         $validTypes = ['All', 'Pass', 'Merit', 'Distinction'];
 
-        if (! in_array($type, $validTypes))
+        if (!in_array($type, $validTypes))
             throw new \InvalidArgumentException();
 
         if ($type = 'All') {

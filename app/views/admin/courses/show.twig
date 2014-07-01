@@ -46,6 +46,7 @@
         <li class="list-group-item"><strong>Pathway:</strong> {{ course.pathway ?: 'N/A' }}</li>
         <li class="list-group-item"><strong>Qualification level:</strong> {{ course.level }}</li>
         <li class="list-group-item"><strong>Course type:</strong> {{ course.type }}</li>
+        <li class="list-group-item"><strong>Course organiser:</strong> {{ course.course_organiser.full_name }}</li>
         <li class="list-group-item"><strong>Subject sector:</strong> {{ course.subject_sector.name }}</li>
         <li class="list-group-item"><strong>Faculty:</strong> {{ course.faculty.name }}</li>
       </ul>
@@ -53,9 +54,9 @@
   </div>
 
 
-  <a href="#" class="btn btn-default">
+  <a href="{{ route('admin.courses.tracker.index', course.id) }}" class="btn btn-default">
     <span class="octicon octicon-chevron-right"></span>
-    View overall student tracker
+    View overall progress tracker
   </a>
 
   <ul class="nav nav-tabs">

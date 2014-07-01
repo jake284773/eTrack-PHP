@@ -1,5 +1,6 @@
 <?php namespace eTrack\Courses;
 
+use DB;
 use eTrack\Accounts\User;
 use eTrack\Core\Entity;
 use eTrack\Faculties\Faculty;
@@ -100,11 +101,11 @@ class Course extends Entity
             ->orderBy('number')
             ->withPivot('unit_number');
 
-        foreach ($units as $unit) {
-            if ($unit->pivot->unit_number) {
-                $unit->number = $unit->pivot->unit_number;
-            }
-        }
+//        foreach ($units as $unit) {
+//            if ($unit->pivot->unit_number) {
+//                $unit->number = $unit->pivot->unit_number;
+//            }
+//        }
 
         return $units;
     }
@@ -143,7 +144,8 @@ class Course extends Entity
         ];
 
         return $this->belongsToMany('eTrack\Accounts\Student', 'course_student', 'course_id', 'student_user_id')
-            ->withPivot($pivotAttributes);
+            ->withPivot($pivotAttributes)
+            ->orderBy(DB::raw("substring_index(full_name, ' ', -1)"));
     }
 
 }

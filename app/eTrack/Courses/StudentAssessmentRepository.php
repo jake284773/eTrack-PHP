@@ -9,13 +9,20 @@ class StudentAssessmentRepository extends EloquentRepository {
         $this->model = $model;
     }
 
+    public function getAllByUnit($unitId)
+    {
+        return $this->model
+            ->where('criteria_unit_id', $unitId)
+            ->get();
+    }
+
     public function getAllByType($type, $studentId, $unitId)
     {
         $validTypes = ['Pass' => 'P', 'Merit' => 'M', 'Distinction' => 'D'];
 
-        if (! in_array($type, $validTypes)) {
-            throw new \InvalidArgumentException("Invalid criteria type specified.");
-        }
+//        if (! in_array($type, $validTypes)) {
+//            throw new \InvalidArgumentException("Invalid criteria type specified.");
+//        }
 
         return $this->model
             ->where('criteria_unit_id', $unitId)

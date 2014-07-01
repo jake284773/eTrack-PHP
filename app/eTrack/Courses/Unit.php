@@ -136,6 +136,11 @@ class Unit extends Entity
         return $this->hasMany('eTrack\Courses\Criteria')->where('type', 'Distinction');
     }
 
+    public function studentGrades()
+    {
+        return $this->hasMany('eTrack\Courses\StudentUnit');
+    }
+
     public function delete()
     {
         return DB::transaction(function () {

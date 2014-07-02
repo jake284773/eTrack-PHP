@@ -9,8 +9,17 @@
     border-right: 2px solid #ddd;
   }
 
+  th:first-child, th:last-child {
+    vertical-align: middle;
+  }
+
   th:last-child, td:last-child {
     border-left: 2px solid #ddd;
+  }
+
+  td.criteria {
+    width: 30px;
+    height: 30px;
   }
 
   td.criteria-achieved {

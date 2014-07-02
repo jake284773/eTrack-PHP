@@ -34,6 +34,7 @@ module.exports = function(grunt) {
                     'bower_components/chosen/chosen.jquery.js',
                     'app/assets/javascripts/chosen-config.js',
                     'app/assets/javascripts/bootstrap-session-timeout.js',
+                    'app/assets/javascripts/criteria-tooltips.js',
                     'app/assets/javascripts/application.js'
                 ],
                 dest: 'public/javascript/main.js'

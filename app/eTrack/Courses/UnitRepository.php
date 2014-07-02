@@ -5,12 +5,27 @@ use eTrack\Core\EloquentRepository;
 
 class UnitRepository extends EloquentRepository
 {
+    protected $criteriaModel;
 
-    protected $subjectSectorRepository;
+    protected $assessmentStatusStylingMap = [
+        'NYA'  => 'criteria-nya',
+        'AM'   => 'criteria-awaitmark',
+        'ALM'  => 'criteria-awaitlatemark',
+        'A'    => 'criteria-achieved',
+        'L'    => 'criteria-late',
+        'LA'   => 'criteria-achieved criteria-lateachieved',
+        'R1'   => 'criteria-ref criteria-r1',
+        'R1AM' => 'criteria-ref criteria-r1awaitmark',
+        'R2'   => 'criteria-ref criteria-r2',
+        'R2AM' => 'criteria-ref criteria-r2awaitmark',
+        'R3'   => 'criteria-ref criteria-r3',
+        'R3AM' => 'criteria-ref criteria-r3awaitmark',
+    ];
 
-    public function __construct(Unit $model)
+    public function __construct(Unit $model, Criteria $criteriaModel)
     {
         $this->model = $model;
+        $this->criteriaModel = $criteriaModel;
     }
 
     protected function queryBySubjectAndSearch($search, $subjectSector)
@@ -65,11 +80,14 @@ class UnitRepository extends EloquentRepository
     public function getWithCriteriaAndAssessments($id)
     {
         return $this->model->with([
-                'criteria' => function ($query) {
-                        $query->orderBy('type', 'desc')->orderBy('id', 'asc');
-                    },
-                'criteria.studentAssessments',]
-        )->findOrFail($id);
+            'studentGrades',
+            'criteria'                    => function ($query) {
+                    $query->orderBy('type', 'desc')->orderBy('id', 'asc');
+                },
+            'criteria.studentAssessments' => function ($query) use ($id) {
+                    $query->where('criteria_unit_id', '=', $id);
+                }
+        ])->findOrFail($id);
     }
 
     public function getWithSubjectSector($id)
@@ -77,18 +95,107 @@ class UnitRepository extends EloquentRepository
         return $this->model->with('subject_sector')->findOrFail($id);
     }
 
-    public function criteriaCount($id, $type = 'All')
+    /**
+     * Calculates the total number of criteria that is part of a unit.
+     *
+     * Specifying a criteria type will filter by that specific type.
+     *
+     * @param Unit|string $unit Unit model object or Unit ID
+     * @param string $type The type of criteria (pass, merit or distinction)
+     *                     Must be in the format of P, M or D.
+     * @return integer Number of criteria
+     * @throws \InvalidArgumentException
+     */
+    public function getTotalCriteria($unit, $type = null)
     {
-        $validTypes = ['All', 'Pass', 'Merit', 'Distinction'];
-
-        if (!in_array($type, $validTypes))
-            throw new \InvalidArgumentException();
-
-        if ($type = 'All') {
-            return $this->model->find($id)->criteria()->get()->count();
+        if (is_string($unit)) {
+            $unit = $this->getWithCriteriaAndAssessments($unit);
         }
 
-        return $this->model->find($id)->criteria()->where('type', $type)->get()->count();
+        if ($type) {
+            if (! in_array($type, ['P', 'M', 'D'])) {
+                throw new \InvalidArgumentException('Invalid criteria type. Accepted: P, M or D.');
+            }
+
+            $passCriteria = $unit->criteria->filter(function ($criteria) use($type) {
+                if (substr($criteria->id, 0, 1) == $type) {
+                    return true;
+                }
+
+                return false;
+            });
+        } else {
+            $passCriteria = $unit->criteria;
+        }
+
+        return $passCriteria->count();
+    }
+
+    /**
+     * Produces an array which contains the criteria marks and unit grade for
+     * all students on the specified course.
+     *
+     * This is used in the tracker by unit view.
+     *
+     * @param Course $course The course model object with the course_students
+     *                       records eager loaded.
+     * @param Unit $unit The unit model object to generate from.
+     * @return array The results array
+     */
+    public function renderUnitCriteriaAssessmentForTracker(Course $course, Unit $unit)
+    {
+        $results = [];
+
+        foreach ($course->students as $student) {
+            foreach ($unit->criteria as $criteria) {
+                // Find the assessment record for the correct student
+                $assessment = $criteria->studentAssessments->filter(function($assessment) use($student, $criteria)
+                {
+                    $assessmentStudentId = $assessment->student_assignment_student_user_id;
+                    $assessmentCriteriaId = $assessment->criteria_id;
+
+                    if ($assessmentStudentId == $student->id && $assessmentCriteriaId == $criteria->id) {
+                        return true;
+                    }
+
+                    return false;
+                })->first();
+
+                // If no assessment could be found then add NYA to the results array
+                // for that criterion and student
+                if (! $assessment) {
+                    $results[$student->full_name.' ('.$student->id.')'][] =
+                        $this->assessmentStatusStylingMap['NYA'];
+                }
+                // Otherwise add the found criterion status code to the results array.
+                else {
+                    $results[$student->full_name.' ('.$student->id.')'][] =
+                        $this->assessmentStatusStylingMap[$assessment->assessment_status];
+                }
+            }
+
+            // Find the correct unit grade for the student.
+            $unitGrade = $unit->studentGrades->filter(function($unitGrade) use($student)
+            {
+                if ($unitGrade->student_user_id == $student->id) {
+                    return true;
+                }
+
+                return false;
+            })->first();
+
+            // If the unit grade can't be found then add NYA to the array for
+            // the unit grade.
+            if (! $unitGrade) {
+                $results[$student->full_name.' ('.$student->id.')'][] = 'NYA';
+            }
+            // Otherwise add the unit grade to the array.
+            else {
+                $results[$student->full_name.' ('.$student->id.')'][] = $unitGrade->grade;
+            }
+        }
+
+        return $results;
     }
 
     /**

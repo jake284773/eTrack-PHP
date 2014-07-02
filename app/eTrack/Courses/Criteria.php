@@ -1,5 +1,6 @@
 <?php namespace eTrack\Courses;
 
+use DB;
 use eTrack\Core\Entity;
 
 /**
@@ -47,6 +48,8 @@ class Criteria extends Entity
 
     public function studentAssessments()
     {
-        return $this->hasMany('eTrack\Courses\StudentAssessment');
+        return $this->hasMany('eTrack\Courses\StudentAssessment')
+            ->orderBy(DB::raw('left(`criteria_id`, 1)'), 'desc')
+            ->orderBy(DB::raw('left(`criteria_id`, 2)'));
     }
 }

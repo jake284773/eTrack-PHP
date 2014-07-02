@@ -4,8 +4,10 @@ use App;
 use eTrack\Controllers\BaseController;
 use eTrack\Courses\CourseRepository;
 use eTrack\Courses\GradeCalculators\UnitGradeCalc;
+use eTrack\Courses\StudentAssessment;
 use eTrack\Courses\StudentAssessmentRepository;
 use eTrack\Courses\StudentUnit;
+use eTrack\Courses\Unit;
 use eTrack\Courses\UnitRepository;
 use View;
 
@@ -15,21 +17,6 @@ class CourseTrackerController extends BaseController
     protected $courseRepository;
     protected $unitRepository;
     protected $studentAssessmentRepository;
-
-    protected $assessmentStatusMap = [
-        'NYA'  => 'nya',
-        'AM'   => 'awaitmark',
-        'ALM'  => 'awaitlatemark',
-        'A'    => 'achieved',
-        'L'    => 'late',
-        'LA'   => 'lateachieved',
-        'R1'   => 'r1',
-        'R1AM' => 'r1awaitmark',
-        'R2'   => 'r2',
-        'R2AM' => 'r2awaitmark',
-        'R3'   => 'r3',
-        'R3AM' => 'r3awaitmark',
-    ];
 
     public function __construct(CourseRepository $courseRepository,
                                 UnitRepository $unitRepository,
@@ -44,60 +31,35 @@ class CourseTrackerController extends BaseController
     {
         $course = $this->courseRepository->getTrackerRelated($courseId);
 
-        $requiredUnitGradeCount = $course->units->count() * $course->students->count();
-        $actualUnitGradeCount = StudentUnit::allForCourse($courseId)->count();
+        $results = $this->courseRepository->renderCourseUnitGradesForTracker($course);
 
-        if ($actualUnitGradeCount != $requiredUnitGradeCount) {
-            $this->calculateAllUnitGradesForCourse($course);
-            $course = $this->courseRepository->getTrackerRelated($courseId);
-        }
-
-        return View::make('admin.courses.tracker.index', ['course' => $course]);
+        return View::make('admin.courses.tracker.index', ['course' => $course,
+                                                          'results' => $results]);
     }
 
     public function unit($courseId, $unitId)
     {
         // Display a 404 page if the requested unit isn't part of the requested
         // course.
-        if (! $this->unitRepository->checkUnitBelongsToCourse($courseId, $unitId)) {
+        if (!$this->unitRepository->checkUnitBelongsToCourse($courseId, $unitId)) {
             App::abort(404);
         }
 
         $course = $this->courseRepository->getById($courseId);
         $unit = $this->unitRepository->getWithCriteriaAndAssessments($unitId);
 
-        $totalPassCriteria = $unit->criteria->filter(function($criteria)
-        {
-            if (substr($criteria->id, 0, 1) == 'P') {
-                return true;
-            }
+        $results = $this->unitRepository->renderUnitCriteriaAssessmentForTracker($course, $unit);
 
-            return false;
-        })->count();
+        $totalPassCriteria = $this->unitRepository->getTotalCriteria($unit, 'P');
+        $totalMeritCriteria = $this->unitRepository->getTotalCriteria($unit, 'M');;
+        $totalDistinctionCriteria = $this->unitRepository->getTotalCriteria($unit, 'D');
 
-        $totalMeritCriteria = $unit->criteria->filter(function($criteria)
-        {
-            if (substr($criteria->id, 0, 1) == 'M') {
-                return true;
-            }
-
-            return false;
-        })->count();
-
-        $totalDistinctionCriteria = $unit->criteria->filter(function($criteria)
-        {
-            if (substr($criteria->id, 0, 1) == 'D') {
-                return true;
-            }
-
-            return false;
-        })->count();
-
-        return View::make('admin.courses.tracker.unit',[
-            'course' => $course,
-            'unit' => $unit,
-            'totalPass' => $totalPassCriteria,
-            'totalMerit' => $totalMeritCriteria,
+        return View::make('admin.courses.tracker.unit', [
+            'course'           => $course,
+            'unit'             => $unit,
+            'results'          => $results,
+            'totalPass'        => $totalPassCriteria,
+            'totalMerit'       => $totalMeritCriteria,
             'totalDistinction' => $totalDistinctionCriteria,
         ]);
     }
@@ -129,7 +91,10 @@ class CourseTrackerController extends BaseController
                 $studentUnitGrade->student_user_id = $student->id;
                 $studentUnitGrade->unit_id = $unit->id;
                 $studentUnitGrade->grade = $unitGradeCalculator->calcUnitGrade($student->id, $unit->id);
-                $studentUnitGrade->save();
+
+                if ($studentUnitGrade->grade != 'NYA') {
+                    $studentUnitGrade->save();
+                }
             }
         }
     }

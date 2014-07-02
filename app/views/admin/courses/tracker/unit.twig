@@ -33,7 +33,7 @@
     <h1 class="page-header">
       {{ block('title') }}
       <div class="pull-right">
-        <a href="{{ route('admin.courses.tracker.index') }}" class="btn btn-default">Overall view</a>
+        <a href="{{ route('admin.courses.tracker.index', course.id) }}" class="btn btn-default">Overall view</a>
 
         <div class="btn-group">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -41,7 +41,7 @@
           </button>
           <ul class="dropdown-menu pull-right" role="menu">
             {% for unit in course.units %}
-              <li><a href="#">Unit {{ unit.number }} &mdash; {{ unit.name }}</a></li>
+              <li><a href="{{ route('admin.courses.tracker.unit', [course.id, unit.id]) }}">Unit {{ unit.number }} &mdash; {{ unit.name }}</a></li>
             {% endfor %}
           </ul>
         </div>
@@ -68,15 +68,15 @@
     </thead>
 
     <tbody>
-    {% for student in course.students %}
+    {% for student, grades in results %}
       <tr>
-        <td>{{ student.full_name }} ({{ student.id }})</td>
-        {% for criteria in unit.criteria %}
-          {% for assessment in criteria.studentAssessments %}
-            {% if assessment.student_assignment_student_user_id == student.id %}
-              <td>{{ assessment.assessment_status }}</td>
-            {% endif %}
-          {% endfor %}
+        <td>{{ student }}</td>
+        {% for grade in grades %}
+          {% if loop.last %}
+            <td class="grade-{{ grade|lower }}">{{ grade }}</td>
+          {% else %}
+            <td class="criteria {{ grade }}"></td>
+          {% endif %}
         {% endfor %}
       </tr>
     {% endfor %}

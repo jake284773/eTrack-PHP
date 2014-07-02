@@ -37,4 +37,35 @@ class CourseRepository extends EloquentRepository {
             ->where('id', $id)->firstOrFail();
     }
 
+    public function renderCourseUnitGradesForTracker(Course $course)
+    {
+        $results = [];
+
+        foreach ($course->students as $student) {
+            foreach ($course->units as $unit) {
+                // Find the correct unit grade for the student.
+                $unitGrade = $unit->studentGrades->filter(function($unitGrade) use($student)
+                {
+                    if ($unitGrade->student_user_id == $student->id) {
+                        return true;
+                    }
+
+                    return false;
+                })->first();
+
+                // If the unit grade can't be found then add NYA to the array for
+                // the unit grade.
+                if (! $unitGrade) {
+                    $results[$student->full_name.' ('.$student->id.')'][] = 'NYA';
+                }
+                // Otherwise add the unit grade to the array.
+                else {
+                    $results[$student->full_name.' ('.$student->id.')'][] = $unitGrade->grade;
+                }
+            }
+        }
+
+        return $results;
+    }
+
 } 

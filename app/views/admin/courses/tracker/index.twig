@@ -80,12 +80,12 @@
               title="{{ student }}" class="student">{{ student }}</td>
           {% for grade in grades %}
             {% if loop.revindex > 5 %}
-              <td class="grade-{{ grade|lower }}">
+              <td class="grade-{{ grade|lower }} }}">
                 {{ grade|slice(0, 1) }}
               </td>
             {% elseif loop.revindex > 2 %}
-              <td class="grade-{{ 'D*D*D*'|lower }}">
-                {{ 'D*D*D*'|slice(0, 6) }}
+              <td class="grade-{{ grade|lower }} }}">
+                {{ grade|slice(0, 6) }}
               </td>
             {% else %}
               <td>{{ grade|slice(0, 6) }}</td>

@@ -5,8 +5,8 @@ module.exports = function(grunt) {
         sass: {
             default: {
                 options: {
-                    outputStyle: 'compressed',
-                    includePaths: [
+                    style: 'compressed',
+                    loadPath: [
                         'bower_components/bootstrap-sass-official/vendor/assets/stylesheets/',
                         'bower_components/chosen/'
                     ]
@@ -120,7 +120,7 @@ module.exports = function(grunt) {
 
     // Plugin loading
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-concat');

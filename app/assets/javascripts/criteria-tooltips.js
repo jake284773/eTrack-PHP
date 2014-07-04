@@ -63,19 +63,19 @@ $(function () {
 
     $('td.grade-d\\*').tooltip({
         placement: 'bottom',
-        title: 'Distinction',
+        title: 'Distinction*',
         container: 'body'
     });
 
     $('td.grade-d\\*d\\*').tooltip({
         placement: 'bottom',
-        title: 'Distinction Distinction',
+        title: 'Distinction* Distinction*',
         container: 'body'
     });
 
     $('td.grade-d\\*d\\*d\\*').tooltip({
         placement: 'bottom',
-        title: 'Distinction Distinction Distinction',
+        title: 'Distinction* Distinction* Distinction*',
         container: 'body'
     });
 

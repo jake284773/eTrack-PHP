@@ -48,7 +48,7 @@ class Criteria extends Entity
 
     public function studentAssessments()
     {
-        return $this->hasMany('eTrack\Courses\StudentAssessment')
+        return $this->hasMany('eTrack\Assessment\StudentAssessment', 'criteria_id')
             ->orderBy(DB::raw('left(`criteria_id`, 1)'), 'desc')
             ->orderBy(DB::raw('left(`criteria_id`, 2)'));
     }

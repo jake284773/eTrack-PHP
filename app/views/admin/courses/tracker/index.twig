@@ -31,42 +31,69 @@
 
     <h1 class="page-header">
       {{ block('title') }}
-      <span class="pull-right">
-      <div class="btn-group">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-          Unit view <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu pull-right" role="menu">
-          {% for unit in course.units %}
-            <li><a
-                  href="{{ route('admin.courses.tracker.unit', [course.id, unit.id]) }}">Unit {{ unit.number }} &mdash; {{ unit.name }}</a>
-            </li>
-          {% endfor %}
-        </ul>
+      <div class="pull-right">
+        <div class="btn-group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            Unit view <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu pull-right" role="menu">
+            {% for unit in course.units %}
+              <li><a
+                    href="{{ route('admin.courses.tracker.unit', [course.id, unit.id]) }}">Unit {{ unit.number }} &mdash; {{ unit.name }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
       </div>
-    </span>
     </h1>
   </header>
 
-  <table class="table table-responsive table-bordered tracker-table">
-    <thead>
-    <tr>
-      <th>Student</th>
-      {% for unit in course.units %}
-        <th>Unit {{ unit.number }}</th>
-      {% endfor %}
-    </tr>
-    </thead>
-
-    <tbody>
-    {% for student, grades in results %}
+  <div class="course-view">
+    <table class="table table-responsive table-bordered tracker-table">
+      <thead>
       <tr>
-        <td>{{ student }}</td>
-        {% for grade in grades %}
-          <td class="grade-{{ grade|lower }}">{{ grade }}</td>
-        {% endfor %}
+        <th rowspan="2">Student</th>
+        <th colspan="{{ course.units.count() }}">Units</th>
+        <th colspan="3">Grades</th>
+        <th colspan="2">UCAS Points</th>
       </tr>
-    {% endfor %}
-    </tbody>
-  </table>
+      <tr>
+        {% for unit in course.units %}
+          <th>{{ unit.number }}</th>
+        {% endfor %}
+        {# Main Grades #}
+        <th>Final</th>
+        <th>Pred.</th>
+        <th>Target</th>
+        {# UCAS Points #}
+        {% if course.level == 3 %}
+          <th>Final</th>
+          <th>Pred.</th>
+        {% endif %}
+      </tr>
+      </thead>
+
+      <tbody>
+      {% for student, grades in results %}
+        <tr>
+          <td data-toggle="tooltip" data-placement="right"
+              title="{{ student }}" class="student">{{ student }}</td>
+          {% for grade in grades %}
+            {% if loop.revindex > 5 %}
+              <td class="grade-{{ grade|lower }}">
+                {{ grade|slice(0, 1) }}
+              </td>
+            {% elseif loop.revindex > 2 %}
+              <td class="grade-{{ 'D*D*D*'|lower }}">
+                {{ 'D*D*D*'|slice(0, 6) }}
+              </td>
+            {% else %}
+              <td>{{ grade|slice(0, 6) }}</td>
+            {% endif %}
+          {% endfor %}
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

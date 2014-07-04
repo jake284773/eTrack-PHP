@@ -1,7 +1,7 @@
-<?php namespace eTrack\Courses\GradeCalculators;
+<?php namespace eTrack\GradeCalculators;
 
 use eTrack\Courses\Criteria;
-use eTrack\Courses\StudentAssessmentRepository;
+use eTrack\Assessment\StudentAssessmentRepository;
 use eTrack\Courses\UnitRepository;
 
 class UnitGradeCalc {

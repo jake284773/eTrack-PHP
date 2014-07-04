@@ -1,6 +1,8 @@
-<?php namespace eTrack\Models;
+<?php namespace eTrack\Assignments;
 
 use DateTime;
+use eTrack\Accounts\Student;
+use eTrack\Core\Entity;
 
 /**
  * Assignment submission model

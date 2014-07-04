@@ -2,12 +2,12 @@
 
 use App;
 use eTrack\Controllers\BaseController;
+use eTrack\GradeCalculators\CourseGradeCalcFactory;
+use eTrack\GradeCalculators\CoursePointsCalc;
 use eTrack\Courses\CourseRepository;
-use eTrack\Courses\GradeCalculators\UnitGradeCalc;
-use eTrack\Courses\StudentAssessment;
-use eTrack\Courses\StudentAssessmentRepository;
+use eTrack\GradeCalculators\UnitGradeCalc;
+use eTrack\Assessment\StudentAssessmentRepository;
 use eTrack\Courses\StudentUnit;
-use eTrack\Courses\Unit;
 use eTrack\Courses\UnitRepository;
 use View;
 
@@ -62,6 +62,27 @@ class CourseTrackerController extends BaseController
             'totalMerit'       => $totalMeritCriteria,
             'totalDistinction' => $totalDistinctionCriteria,
         ]);
+    }
+
+    public function calculateFinal($courseId)
+    {
+        $course = $this->courseRepository->getTrackerRelated($courseId);
+        $pointsCalc = new CoursePointsCalc();
+        $gradeCalc = CourseGradeCalcFactory::create($course);
+
+        foreach ($course->students as $student)
+        {
+            $totalPoints = $pointsCalc->calculateTotalPoints($course, $student->id);
+
+            $grade = $gradeCalc->calcGrade($totalPoints, $course);
+            $ucasPoints = $gradeCalc->calcUcasTariffPoints($totalPoints, $course);
+
+            $student->pivot->final_grade = $grade;
+            if ($course->level == 3) {
+                $student->pivot->final_ucas_tariff_score = $ucasPoints;
+            }
+            $student->pivot->save();
+        }
     }
 
     private function calculateAllUnitGradesForCourse($course)

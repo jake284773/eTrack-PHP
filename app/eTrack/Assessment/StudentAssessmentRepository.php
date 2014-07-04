@@ -1,4 +1,4 @@
-<?php namespace eTrack\Courses;
+<?php namespace eTrack\Assessment;
 
 use eTrack\Core\EloquentRepository;
 

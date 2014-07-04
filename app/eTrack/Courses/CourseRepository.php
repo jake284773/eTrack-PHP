@@ -42,6 +42,11 @@ class CourseRepository extends EloquentRepository {
         $results = [];
 
         foreach ($course->students as $student) {
+            $studentInitial = substr($student->full_name, 0, 1);
+            $studentNameSplit = explode(' ', $student->full_name);
+            $studentLastName = strtoupper(array_pop($studentNameSplit));
+            $studentName = $studentInitial.'. '.$studentLastName;
+
             foreach ($course->units as $unit) {
                 // Find the correct unit grade for the student.
                 $unitGrade = $unit->studentGrades->filter(function($unitGrade) use($student)
@@ -56,13 +61,19 @@ class CourseRepository extends EloquentRepository {
                 // If the unit grade can't be found then add NYA to the array for
                 // the unit grade.
                 if (! $unitGrade) {
-                    $results[$student->full_name.' ('.$student->id.')'][] = 'NYA';
+                    $results[$studentName][] = 'NYA';
                 }
                 // Otherwise add the unit grade to the array.
                 else {
-                    $results[$student->full_name.' ('.$student->id.')'][] = $unitGrade->grade;
+                    $results[$studentName][] = $unitGrade->grade;
                 }
             }
+
+            $results[$studentName][] = $student->pivot->final_grade;
+            $results[$studentName][] = $student->pivot->predicted_grade;
+            $results[$studentName][] = $student->pivot->target_grade;
+            $results[$studentName][] = $student->pivot->final_ucas_tariff_score;
+            $results[$studentName][] = $student->pivot->predicted_ucas_tariff_score;
         }
 
         return $results;

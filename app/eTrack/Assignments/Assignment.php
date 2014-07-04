@@ -1,4 +1,4 @@
-<?php namespace eTrack\Courses;
+<?php namespace eTrack\Assignments;
 
 use DateTime;
 use eTrack\Core\Entity;
@@ -16,7 +16,7 @@ use eTrack\Core\Entity;
  * @property DateTime $marking_start_date
  * @property DateTime $marking_deadline
  * @property-read \Illuminate\Database\Eloquent\Collection|Criteria[] $criteria
- * @property-read \Illuminate\Database\Eloquent\Collection|\eTrack\Models\AssignmentSubmission[] $submissions
+ * @property-read \Illuminate\Database\Eloquent\Collection|AssignmentSubmission[] $submissions
  */
 class Assignment extends Entity
 {

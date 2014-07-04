@@ -1,6 +1,7 @@
 <?php namespace eTrack\Courses;
 
 use DB;
+use eTrack\Accounts\Student;
 use eTrack\Accounts\User;
 use eTrack\Core\Entity;
 use eTrack\Faculties\Faculty;
@@ -15,8 +16,8 @@ use eTrack\SubjectSectors\SubjectSector;
  * @property string $status
  * @property string $pathway
  * @property-read \Illuminate\Database\Eloquent\Collection|Unit[] $units
-// * @property-read \Illuminate\Database\Eloquent\Collection|Enrolment[] $enrollments
-// * @property-read \Illuminate\Database\Eloquent\Collection|Student[] $students
+ * @property-read \Illuminate\Database\Eloquent\Collection|Enrolment[] $enrollments
+ * @property-read \Illuminate\Database\Eloquent\Collection|Student[] $students
  * @property-read User $courseOrganiser
  * @property-read SubjectSector $subjectSector
  * @property-read Faculty $faculty
@@ -45,6 +46,14 @@ class Course extends Entity
         'BTEC National Certificate',
         'BTEC National Subsidiary Diploma',
         'BTEC National Extended Diploma',
+    ];
+
+    protected $courseTypeClassMap = [
+        'BTEC National Certificate' => 'eTrack\Courses\BTEC\National\NationalCertificate',
+        'BTEC National Subsidiary Diploma' => 'eTrack\Courses\BTEC\National\NationalSubsidiaryDiploma',
+        'BTEC National 90 Credit Diploma' => 'eTrack\Courses\BTEC\National\National90CreditDiploma',
+        'BTEC National Diploma' => 'eTrack\Courses\BTEC\National\NationalDiploma',
+        'BTEC National Extended Diploma' => 'eTrack\Courses\BTEC\National\NationalExtendedDiploma',
     ];
 
     /**
@@ -95,9 +104,32 @@ class Course extends Entity
         $this->validationRules['type'] = $this->validationRules['type']."|in:".$validTypesList;
     }
 
+    /**
+     * Overridden to check if the more specific course object can be instantiated.
+     *
+     * It is used when an existing course is found with a 'type' attribute.
+     * This attribute determines what type of course it is. i.e. (Whether it's a
+     * BTEC National Subsidiary or Extended Diploma).
+     *
+     * @param array $attributes
+     * @return \Illuminate\Database\Eloquent\Model|static
+     */
+    public function newFromBuilder($attributes = [])
+    {
+        if ($attributes->type) {
+            $class = $this->courseTypeClassMap[$attributes->type];
+            $instance = new $class;
+            $instance->exists = true;
+            $instance->setRawAttributes((array) $attributes, true);
+            return $instance;
+        } else {
+            return parent::newFromBuilder($attributes);
+        }
+    }
+
     public function units()
     {
-        $units = $this->belongsToMany('eTrack\Courses\Unit', 'course_unit')
+        $units = $this->belongsToMany('eTrack\Courses\Unit', 'course_unit', 'course_id')
             ->orderBy('number')
             ->withPivot('unit_number');
 

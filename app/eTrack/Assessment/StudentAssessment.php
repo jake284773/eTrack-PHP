@@ -1,7 +1,8 @@
-<?php namespace eTrack\Courses;
+<?php namespace eTrack\Assessment;
 
 use eTrack\Accounts\Student;
 use eTrack\Accounts\User;
+use eTrack\Assignments\Assignment;
 use eTrack\Core\Entity;
 
 /**

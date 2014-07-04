@@ -1,20 +1,35 @@
 @import '../variables';
 
+@media screen and (max-width: $screen-sm-max) {
+  div.course-view {
+    overflow-x: scroll;
+  }
+}
+
 .tracker-table {
+  border: 3px solid #333;
+
+  thead tr th:first-child, thead tr:last-child th,
+  thead tr:first-child th {
+    border-bottom: 3px solid #333;
+  }
+
+  tr:first-child th:first-child, tr td:first-child {
+    border-right: 3px solid #333;
+  }
+
+  thead tr:first-child th:last-child,
+  tr th:nth-last-child(2), tr th:nth-last-child(5),
+  tr td:nth-last-child(2), tr td:nth-last-child(5) {
+    border-left: 3px solid #333;
+  }
+
   th, td {
     text-align: center;
   }
 
-  th:nth-child(1), td:nth-child(1) {
-    border-right: 2px solid #ddd;
-  }
-
-  th:first-child, th:last-child {
-    vertical-align: middle;
-  }
-
-  th:last-child, td:last-child {
-    border-left: 2px solid #ddd;
+  tr th, tr td {
+    vertical-align: middle !important;
   }
 
   td.criteria {
@@ -39,20 +54,21 @@
     background: $brand-primary !important;
   }
 
-  td.grade-distinction, td.grade-merit, td.grade-pass {
+  td.grade-d, td.grade-m, td.grade-p {
     font-weight: bold;
   }
 
-  td.grade-distinction {
+  td.grade-d, td.grade-dd, td.grade-ddd,
+  td.grade-d\*dd, td.grade-d\*d\*d, td.grade-d\*d\*d*  {
     background: fade-out(#369836, 0.1) !important;
     text-transform: uppercase;
   }
 
-  td.grade-merit {
+  td.grade-m, td.grade-mm, td.grade-mmm {
     background: fade-out(#5cb85c, 0.1) !important;
   }
 
-  td.grade-pass {
+  td.grade-p, td.grade-pp, td.grade-ppp {
     background: fade-out(#8ad38a, 0.1) !important;
   }
 

@@ -6,9 +6,7 @@
   }
 }
 
-.tracker-table {
-  border: 3px solid #333;
-
+.course-view > .tracker-table {
   thead tr th:first-child, thead tr:last-child th,
   thead tr:first-child th {
     border-bottom: 3px solid #333;
@@ -23,6 +21,10 @@
   tr td:nth-last-child(2), tr td:nth-last-child(5) {
     border-left: 3px solid #333;
   }
+}
+
+.tracker-table {
+  border: 3px solid #333;
 
   th, td {
     text-align: center;
@@ -58,8 +60,7 @@
     font-weight: bold;
   }
 
-  td.grade-d, td.grade-dd, td.grade-ddd,
-  td.grade-d\*dd, td.grade-d\*d\*d, td.grade-d\*d\*d*  {
+  td.grade-d, td.grade-dd, td.grade-ddd  {
     background: fade-out(#369836, 0.1) !important;
     text-transform: uppercase;
   }
@@ -72,7 +73,7 @@
     background: fade-out(#8ad38a, 0.1) !important;
   }
 
-  td.grade-nya {
+  td.grade-n {
     background: fade-out($brand-danger, 0.2) !important;
   }
 }

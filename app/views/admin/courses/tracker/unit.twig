@@ -51,35 +51,37 @@
 
   <h3>Unit {{ unit.number }} &mdash; {{ unit.name }}</h3>
 
-  <table class="table table-responsive table-bordered tracker-table">
-    <thead>
-    <tr>
-      <th rowspan="2">Student</th>
-      <th colspan="{{ totalPass }}"><strong>Pass</strong></th>
-      <th colspan="{{ totalMerit }}"><strong>Merit</strong></th>
-      <th colspan="{{ totalDistinction }}"><strong>Distinction</strong></th>
-      <th rowspan="2">Grade</th>
-    </tr>
-    <tr>
-      {% for criteria in unit.criteria %}
-        <th>{{ criteria.id }}</th>
-      {% endfor %}
-    </tr>
-    </thead>
-
-    <tbody>
-    {% for student, grades in results %}
+  <div class="unit-view">
+    <table class="table table-responsive table-bordered tracker-table">
+      <thead>
       <tr>
-        <td>{{ student }}</td>
-        {% for grade in grades %}
-          {% if loop.last %}
-            <td class="grade-{{ grade|lower }}">{{ grade }}</td>
-          {% else %}
-            <td class="criteria {{ grade }}"></td>
-          {% endif %}
+        <th rowspan="2">Student</th>
+        <th colspan="{{ totalPass }}"><strong>Pass</strong></th>
+        <th colspan="{{ totalMerit }}"><strong>Merit</strong></th>
+        <th colspan="{{ totalDistinction }}"><strong>Distinction</strong></th>
+        <th rowspan="2">Grade</th>
+      </tr>
+      <tr>
+        {% for criteria in unit.criteria %}
+          <th>{{ criteria.id }}</th>
         {% endfor %}
       </tr>
-    {% endfor %}
-    </tbody>
-  </table>
+      </thead>
+
+      <tbody>
+      {% for student, grades in results %}
+        <tr>
+          <td>{{ student }}</td>
+          {% for grade in grades %}
+            {% if loop.last %}
+              <td class="grade-{{ grade|lower|slice(0, 1) }}">{{ grade }}</td>
+            {% else %}
+              <td class="criteria {{ grade }}"></td>
+            {% endif %}
+          {% endfor %}
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

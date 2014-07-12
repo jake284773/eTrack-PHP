@@ -22,9 +22,11 @@ class CreateCourseUnitTable extends Migration {
     public function up()
     {
         Schema::create('course_unit', function(Blueprint $table) {
-            $table->string("course_id", 6);
+            $table->string("course_id", 15);
             $table->string("unit_id", 12);
             $table->integer("unit_number")->nullable();
+            $table->string("tutor_user_id", 25);
+            $table->string("moderator_user_id", 25);
 
             $table->foreign("course_id")
                 ->references("id")
@@ -32,6 +34,12 @@ class CreateCourseUnitTable extends Migration {
             $table->foreign("unit_id")
                 ->references("id")
                 ->on("unit");
+            $table->foreign("tutor_user_id")
+                ->references("id")
+                ->on("user");
+            $table->foreign("moderator_user_id")
+                ->references("id")
+                ->on("user");
 
             $table->primary(["course_id", "unit_id"]);
         });

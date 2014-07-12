@@ -22,7 +22,7 @@ class CreateCourseStudentTable extends Migration {
 	public function up()
 	{
 		Schema::create('course_student', function(Blueprint $table) {
-			$table->string("course_id", 6);
+			$table->string("course_id", 15);
 			$table->string("student_user_id", 25);
 			$table->string("final_grade", 45)->nullable();
 			$table->string("predicted_grade", 45)->nullable();

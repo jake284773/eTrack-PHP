@@ -1,6 +1,6 @@
 {% extends "layouts.single" %}
 
-{% block title %}Progress tracker{% endblock %}
+{% block title %}{{ course.name }}{% endblock %}
 {% block mainclass %}col-md-12{% endblock %}
 
 {% block stylesheets %}
@@ -60,9 +60,13 @@
         </div>
       </div>
     </h1>
-  </header>
 
-  <h3>Unit {{ unit.number }} &mdash; {{ unit.name }}</h3>
+    <h2>Progress tracker
+      <small>Unit view</small>
+    </h2>
+
+    <h3>{{ unit.full_name }}</h3>
+  </header>
 
   <div class="unit-view">
     <table class="table table-responsive table-bordered tracker-table">

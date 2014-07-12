@@ -3,12 +3,11 @@
 {% block title %}Manage faculties{% endblock %}
 
 {% block content %}
-  <header class="page-header">
+  <header>
     <ol class="breadcrumb">
       <li><a href="{{ route('home') }}">Home</a></li>
       <li class="active">Faculties</li>
     </ol>
-    <hgroup>
       {% if session_has('successMessage') %}
         <div class="alert alert-success">
           {{ session_get('successMessage') }}
@@ -27,13 +26,11 @@
         </div>
       {% endif %}
 
-      <h1 class="heading-large">
-          {{ block('title') }}
-          <span class="pull-right">
-          <a href="{{ route('admin.faculties.create') }}" class="btn btn-primary btn-sm">Create a new faculty</a>
-        </span>
+      <h1 class="page-header">
+        {{ block('title') }}
+        <br>
+        <a href="{{ route('admin.faculties.create') }}" class="btn btn-primary btn-sm">Create a new faculty</a>
       </h1>
-    </hgroup>
   </header>
 
   <article>

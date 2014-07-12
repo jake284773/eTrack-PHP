@@ -30,10 +30,9 @@
 
     <h1 class="page-header">
       {{ block('title') }}
-      <span class="pull-right">
-          <a href="{{ route('admin.courses.delete_confirm', course.id) }}" data-toggle="modal"
-             data-target="#web-modal" class="btn btn-danger btn-sm">Delete</a>
-      </span>
+      <br>
+      <a href="{{ route('admin.courses.delete_confirm', course.id) }}" data-toggle="modal"
+         data-target="#web-modal" class="btn btn-danger btn-sm">Delete</a>
     </h1>
   </header>
 
@@ -103,7 +102,7 @@
     </div>
 
     <div class="tab-pane" id="students">
-      <table class="table table-responsive table-bordered">
+      <table class="table table-responsive table-bordered course-students-table">
         <thead>
         <tr>
           <th>Student</th>
@@ -124,7 +123,7 @@
             <td>{{ student.pivot.predicted_grade }}</td>
             <td>
               {{ student.pivot.target_grade }}
-              <span class="pull-right">
+              <span class="cell-btns pull-right">
                 <a href="{{ route('admin.courses.students.edit', [course.id, student.id]) }}"
                    class="btn btn-xs btn-default" data-toggle="modal"
                    data-target="#web-modal">

@@ -82,3 +82,14 @@ thead .table-header-secondary td {
     display: block;
   }
 }
+
+table.course-students-table td {
+  height: 40px;
+}
+td .cell-btns {
+  display: none;
+}
+
+td:hover .cell-btns {
+  display: block;
+}

@@ -1,16 +1,15 @@
 {% extends "layouts.single" %}
 
 {% block title %}{{ faculty.name }} ({{ faculty.id }}){% endblock %}
-{% block mainclass %}col-md-8{% endblock %}
+{#{% block mainclass %}col-md-8{% endblock %}#}
 
 {% block content %}
-  <header class="page-header">
+  <header>
     <ol class="breadcrumb">
       <li><a href="{{ route('home') }}">Home</a></li>
       <li><a href="{{ route('admin.faculties.index') }}">Faculties</a></li>
       <li class="active">{{ faculty.name }}</li>
     </ol>
-    <hgroup>
       {% if session_has('successMessage') %}
         <div class="alert alert-success">
           {{ session_get('successMessage') }}
@@ -29,14 +28,12 @@
         </div>
       {% endif %}
 
-      <h1 class="heading-large">
+      <h1 class="page-header">
         {{ block('title') }}
-        <span class="pull-right">
-          <a href="{{ route('admin.faculties.edit', faculty.id) }}" class="btn btn-default btn-sm">Edit</a>
-          <a href="{{ route('admin.faculties.delete_confirm', faculty.id) }}" data-toggle="modal" data-target="#web-modal" class="btn btn-danger btn-sm">Delete</a>
-        </span>
+        <br>
+        <a href="{{ route('admin.faculties.edit', faculty.id) }}" class="btn btn-default btn-sm">Edit</a>
+        <a href="{{ route('admin.faculties.delete_confirm', faculty.id) }}" data-toggle="modal" data-target="#web-modal" class="btn btn-danger btn-sm">Delete</a>
       </h1>
-    </hgroup>
   </header>
 
   <article>

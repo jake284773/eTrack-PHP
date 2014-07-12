@@ -1,19 +1,7 @@
-<?php namespace eTrack\GradeCalculators\BTEC;
+<?php namespace eTrack\GradeCalculators;
 
-/**
- * Grade object for storing a grade for a BTEC National course.
- *
- * The key difference between this and the BTECGrade object is the inclusion of
- * the UCAS tariff points that each grade in a BTEC National has. (__UCAS tariff
- * points are awarded to BTEC Nationals because they are level 3 qualifications__).
- *
- * 
- * @package eTrack\Courses\BTEC\National
- * @author Jake Moreman <mail@jakemoreman.co.uk>
- * @copyright 2014 City College Plymouth
- */
-class NationalGrade extends BTECGrade {
-    
+class CourseGradeL3 extends CourseGrade {
+
     /**
      * The number of UCAS Tariff Points this grade provides.
      * @var integer
@@ -32,7 +20,7 @@ class NationalGrade extends BTECGrade {
      * grade
      */
     public function __construct($grade, $ucasTariffPoints, $pointsStart,
-        $pointsEnd = null)
+                                $pointsEnd = null)
     {
         parent::__construct($grade, $pointsStart, $pointsEnd);
         $this->ucasTariffPoints = $ucasTariffPoints;
@@ -47,4 +35,5 @@ class NationalGrade extends BTECGrade {
     {
         return $this->ucasTariffPoints;
     }
-}
+
+} 

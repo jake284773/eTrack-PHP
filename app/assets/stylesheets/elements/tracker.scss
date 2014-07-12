@@ -6,25 +6,39 @@
   }
 }
 
+.unit-view > .tracker-table {
+  thead tr:first-child th:last-child, tbody tr td:last-child {
+    border-left: 2px solid #000;
+  }
+}
+
+.unit-view > .tracker-table,
 .course-view > .tracker-table {
   thead tr th:first-child, thead tr:last-child th,
   thead tr:first-child th {
-    border-bottom: 3px solid #333;
+    border-bottom: 2px solid #000;
   }
 
   tr:first-child th:first-child, tr td:first-child {
-    border-right: 3px solid #333;
+    border-right: 2px solid #000;
   }
+}
 
+.course-view > .tracker-table {
   thead tr:first-child th:last-child,
   tr th:nth-last-child(2), tr th:nth-last-child(5),
   tr td:nth-last-child(2), tr td:nth-last-child(5) {
-    border-left: 3px solid #333;
+    border-left: 2px solid #000;
   }
 }
 
 .tracker-table {
-  border: 3px solid #333;
+  border: 2px solid #000;
+  
+  td.student {
+    white-space: nowrap;
+    text-align: left;
+  }
 
   th, td {
     text-align: center;
@@ -34,38 +48,37 @@
     vertical-align: middle !important;
   }
 
-  td.criteria {
-    width: 30px;
-    height: 30px;
-  }
-
   td.criteria-achieved {
-    background: $brand-success !important;
+    background: fade-out($brand-success, 0.1) !important;
     color: $brand-success;
   }
 
   td.criteria-nya {
-    background: $brand-danger !important;
+    background: fade-out($brand-danger, 0.1) !important;
   }
 
   td.criteria-awaitmark {
-    background: $brand-warning !important;
+    background: fade-out($brand-warning, 0.1) !important;
   }
 
   td.criteria-ref {
-    background: $brand-primary !important;
+    background: fade-out($brand-primary, 0.1) !important;
   }
 
   td.grade-d, td.grade-m, td.grade-p {
     font-weight: bold;
   }
 
-  td.grade-d, td.grade-dd, td.grade-ddd  {
+  td.grade-ds, td.grade-dsds, td.grade-dsdsds,
+  td.grade-dsdd, td.grade-dsdsd,
+  td.grade-d, td.grade-dd, td.grade-ddd,
+  td.grade-dmm, td.grade-ddm {
     background: fade-out(#369836, 0.1) !important;
     text-transform: uppercase;
   }
 
-  td.grade-m, td.grade-mm, td.grade-mmm {
+  td.grade-m, td.grade-mm, td.grade-mmm,
+  td.grade-mpp, td.grade-mmp, {
     background: fade-out(#5cb85c, 0.1) !important;
   }
 

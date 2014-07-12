@@ -1,6 +1,6 @@
 {% extends "layouts.single" %}
 
-{% block title %}Progress tracker{% endblock %}
+{% block title %}{{ course.name }}{% endblock %}
 {% block mainclass %}col-md-12{% endblock %}
 
 {% block content %}
@@ -32,21 +32,65 @@
     <h1 class="page-header">
       {{ block('title') }}
       <div class="pull-right">
+        {% if course.student_groups is not empty %}
+          <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              <span class="glyphicon glyphicon-filter"></span>
+              Filter by student group <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu pull-right" role="menu">
+              {% for group in course.student_groups %}
+                <li><a
+                      href="{{ route('admin.courses.tracker.index', {'courseId': course.id, 'group': group.id}) }}">{{ group.id }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {% if input_get('group') %}
+          <a href="{{ route('admin.courses.tracker.index', course.id) }}" class="btn btn-default">Remove filter</a>
+        {% endif %}
+
         <div class="btn-group">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             Unit view <span class="caret"></span>
           </button>
           <ul class="dropdown-menu pull-right" role="menu">
             {% for unit in course.units %}
-              <li><a
-                    href="{{ route('admin.courses.tracker.unit', [course.id, unit.id]) }}">Unit {{ unit.number }} &mdash; {{ unit.name }}</a>
+              <li>
+                <a href="{{ route('admin.courses.tracker.unit', [course.id, unit.id]) }}">
+                  Unit {{ unit.number }} &mdash; {{ unit.name }}
+                </a>
               </li>
             {% endfor %}
           </ul>
         </div>
       </div>
     </h1>
+
+    <h2>Progress tracker
+      <small>Overall view</small>
+    </h2>
   </header>
+
+  {% if course.units.count() != constant('MAX_UNITS', course) %}
+    <div class="alert alert-warning">
+      <h4><span class="glyphicon glyphicon-warning-sign"></span> Final grades cannot be calculated yet</h4>
+
+      <p>
+        This is because the qualification for this course must have
+        <strong>{{ constant('MAX_UNITS', course) }}</strong> units to be classified as complete.
+      </p>
+    </div>
+  {% endif %}
+
+  {% if input_get('group') %}
+    <div class="alert alert-info">
+      <span class="glyphicon glyphicon-info-sign"></span> Filtering by student group:
+      <strong>{{ input_get('group') }}</strong>
+    </div>
+  {% endif %}
 
   <div class="course-view">
     <table class="table table-responsive table-bordered tracker-table">
@@ -59,7 +103,9 @@
       </tr>
       <tr>
         {% for unit in course.units %}
-          <th>{{ unit.number }}</th>
+          <th class="unit" title="{{ unit.fullName }}">
+            <a href="{{ route('admin.courses.tracker.unit', [course.id, unit.id]) }}">{{ unit.number }}</a>
+          </th>
         {% endfor %}
         {# Main Grades #}
         <th>Final</th>
@@ -74,23 +120,17 @@
       </thead>
 
       <tbody>
-      {% for student, grades in results %}
+      {% for result in results %}
         <tr>
-          <td data-toggle="tooltip" data-placement="right"
-              title="{{ student }}" class="student">{{ student }}</td>
-          {% for grade in grades %}
-            {% if loop.revindex > 5 %}
-              <td class="grade-{{ grade|lower }} }}">
-                {{ grade|slice(0, 1) }}
-              </td>
-            {% elseif loop.revindex > 2 %}
-              <td class="grade-{{ grade|lower }} }}">
-                {{ grade|slice(0, 6) }}
-              </td>
-            {% else %}
-              <td>{{ grade|slice(0, 6) }}</td>
-            {% endif %}
+          <td class="student" title="{{ result.student.fullName }}">{{ result.student.shortName }}</td>
+          {% for unit in result.units %}
+            <td class="grade-{{ unit.grade.slug }}">{{ unit.grade.shortName }}</td>
           {% endfor %}
+          <td class="grade-{{ result.finalGrade.slug }}">{{ result.finalGrade.shortName }}</td>
+          <td class="grade-{{ result.predictedGrade.slug }}">{{ result.predictedGrade.shortName }}</td>
+          <td class="grade-{{ result.targetGrade.slug }}">{{ result.targetGrade.shortName }}</td>
+          <td>{{ result.finalUcasPoints }}</td>
+          <td>{{ result.predictedUcasPoints }}</td>
         </tr>
       {% endfor %}
       </tbody>

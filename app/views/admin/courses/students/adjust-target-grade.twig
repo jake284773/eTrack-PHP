@@ -1,0 +1,21 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <h4 class="modal-title">Adjust target grade for {{ student.full_name }} ({{ student.id }})</h4>
+</div>
+{% autoescape false %}
+{{ form_open({'route': ['admin.courses.students.update', course.id, student.id], 'method': 'put'}) }}
+<div class="modal-body">
+  <div class="row">
+    <div class="form-group col-md-5">
+      {{ form_label('target_grade', 'Target grade', {'id': 'target_grade-label', 'class': 'control-label'}) }}
+      {{ form_select('target_grade', possibleGrades, input.old('target_grade') ?: student.pivot.target_grade, {'id': 'target_grade', 'class': 'form-control chosen-select', 'data-placeholder': 'Select grade'}) }}
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  {{ form_button('Save changes', {'type': 'submit', 'class': 'btn btn-primary'}) }}
+  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+</div>
+{{ form_close() }}
+{% endautoescape %}
+<script src="{{ asset('javascript/main.js') }}" type="text/javascript"></script>

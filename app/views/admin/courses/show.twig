@@ -71,18 +71,21 @@
       <table class="table table-responsive">
         <thead>
         <tr>
-          <th>Unit ID</th>
+          <th>Unit Code</th>
           <th>Unit number</th>
           <th>Unit name</th>
+          <th></th>
         </tr>
         </thead>
 
         <tbody>
         {% for unit in course.units %}
           <tr>
-            <td>{{ unit.id }}</td>
-            <td>{{ unit.number }}</td>
-            <td>{{ unit.name }}</td>
+            <td><a href="{{ route('admin.courses.units.show', [course.id, unit.id]) }}">{{ unit.id }}</a></td>
+            <td><a href="{{ route('admin.courses.units.show', [course.id, unit.id]) }}">{{ unit.number }}</a></td>
+            <td><a href="{{ route('admin.courses.units.show', [course.id, unit.id]) }}">{{ unit.name }}</a></td>
+            <td><a href="{{ route('admin.courses.units.delete_confirm', [course.id, unit.id]) }}" data-toggle="modal"
+                           data-target="#web-modal" class="btn btn-danger btn-sm">Remove unit</a></td>
           </tr>
         {% else %}
           <tr>
@@ -91,6 +94,12 @@
         {% endfor %}
         </tbody>
       </table>
+
+      {% if course.units.count() < constant('MAX_UNITS', course) %}
+        <a href="{{ route('admin.courses.units.add', course.id) }}" class="btn btn-default">
+          <span class="glyphicon glyphicon-plus"></span> Add a unit
+        </a>
+      {% endif %}
     </div>
 
     <div class="tab-pane" id="students">
@@ -113,7 +122,16 @@
             <td>{{ student.full_name }} ({{ student.id }})</td>
             <td>{{ student.pivot.final_grade }}</td>
             <td>{{ student.pivot.predicted_grade }}</td>
-            <td>{{ student.pivot.target_grade }}</td>
+            <td>
+              {{ student.pivot.target_grade }}
+              <span class="pull-right">
+                <a href="{{ route('admin.courses.students.edit', [course.id, student.id]) }}"
+                   class="btn btn-xs btn-default" data-toggle="modal"
+                   data-target="#web-modal">
+                  Adjust
+                </a>
+              </span>
+            </td>
             {% if course.level == 3 %}
               <td>{{ student.pivot.final_ucas_tariff_score }}</td>
               <td>{{ student.pivot.predicted_ucas_tariff_score }}</td>
@@ -128,6 +146,11 @@
           {% endfor %}
         </tbody>
       </table>
+
+      <a href="{{ route('admin.courses.students.add', course.id) }}" class="btn btn-default">
+        <span class="glyphicon glyphicon-plus"></span>
+        Add a student
+      </a>
     </div>
 
     <div class="tab-pane" id="groups">
@@ -152,6 +175,11 @@
         {% endfor %}
         </tbody>
       </table>
+
+      <a href="{{ route('admin.courses.student_groups.create', course.id) }}" class="btn btn-default">
+        <span class="glyphicon glyphicon-plus"></span>
+        Create a student group
+      </a>
     </div>
   </div>
 {% endblock %}

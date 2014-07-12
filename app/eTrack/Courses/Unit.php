@@ -91,6 +91,21 @@ class Unit extends Entity
         });
     }
 
+    public function getFullNameAttribute()
+    {
+        return 'Unit '.$this->number.' - '.$this->name;
+    }
+
+    public function getNumberAttribute()
+    {
+        if (isset($this->pivot->unit_number))
+        {
+            return $this->pivot->unit_number;
+        }
+
+        return $this->attributes['number'];
+    }
+
 //    public function scopeListUnits($query, $selectedSubjectSector = '', $searchString = '')
 //    {
 //        return $query->select('unit.id as id', 'number', 'unit.name as name',
@@ -114,6 +129,11 @@ class Unit extends Entity
     public function courses()
     {
         return $this->belongsToMany('eTrack\Courses\Course');
+    }
+
+    public function assignments()
+    {
+        return $this->hasMany('eTrack\Assignments\Assignment');
     }
 
     public function criteria()

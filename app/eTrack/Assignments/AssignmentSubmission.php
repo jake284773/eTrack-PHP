@@ -45,7 +45,7 @@ class AssignmentSubmission extends Entity
 
     public function student()
     {
-        return $this->hasMany('eTrack\Models\Entities\Student', 'id', 'student_user_id');
+        return $this->hasOne('eTrack\Accounts\Student', 'id', 'student_user_id');
     }
 
 }

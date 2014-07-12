@@ -1,7 +1,10 @@
 <?php namespace eTrack\Assignments;
 
 use DateTime;
+use DB;
 use eTrack\Core\Entity;
+use eTrack\Courses\Criteria;
+use eTrack\Courses\Unit;
 
 /**
  * Assignment model
@@ -28,6 +31,17 @@ class Assignment extends Entity
      */
     protected $table = 'assignment';
 
+    protected $fillable = [
+        'id',
+        'unit_id',
+        'number',
+        'name',
+        'available_date',
+        'deadline',
+        'marking_start_date',
+        'marking_deadline',
+    ];
+
     public function unit()
     {
         return $this->belongsTo('eTrack\Courses\Unit');
@@ -35,18 +49,19 @@ class Assignment extends Entity
 
     public function criteria()
     {
-        return Criteria::where('assignment_id', $this->id)
-            ->select('criteria.id', 'criteria.type')
-            ->join('assignment_criteria', function ($join) {
-                $join->on('criteria.id', '=', 'assignment_criteria.criteria_id')
-                    ->on('criteria.unit_id', '=', 'assignment_criteria.criteria_unit_id');
+        return $this->belongsToMany('eTrack\Courses\Criteria')
+            ->join(DB::raw('assignment_criteria ac2'), function ($join) {
+                $join->on('criteria.id', '=', DB::raw('ac2.criteria_id'))
+                    ->on('criteria.unit_id', '=', DB::raw('ac2.criteria_unit_id'));
             })
-            ->orderBy('type', 'desc');
+            ->orderBy(DB::raw('left(ac2.criteria_id, 1)'), 'desc')
+            ->orderBy(DB::raw('left(ac2.criteria_id, 2)'))
+            ->where(DB::raw('ac2.assignment_id'), $this->id);
     }
 
     public function submissions()
     {
-        return $this->hasMany('eTrack\Courses\AssignmentSubmission');
+        return $this->hasMany('eTrack\Assignments\AssignmentSubmission');
     }
 
 }

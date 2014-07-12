@@ -1,31 +1,39 @@
 <?php namespace eTrack\Courses;
 
 use DB;
+use eTrack\Accounts\Student;
 use eTrack\Core\EloquentRepository;
+use eTrack\Tracker\CriteriaAssessmentStructure;
+use eTrack\Tracker\GradeStructure;
+use eTrack\Tracker\StudentStructure;
+use eTrack\Tracker\StudentUnitStructure;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UnitRepository extends EloquentRepository
 {
     protected $criteriaModel;
 
-    protected $assessmentStatusStylingMap = [
-        'NYA'  => 'criteria-nya',
-        'AM'   => 'criteria-awaitmark',
-        'ALM'  => 'criteria-awaitlatemark',
-        'A'    => 'criteria-achieved',
-        'L'    => 'criteria-late',
-        'LA'   => 'criteria-achieved criteria-lateachieved',
-        'R1'   => 'criteria-ref criteria-r1',
-        'R1AM' => 'criteria-ref criteria-r1awaitmark',
-        'R2'   => 'criteria-ref criteria-r2',
-        'R2AM' => 'criteria-ref criteria-r2awaitmark',
-        'R3'   => 'criteria-ref criteria-r3',
-        'R3AM' => 'criteria-ref criteria-r3awaitmark',
-    ];
-
     public function __construct(Unit $model, Criteria $criteriaModel)
     {
         $this->model = $model;
         $this->criteriaModel = $criteriaModel;
+    }
+
+    public function getAllNotInCourse($courseId)
+    {
+        return $this->model->select('unit.*')
+            ->with('subject_sector')
+            ->join('subject_sector', 'unit.subject_sector_id', '=', 'subject_sector.id')
+            ->leftJoin('course_unit', function($join) use($courseId)
+            {
+                $join->on('unit.id', '=', 'course_unit.unit_id')
+                    ->where('course_unit.course_id', '=', $courseId);
+            })
+            ->where('course_unit.unit_id')
+            ->orderBy('subject_sector.name')
+            ->orderBy('unit.number')
+            ->get();
     }
 
     protected function queryBySubjectAndSearch($search, $subjectSector)
@@ -95,6 +103,22 @@ class UnitRepository extends EloquentRepository
         return $this->model->with('subject_sector')->findOrFail($id);
     }
 
+    public function criteriaListForSelect($id, $unit = null)
+    {
+        if (! $unit) {
+            $unit = $this->getWithCriteria($id);
+        }
+
+        $criteriaSelect = [];
+
+        foreach ($unit->criteria as $criteria)
+        {
+            $criteriaSelect[$criteria->id] = $criteria->id;
+        }
+
+        return $criteriaSelect;
+    }
+
     /**
      * Calculates the total number of criteria that is part of a unit.
      *
@@ -144,55 +168,26 @@ class UnitRepository extends EloquentRepository
      */
     public function renderUnitCriteriaAssessmentForTracker(Course $course, Unit $unit)
     {
-        $results = [];
+        $results = new Collection();
 
         foreach ($course->students as $student) {
+            $criteriaResult = new Collection();
+
             foreach ($unit->criteria as $criteria) {
                 // Find the assessment record for the correct student
-                $assessment = $criteria->studentAssessments->filter(function($assessment) use($student, $criteria)
-                {
-                    $assessmentStudentId = $assessment->student_assignment_student_user_id;
-                    $assessmentCriteriaId = $assessment->criteria_id;
-
-                    if ($assessmentStudentId == $student->id && $assessmentCriteriaId == $criteria->id) {
-                        return true;
-                    }
-
-                    return false;
-                })->first();
-
-                // If no assessment could be found then add NYA to the results array
-                // for that criterion and student
-                if (! $assessment) {
-                    $results[$student->full_name.' ('.$student->id.')'][] =
-                        $this->assessmentStatusStylingMap['NYA'];
-                }
-                // Otherwise add the found criterion status code to the results array.
-                else {
-                    $results[$student->full_name.' ('.$student->id.')'][] =
-                        $this->assessmentStatusStylingMap[$assessment->assessment_status];
-                }
+                $criteriaResult->add($this->findAssessmentForStudent($criteria, $student));
             }
 
             // Find the correct unit grade for the student.
-            $unitGrade = $unit->studentGrades->filter(function($unitGrade) use($student)
-            {
-                if ($unitGrade->student_user_id == $student->id) {
-                    return true;
-                }
+            $unitGrade = $this->findUnitGradeForStudent($unit, $student);
 
-                return false;
-            })->first();
+            $studentStructure = new StudentStructure($student);
 
-            // If the unit grade can't be found then add NYA to the array for
-            // the unit grade.
-            if (! $unitGrade) {
-                $results[$student->full_name.' ('.$student->id.')'][] = 'NYA';
-            }
-            // Otherwise add the unit grade to the array.
-            else {
-                $results[$student->full_name.' ('.$student->id.')'][] = $unitGrade->grade;
-            }
+            $results->add(new StudentUnitStructure($unit, $unitGrade, $criteriaResult, $studentStructure));
+
+            unset($studentStructure);
+            unset($unitGrade);
+            unset($criteriaResult);
         }
 
         return $results;
@@ -203,6 +198,7 @@ class UnitRepository extends EloquentRepository
      *
      * @param string $courseId The ID of the course to check.
      * @param string $unitId The ID of the unit to check.
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      * @return bool True if unit exists in course.
      */
     public function checkUnitBelongsToCourse($courseId, $unitId)
@@ -210,9 +206,87 @@ class UnitRepository extends EloquentRepository
         $unitCount = DB::table('course_unit')->where('course_id', $courseId)
             ->where('unit_id', $unitId)->count();
 
-        if ($unitCount == 0) return false;
+        if ($unitCount == 0) throw new ModelNotFoundException();
 
         return true;
+    }
+
+    /**
+     * Retrieve the criteria assessment record for a particular student and
+     * criterion, then instantiate a criteria assessment structure object from it.
+     *
+     * @param Criteria $criteria The criteria model object which represents the
+     *                           criterion to find.
+     * @param Student $student The student model object which represents which
+     *                         student this search is for.
+     * @return CriteriaAssessmentStructure
+     */
+    private function findAssessmentForStudent(Criteria $criteria, Student $student)
+    {
+        $assessment = $criteria->studentAssessments->filter(function ($assessment) use ($student, $criteria) {
+            $assessmentStudentId = $assessment->student_assignment_student_user_id;
+            $assessmentCriteriaId = $assessment->criteria_id;
+
+            if ($assessmentStudentId == $student->id && $assessmentCriteriaId == $criteria->id) {
+                return true;
+            }
+
+            return false;
+        })->first();
+
+        // If no assessment could be found, then assume the student has not yet
+        // achieved it yet.
+        if (! $assessment) {
+            $assessmentStructure = new CriteriaAssessmentStructure($criteria->id, 'NYA');
+        }
+        // Otherwise add the found criterion assessment status to the structure object.
+        else {
+            $assessmentStructure = new CriteriaAssessmentStructure($criteria->id,
+                $assessment->assessment_status);
+        }
+
+        return $assessmentStructure;
+    }
+
+    /**
+     * Retrieve the student unit record for a particular unit and student,
+     * then instantiate a grade structure object from it.
+     *
+     * @param Unit $unit
+     * @param Student $student
+     * @return GradeStructure
+     */
+    private function findUnitGradeForStudent(Unit $unit, Student $student)
+    {
+        $unitGrade = $unit->studentGrades->filter(function ($unitGrade) use ($student) {
+            if ($unitGrade->student_user_id == $student->id) {
+                return true;
+            }
+
+            return false;
+        })->first();
+
+        // If the unit grade can't be found then set it to NYA.
+        if (! $unitGrade) {
+            $unitGradeStructure = new GradeStructure('NYA');
+        }
+        // Otherwise add the unit grade to the new grade structure object.
+        else {
+            $unitGradeStructure = new GradeStructure($unitGrade->grade);
+        }
+
+        return $unitGradeStructure;
+    }
+
+    public function getWithAssignments($id)
+    {
+        return $this->model->with([
+            'criteria'                    => function ($query) {
+                    $query->orderBy('type', 'desc')->orderBy('id', 'asc');
+                },
+            'assignments',
+            'subject_sector'
+        ])->findOrFail($id);
     }
 
 } 

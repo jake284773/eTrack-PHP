@@ -1,0 +1,57 @@
+{% extends "layouts.single" %}
+
+{% block title %}Add a unit to the course{% endblock %}
+
+{% block content %}
+  <header>
+    <ol class="breadcrumb">
+      <li><a href="{{ route('home') }}">Home</a></li>
+      <li><a href="{{ route('admin.courses.index') }}">Courses</a></li>
+      <li><a href="{{ route('admin.courses.show', course.id) }}">{{ course.name }}</a></li>
+      <li class="active">{{ block('title') }}</li>
+    </ol>
+    <h1 class="page-header">{{ block('title') }}</h1>
+  </header>
+
+  <article>
+    {% if errors is not empty %}
+      <div class="alert alert-danger">
+        <h4>There was a problem submitting the form</h4>
+
+        <p>Because of the following problems:</p>
+
+        <ol>
+          {% for error in errors.all %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ol>
+      </div>
+    {% endif %}
+
+    {% autoescape false %}
+    {{ form_open({'route': ['admin.courses.units.store', course.id]}) }}
+    <div class="row">
+      <div class="form-group col-md-7">
+        {{ form_label('unit', 'Unit to add', {'id': 'unit-label', 'class': 'control-label'}) }}
+        {{ form_select('unit', units, input.old('unit'), {'id': 'unit', 'class': 'form-control chosen-select', 'data-placeholder': 'Select a unit'}) }}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group col-md-5">
+        {{ form_label('unit-number', 'Override unit number (optional)', {'id': 'unit-number-label', 'class': 'control-label'}) }}
+        {{ form_text('unit-number', input.old('unit-number'), {'id': 'unit-number', 'class': 'form-control'}) }}
+        <div class="help-block">
+          If the default unit number is already taken then enter an alternative here.
+        </div>
+      </div>
+    </div>
+
+    <div class="well">
+      {{ form_button('Add unit to course', {'type': 'submit', 'class': 'btn btn-primary'}) }}
+      or <a href="{{ route('admin.courses.show', course.id) }}">cancel</a>
+    </div>
+    {{ form_close() }}
+    {% endautoescape %}
+  </article>
+{% endblock %}

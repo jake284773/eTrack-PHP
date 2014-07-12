@@ -9,6 +9,10 @@ use eTrack\GradeCalculators\UnitGradeCalc;
 use eTrack\Assessment\StudentAssessmentRepository;
 use eTrack\Courses\StudentUnit;
 use eTrack\Courses\UnitRepository;
+use Event;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Input;
+use Redirect;
 use View;
 
 class CourseTrackerController extends BaseController
@@ -31,7 +35,7 @@ class CourseTrackerController extends BaseController
     {
         $course = $this->courseRepository->getTrackerRelated($courseId);
 
-        $results = $this->courseRepository->renderCourseUnitGradesForTracker($course);
+        $results = $this->courseRepository->renderCourseUnitGradesForTracker($course, Input::get('group'));
 
         return View::make('admin.courses.tracker.index', ['course' => $course,
                                                           'results' => $results]);
@@ -41,7 +45,9 @@ class CourseTrackerController extends BaseController
     {
         // Display a 404 page if the requested unit isn't part of the requested
         // course.
-        if (!$this->unitRepository->checkUnitBelongsToCourse($courseId, $unitId)) {
+        try {
+            $this->unitRepository->checkUnitBelongsToCourse($courseId, $unitId);
+        } catch (ModelNotFoundException $e) {
             App::abort(404);
         }
 
@@ -66,23 +72,10 @@ class CourseTrackerController extends BaseController
 
     public function calculateFinal($courseId)
     {
-        $course = $this->courseRepository->getTrackerRelated($courseId);
-        $pointsCalc = new CoursePointsCalc();
-        $gradeCalc = CourseGradeCalcFactory::create($course);
+        Event::fire('tracker.calcAllFinalGrades', [$courseId]);
+        Event::fire('tracker.calcAllPredictedGrades', [$courseId]);
 
-        foreach ($course->students as $student)
-        {
-            $totalPoints = $pointsCalc->calculateTotalPoints($course, $student->id);
-
-            $grade = $gradeCalc->calcGrade($totalPoints, $course);
-            $ucasPoints = $gradeCalc->calcUcasTariffPoints($totalPoints, $course);
-
-            $student->pivot->final_grade = $grade;
-            if ($course->level == 3) {
-                $student->pivot->final_ucas_tariff_score = $ucasPoints;
-            }
-            $student->pivot->save();
-        }
+        return Redirect::route('admin.courses.tracker.index', $courseId);
     }
 
     private function calculateAllUnitGradesForCourse($course)

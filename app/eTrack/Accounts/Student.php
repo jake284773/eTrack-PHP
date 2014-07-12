@@ -21,10 +21,11 @@ class Student extends User
         return $this->belongsToMany('eTrack\Courses\Course', null, 'student_user_id');
     }
 
-    public function unitGrades()
+    public function units()
     {
-        return $this->hasMany('eTrack\Courses\StudentUnit', 'student_user_id')
-            ->join('unit', 'student_unit.unit_id', '=', 'unit.id')
+        return $this->belongsToMany('eTrack\Courses\Unit', 'student_unit', 'student_user_id')
+            ->withPivot('grade')
+            ->orderBy('subject_sector.id')
             ->orderBy('number');
     }
 

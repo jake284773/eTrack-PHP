@@ -1,7 +1,15 @@
 $(function () {
-    $("td.student").tooltip({container: 'body'});
+    $("td.student").tooltip({
+        container: 'body',
+        placement: 'right'
+    });
 
-    $("td.grade-nya").tooltip({
+    $("th.unit").tooltip({
+        container: 'body',
+        placement: 'bottom'
+    });
+
+    $("td.grade-n").tooltip({
         placement: 'bottom',
         title: 'Not yet achieved',
         container: 'body'
@@ -43,6 +51,18 @@ $(function () {
         container: 'body'
     });
 
+    $("td.grade-mpp").tooltip({
+        placement: 'bottom',
+        title: 'Merit Pass Pass',
+        container: 'body'
+    });
+
+    $("td.grade-mmp").tooltip({
+        placement: 'bottom',
+        title: 'Merit Merit Pass',
+        container: 'body'
+    });
+
     $("td.grade-d").tooltip({
         placement: 'bottom',
         title: 'Distinction',
@@ -61,21 +81,45 @@ $(function () {
         container: 'body'
     });
 
-    $('td.grade-d\\*').tooltip({
+    $("td.grade-ddm").tooltip({
+        placement: 'bottom',
+        title: 'Distinction Distinction Merit',
+        container: 'body'
+    });
+
+    $("td.grade-dmm").tooltip({
+        placement: 'bottom',
+        title: 'Distinction Merit Merit',
+        container: 'body'
+    });
+
+    $('td.grade-ds').tooltip({
         placement: 'bottom',
         title: 'Distinction*',
         container: 'body'
     });
 
-    $('td.grade-d\\*d\\*').tooltip({
+    $('td.grade-dsds').tooltip({
         placement: 'bottom',
         title: 'Distinction* Distinction*',
         container: 'body'
     });
 
-    $('td.grade-d\\*d\\*d\\*').tooltip({
+    $('td.grade-dsdsds').tooltip({
         placement: 'bottom',
         title: 'Distinction* Distinction* Distinction*',
+        container: 'body'
+    });
+
+    $('td.grade-dsdsd').tooltip({
+        placement: 'bottom',
+        title: 'Distinction* Distinction* Distinction',
+        container: 'body'
+    });
+
+    $('td.grade-dsdd').tooltip({
+        placement: 'bottom',
+        title: 'Distinction* Distinction Distinction',
         container: 'body'
     });
 

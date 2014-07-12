@@ -29,9 +29,9 @@
 
     <h1 class="page-header">
       {{ block('title') }}
-      <span class="pull-right">
-          <a href="{{ route('admin.courses.create') }}" class="btn btn-primary btn-sm">Create one</a>
-        </span>
+      <span class="action-btn-block">
+        <a href="{{ route('admin.courses.create') }}" class="btn btn-primary">Create one</a>
+      </span>
     </h1>
   </header>
 
@@ -40,11 +40,11 @@
     <tr>
       <th>Course code</th>
       <th>Course name</th>
-      <td>Level</td>
-      <td>Type</td>
-      <td>Subject Sector</td>
-      <td>Faculty</td>
-      <td>Course Organiser</td>
+      <th>Level</th>
+      <th>Type</th>
+      <th>Subject Sector</th>
+      <th>Faculty</th>
+      <th>Course Organiser</th>
       <th></th>
     </tr>
     </thead>
@@ -56,7 +56,8 @@
         <td><a href="{{ route('admin.courses.show', course.id) }}">{{ course.name }}</a></td>
         <td>{{ course.level }}</td>
         <td>{{ course.type }}</td>
-        <td><a href="{{ route('admin.subjectsectors.show', course.subject_sector.id) }}">{{ course.subject_sector.name }}</a>
+        <td><a
+              href="{{ route('admin.subjectsectors.show', course.subject_sector.id) }}">{{ course.subject_sector.name }}</a>
         </td>
         <td><a href="{{ route('admin.faculties.show', course.faculty.id) }}">{{ course.faculty.name }}</a></td>
         <td>{{ course.course_organiser.full_name }}</td>

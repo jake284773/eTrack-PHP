@@ -1,34 +1,34 @@
-<?php namespace eTrack\GradeCalculators\BTEC;
+<?php namespace eTrack\GradeCalculators;
 
 /**
- * BTEC grade object for storing a grade for a BTEC course.
+ * Course grade object for storing a grade for a course.
  *
  * It contains the grade string (i.e. DDM), and the minimum and maximum amount of
  * points the student must have to achieve the grade. These two figures are used
  * when calculating the final grade for a student.
  *
- * When the grade is the highest possible one, the points end attribute is set 
+ * When the grade is the highest possible one, the points end attribute is set
  * to null, which represents that there is no end value for that grade.
- * 
- * @package eTrack\Courses\BTEC
+ *
+ * @package eTrack\GradeCalculators
  * @author Jake Moreman <mail@jakemoreman.co.uk>
  * @copyright 2014 City College Plymouth
  */
-class BTECGrade {
-    
+class CourseGrade {
+
     /**
      * The name of the grade.
      * @var string
      */
     protected $grade;
-    
+
     /**
      * The minimum number of points the student must have achieved to be awarded
      * this grade.
      * @var integer
      */
     protected $pointsStart;
-    
+
     /**
      * The maximum number of points the student can achieve to be awarded this
      * grade.

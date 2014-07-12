@@ -1,40 +1,33 @@
-<?php namespace eTrack\GradeCalculators\BTEC;
+<?php namespace eTrack\GradeCalculators;
 
-use eTrack\Courses\BTEC\BTEC;
+use eTrack\Courses\Course;
 
-/**
- * BTEC grade calculator object used for calculating a grade for a student based
- * on the total number of points they have achieved from the units.
- *
- * @package eTrack\Courses\BTEC
- * @author Jake Moreman <mail@jakemoreman.co.uk>
- * @copyright 2014 City College Plymouth
- */
-class BTECGradeCalc {
+abstract class CourseGradeCalc
+{
 
     /**
-     * Calculate the grade based on the specified number of points and the BTEC
+     * Calculate the grade based on the specified number of points and the
      * course object.
      *
      * @param integer $points The total number of points achieved for the
      * qualification.
-     * @param BTEC $btec The BTEC course the calculated grade should be for.
+     * @param Course $course The course the calculated grade should be for.
      * This is to determine what the possible grades could be.
      * @return string
      * @throws \InvalidArgumentException When the total number of points doesn't
      * match any of the possible grade boundaries.
      */
-    public function calcGrade($points, BTEC $btec)
+    public function calcGrade($points, Course $course)
     {
-        $possibleGrades = $btec->getPossibleGrades();
+        $possibleGrades = $course->getPossibleGrades();
 
         // Loop through all the possible grades for the specified BTEC course.
         foreach ($possibleGrades as $grading) {
             // If the points variable is in the start and end range for the grade,
             // return that grade object.
             if ($points >= $grading->getPointsStart() &&
-                $points <= $grading->getPointsEnd())
-            {
+                $points <= $grading->getPointsEnd()
+            ) {
                 return $grading->getGrade();
             }
 
@@ -43,8 +36,7 @@ class BTECGradeCalc {
             //
             // This statement should return true when the number of points matches for the
             // highest grade in the qualification.
-            if (is_null($grading->getPointsEnd()) && $points >= $grading->getPointsStart())
-            {
+            if (is_null($grading->getPointsEnd()) && $points >= $grading->getPointsStart()) {
                 return $grading->getGrade();
             }
         }
@@ -54,6 +46,32 @@ class BTECGradeCalc {
         throw new \InvalidArgumentException('Invalid number of points provided');
     }
 
-//    public function calcPredictedGrade()
+    public function studentAchievedAllUnits(Course $course, $studentId)
+    {
+        $numberOfUnitsAchieved = 0;
 
-}
+        $units = $course->units;
+
+        foreach ($units as $unit) {
+            $studentGrades = $unit->studentGrades;
+
+            $studentUnitGrade = $studentGrades->filter(function ($studentUnitGrade) use ($studentId) {
+                if ($studentUnitGrade->student_user_id == $studentId) {
+                    return true;
+                }
+
+                return false;
+            })->find(0);
+
+            if ($studentUnitGrade->grade != 'NYA') {
+                $numberOfUnitsAchieved++;
+            }
+        }
+
+        if ($numberOfUnitsAchieved == $course::MAX_UNITS) {
+            return true;
+        }
+
+        return false;
+    }
+} 

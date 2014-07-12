@@ -1,0 +1,132 @@
+{% extends "layouts.single" %}
+
+{% block title %}Assignment {{ assignment.number }} - {{ assignment.name }}{% endblock %}
+{% block mainclass %}col-md-8{% endblock %}
+
+{% block content %}
+  <header>
+    <ol class="breadcrumb">
+      <li><a href="{{ route('home') }}">Home</a></li>
+      <li><a href="{{ route('admin.courses.index') }}">Courses</a></li>
+      <li><a href="{{ route('admin.courses.show', course.id) }}">{{ course.name }}</a></li>
+      <li>
+        <a href="{{ route('admin.courses.units.show', [course.id, unit.id]) }}">
+          Unit {{ unit.number }} &mdash; {{ unit.name }}
+        </a>
+      </li>
+      <li class="active">{{ block("title") }}</li>
+    </ol>
+    {% if session_has('successMessage') %}
+      <div class="alert alert-success">
+        {{ session_get('successMessage') }}
+      </div>
+    {% endif %}
+
+    {% if session_has('infoMessage') %}
+      <div class="alert alert-info">
+        {{ session_get('infoMessage') }}
+      </div>
+    {% endif %}
+
+    {% if session_has('errorMessage') %}
+      <div class="alert alert-danger">
+        {{ session_get('errorMessage') }}
+      </div>
+    {% endif %}
+
+    <h1 class="page-header">{{ block('title') }}</h1>
+  </header>
+
+  <article>
+    <div class="row">
+      <div class="col-md-7">
+        <h4>Assignment details</h4>
+        <ul class="list-group list-group-compact">
+          <li class="list-group-item"><strong>Assignment ID:</strong> {{ assignment.id }}</li>
+          <li class="list-group-item"><strong>Assignment availability date:</strong> {{ assignment.available_date|date("d/m/Y, H:i") }}</li>
+          <li class="list-group-item"><strong>Student submission deadline:</strong> {{ assignment.deadline|date("d/m/Y, H:i") }}</li>
+          <li class="list-group-item"><strong>Marking start date:</strong> {{ assignment.marking_start_date|date("d/m/Y, H:i") }}</li>
+          <li class="list-group-item"><strong>Marking deadline:</strong> {{ assignment.marking_deadline|date("d/m/Y, H:i") }}</li>
+        </ul>
+      </div>
+
+      <div class="col-md-2">
+        <h4>Criteria</h4>
+        <ul class="list-group list-group-compact">
+          {% for criteria in assignment.criteria %}
+            <li class="list-group-item"><strong>{{ criteria.id }}</strong></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-12">
+        <h4>Student submissions</h4>
+
+        <table class="table table-responsive">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Submission Date</th>
+              <th>Special deadline?</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for submission in assignment.submissions %}
+              <tr>
+                <td>{{ submission.student.full_name }} ({{ submission.student.id }})</td>
+                <td>
+                  {% if submission.submission_date %}
+                    {% if submission.special_deadline %}
+                      {% if submission.submission_date > submission.special_deadline %}
+                        <span class="text-danger">{{ submission.submission_date|date("d/m/Y, H:i") }} <strong>(Late)</strong></span>
+                      {% else %}
+                        {{ submission.submission_date|date("d/m/Y, H:i") }}
+                      {% endif %}
+                    {% else %}
+                      {% if submission.submission_date > assignment.deadline %}
+                        <span class="text-danger">{{ submission.submission_date|date("d/m/Y, H:i") }} <strong>(Late)</strong></span>
+                      {% else %}
+                        {{ submission.submission_date|date("d/m/Y, H:i") }}
+                      {% endif %}
+                    {% endif %}
+                  {% else %}
+                    {% if "now"|date > assignment.deadline %}
+                      <span class="text-danger">Not yet submitted <strong>(Late)</strong></span>
+                    {% else %}
+                      Not yet submitted
+                    {% endif %}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if submission.special_deadline %}
+                    {{ submission.special_deadline|date("d/m/Y, H:i") }}
+                  {% else %}
+                    N/A
+                  {% endif %}
+                </td>
+                <td>
+                  <a href="#" class="btn btn-sm btn-default">Modify</a>
+                  <a href="#" class="btn btn-sm btn-default">Assess</a>
+                  <a href="#" class="btn btn-sm btn-danger">Remove</a>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="4">No submissions could be found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <a class="btn btn-default">
+          <span class="glyphicon glyphicon-plus"></span>
+          Add a submission
+        </a>
+      </div>
+    </div>
+  </article>
+
+{% endblock %}

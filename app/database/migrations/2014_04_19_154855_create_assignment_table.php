@@ -24,6 +24,7 @@ class CreateAssignmentTable extends Migration {
         Schema::create('assignment', function(Blueprint $table) {
             $table->string("id", 15);
             $table->string("unit_id", 12);
+            $table->tinyInteger("number");
             $table->text('brief')->nullable();
             $table->string('status', 20);
             $table->dateTime("available_date");

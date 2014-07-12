@@ -1,5 +1,6 @@
 <?php namespace eTrack\Accounts;
 
+use DB;
 use eTrack\Core\EloquentRepository;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
 
@@ -34,6 +35,34 @@ class UserRepository extends EloquentRepository {
         }
 
         return $this->model->where('role', '=', $role);
+    }
+
+    public function getAllTutors()
+    {
+        return $this->model->where('role', '=', 'Tutor')
+            ->orWhere('role', '=', 'Course Organiser')
+            ->get();
+    }
+
+    public function getStudentsNotEnrolledOnCourse($courseId)
+    {
+        // Retrieve an array list of all the student IDs that are already enrolled
+        // on the course.
+        $studentIdsAlreadyEnrolled = DB::table('course_student')
+            ->where('course_student.course_id', '=', $courseId)
+            ->lists('student_user_id');
+
+        $query = $this->model
+            ->where('role', '=', 'Student')
+            ->orderBy(DB::raw("substring_index(full_name, ' ', -1)"));
+
+        // If there are any enrolled students in any of the groups for this
+        // course, then exclude them from the result.
+        if ($studentIdsAlreadyEnrolled) {
+            $query = $query->whereNotIn('id', $studentIdsAlreadyEnrolled);
+        }
+
+        return $query->get();
     }
 
     /**

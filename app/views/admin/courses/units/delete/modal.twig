@@ -1,0 +1,47 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <h4 class="modal-title">Remove unit ({{ unit.name }}) from course ({{ course.id }})</h4>
+</div>
+<div class="modal-body">
+  <p>Are you sure you want to remove the unit titled <strong>{{ unit.name }}</strong>
+    from the course with the course code <strong>{{ course.id }}</strong>?</p>
+
+  <div class="alert alert-info">
+    <h4><span class="glyphicon glyphicon-info-sign"></span> Note:</h4>
+
+    <p>
+      Deleting a unit from a course won't delete any student assessments or
+      assignments. It will just remove the link between the course. This means that
+      grade calculations will no longer include this unit and the progress tracker
+      won't show this unit.
+    </p>
+  </div>
+
+  <p>Please check the details as shown in the table before continuing:</p>
+
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Unit Code</th>
+      <th>Unit number</th>
+      <th>Unit name</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+      <td>{{ unit.id }}</td>
+      <td>{{ unit.number }}</td>
+      <td>{{ unit.name }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  {% autoescape false %}
+    {{ form_open({'route': ['admin.courses.units.destroy', course.id, unit.id], 'method': 'delete'}) }}
+      {{ form_button('Remove unit from course', {'type': 'submit', 'class': 'btn btn-danger'}) }}
+      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+    {{ form_close() }}
+  {% endautoescape %}
+</div>

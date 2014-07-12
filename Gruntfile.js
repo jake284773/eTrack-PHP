@@ -22,7 +22,7 @@ module.exports = function(grunt) {
             },
             js_main: {
                 src: [
-                    'bower_components/jquery/jquery.js',
+                    'bower_components/jquery/dist/jquery.js',
                     'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/transition.js',
                     'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js',
                     'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/dropdown.js',
@@ -31,7 +31,10 @@ module.exports = function(grunt) {
                     'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/modal.js',
                     'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/button.js',
                     'bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tooltip.js',
+                    'bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js',
                     'bower_components/chosen/chosen.jquery.js',
+                    'app/assets/javascripts/datepicker-config.js',
+                    'app/assets/javascripts/assignment-deadline-calculator.js',
                     'app/assets/javascripts/chosen-config.js',
                     'app/assets/javascripts/bootstrap-session-timeout.js',
                     'app/assets/javascripts/criteria-tooltips.js',
@@ -108,7 +111,7 @@ module.exports = function(grunt) {
             },
             js_main: {
                 files: [
-                    'app/assets/javascript/**/*.js'
+                    'app/assets/javascripts/**/*.js'
                 ],
                 tasks: ['concat:js_main','uglify:main'],
                 options: {

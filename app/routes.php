@@ -45,6 +45,15 @@ Route::group(['before' => 'auth|admin', 'prefix' => 'admin', 'namespace' => 'eTr
     Route::get('courses/delete/{id}', ['as' => 'admin.courses.delete_confirm', 'uses' => 'CourseController@deleteConfirm']);
     Route::resource('courses', 'CourseController');
 
+    Route::get('courses/{courseId}/units/delete/{id}', ['as' => 'admin.courses.units.delete_confirm', 'uses' => 'CourseUnitController@deleteConfirm']);
+    Route::get('courses/{courseId}/units/add', ['as' => 'admin.courses.units.add', 'uses' => 'CourseUnitController@add']);
+    Route::resource('courses.units', 'CourseUnitController', ['except' => ['index', 'create', 'edit', 'update']]);
+
+    Route::get('courses/{courseId}/students/add', ['as' => 'admin.courses.students.add', 'uses' => 'CourseStudentController@add']);
+    Route::resource('courses.students', 'CourseStudentController', ['except' => ['index', 'create']]);
+
+    Route::resource('courses.units.assignments', 'AssignmentController', ['except' => ['index']]);
+
     Route::resource('courses.student_groups', 'StudentGroupController');
 
     Route::get('courses/{courseId}/tracker', ['as' => 'admin.courses.tracker.index', 'uses' => 'CourseTrackerController@index']);

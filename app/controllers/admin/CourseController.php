@@ -1,17 +1,18 @@
 <?php namespace eTrack\Controllers\Admin;
 
 use App;
-use eTrack\Controllers\RestController;
+use eTrack\Controllers\BaseController;
 use eTrack\Courses\CourseRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use View;
 
-class CourseController extends RestController {
+class CourseController extends BaseController {
 
     private $courseRepository;
 
     public function __construct(CourseRepository $courseRepository)
     {
+        parent::__construct();
         $this->courseRepository = $courseRepository;
     }
 

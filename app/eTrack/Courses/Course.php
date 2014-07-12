@@ -5,6 +5,7 @@ use eTrack\Accounts\Student;
 use eTrack\Accounts\User;
 use eTrack\Core\Entity;
 use eTrack\Faculties\Faculty;
+use eTrack\GradeCalculators\CourseGrade;
 use eTrack\SubjectSectors\SubjectSector;
 
 /**
@@ -29,7 +30,6 @@ use eTrack\SubjectSectors\SubjectSector;
  */
 class Course extends Entity
 {
-
     /**
      * The database table used by the model.
      *
@@ -38,23 +38,63 @@ class Course extends Entity
     protected $table = 'course';
 
     /**
+     * The qualification framework that the course is for.
+     * @var string
+     */
+    protected $qualificationFramework;
+
+    /**
      * The supported course types
      *
      * @var array
+     * @static
      */
-    protected $validTypes = [
+    protected static $validTypes = [
         'BTEC National Certificate',
         'BTEC National Subsidiary Diploma',
+        'BTEC National 90 Credit Diploma',
+        'BTEC National Diploma',
         'BTEC National Extended Diploma',
+
+        'Cambridge Technical Certificate',
+        'Cambridge Technical Introductory Diploma',
+        'Cambridge Technical Subsidiary Diploma',
+        'Cambridge Technical Diploma',
+        'Cambridge Technical Extended Diploma',
     ];
 
-    protected $courseTypeClassMap = [
+    /**
+     * A key value array that maps the course types to the specialised course
+     * classes.
+     *
+     * @var array
+     * @static
+     */
+    protected static $courseTypeClassMap = [
         'BTEC National Certificate' => 'eTrack\Courses\BTEC\National\NationalCertificate',
         'BTEC National Subsidiary Diploma' => 'eTrack\Courses\BTEC\National\NationalSubsidiaryDiploma',
         'BTEC National 90 Credit Diploma' => 'eTrack\Courses\BTEC\National\National90CreditDiploma',
         'BTEC National Diploma' => 'eTrack\Courses\BTEC\National\NationalDiploma',
         'BTEC National Extended Diploma' => 'eTrack\Courses\BTEC\National\NationalExtendedDiploma',
+
+        'Cambridge Technical Certificate' => 'eTrack\Courses\CambridgeTechnical\CTCertificate',
+        'Cambridge Technical Introductory Diploma' => 'eTrack\Courses\CambridgeTechnical\CTIntroductoryDiploma',
+        'Cambridge Technical Subsidiary Diploma' => 'eTrack\Courses\CambridgeTechnical\CTSubsidiaryDiploma',
+        'Cambridge Technical Diploma' => 'eTrack\Courses\CambridgeTechnical\CTDiploma',
+        'Cambridge Technical Extended Diploma' => 'eTrack\Courses\CambridgeTechnical\CTExtendedDiploma',
     ];
+
+    /**
+     * An array of all the possible grades in the form of grade objects.
+     * @var CourseGrade[]
+     */
+    protected $possibleGrades = [];
+
+    /**
+     * The total number of credit points this course provides.
+     * @var integer
+     */
+    protected $totalCredits;
 
     /**
      * The attributes that can be mass-assigned.
@@ -100,7 +140,7 @@ class Course extends Entity
         parent::__construct();
 
         // Make sure that only supported course types can be entered
-        $validTypesList = implode(",", $this->validTypes);
+        $validTypesList = implode(",", Course::$validTypes);
         $this->validationRules['type'] = $this->validationRules['type']."|in:".$validTypesList;
     }
 
@@ -117,7 +157,7 @@ class Course extends Entity
     public function newFromBuilder($attributes = [])
     {
         if ($attributes->type) {
-            $class = $this->courseTypeClassMap[$attributes->type];
+            $class = Course::$courseTypeClassMap[$attributes->type];
             $instance = new $class;
             $instance->exists = true;
             $instance->setRawAttributes((array) $attributes, true);
@@ -127,19 +167,41 @@ class Course extends Entity
         }
     }
 
+    /**
+     * Retrieves the Course Grade object based on the grade string parameter.
+     *
+     * @param string $grade The grade to search for in the shorthand format
+     * (i.e. DDM).
+     * @throws \InvalidArgumentException
+     * @return CourseGrade
+     */
+    public function getGrade($grade)
+    {
+        foreach ($this->possibleGrades as $grading)
+        {
+            if ($grading->getGrade() === $grade)
+            {
+                return $grading;
+            }
+        }
+
+        throw new \InvalidArgumentException('Specified grade could not be found.');
+    }
+
+    /**
+     * Gets the possible grades array for the course.
+     * @return CourseGrade[]
+     */
+    public function getPossibleGrades()
+    {
+        return $this->possibleGrades;
+    }
+
     public function units()
     {
-        $units = $this->belongsToMany('eTrack\Courses\Unit', 'course_unit', 'course_id')
-            ->orderBy('number')
-            ->withPivot('unit_number');
-
-//        foreach ($units as $unit) {
-//            if ($unit->pivot->unit_number) {
-//                $unit->number = $unit->pivot->unit_number;
-//            }
-//        }
-
-        return $units;
+        return $this->belongsToMany('eTrack\Courses\Unit', 'course_unit', 'course_id')
+            ->withPivot('unit_number')
+            ->orderBy('pivot_unit_number');
     }
 
     public function course_organiser()
@@ -159,15 +221,15 @@ class Course extends Entity
 
     public function student_groups()
     {
-        return $this->hasMany('eTrack\Courses\StudentGroup');
+        return $this->hasMany('eTrack\Courses\StudentGroup', 'course_id');
     }
 
-
-    public function enrollments()
-    {
-        return $this->hasMany('eTrack\Courses\Enrolment');
-    }
-
+    /**
+     * Retrieve all the students that are enrolled on the course including the
+     * specific enrollment details (i.e. final grades)
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function students()
     {
         $pivotAttributes = [
@@ -178,6 +240,55 @@ class Course extends Entity
         return $this->belongsToMany('eTrack\Accounts\Student', 'course_student', 'course_id', 'student_user_id')
             ->withPivot($pivotAttributes)
             ->orderBy(DB::raw("substring_index(full_name, ' ', -1)"));
+    }
+
+    /**
+     * Retrieves all the students enrolled on the course which are not part of
+     * any student group.
+     *
+     * This is used in the student group creation form in the student selection
+     * box, to determine which students can be added to a new group.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function studentsNotInGroup()
+    {
+        // Retrieve an array list of all the student IDs that already belong to a group.
+        $studentIdsInGroup = DB::table('student_group')
+            ->join('student_group_student', 'student_group.id', '=', 'student_group_student.student_group_id')
+            ->where('student_group.course_id', '=', $this->id)
+            ->lists('student_user_id');
+
+        $relationship = $this->belongsToMany('eTrack\Accounts\Student', 'course_student', 'course_id', 'student_user_id')
+            ->orderBy(DB::raw("substring_index(full_name, ' ', -1)"));
+
+        // If there are any enrolled students in any of the groups for this
+        // course, then exclude them from the result.
+        if ($studentIdsInGroup) {
+            $relationship = $relationship->whereNotIn('id', $studentIdsInGroup);
+        }
+
+        return $relationship;
+    }
+
+    public function studentsNotOnCourse()
+    {
+        // Retrieve an array list of all the student IDs that are already enrolled
+        // on the course.
+        $studentIdsAlreadyEnrolled = DB::table('course_student')
+            ->where('course_student.course_id', '=', $this->id)
+            ->lists('student_user_id');
+
+        $relationship = $this->belongsToMany('eTrack\Accounts\Student', 'course_student', 'course_id', 'student_user_id')
+            ->orderBy(DB::raw("substring_index(full_name, ' ', -1)"));
+
+        // If there are any enrolled students in any of the groups for this
+        // course, then exclude them from the result.
+        if ($studentIdsAlreadyEnrolled) {
+            $relationship = $relationship->whereNotIn('id', $studentIdsAlreadyEnrolled);
+        }
+
+        return $relationship;
     }
 
 }

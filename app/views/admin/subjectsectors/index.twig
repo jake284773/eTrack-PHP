@@ -1,10 +1,10 @@
 {% extends "layouts.single" %}
 
 {% block title %}Manage subject sectors{% endblock %}
-{% block mainclass %}col-md-8{% endblock %}
+{% block mainclass %}col-md-8 col-md-offset-2{% endblock %}
 
 {% block content %}
-  <header class="page-header">
+  <header>
     <ol class="breadcrumb">
       <li><a href="{{ route('home') }}">Home</a></li>
       <li class="active">Subject sectors</li>
@@ -35,33 +35,31 @@
     </h1>
   </header>
 
-  <article>
-    <table class="table table-borders table-responsive">
-      <thead>
-      <tr>
-        <th>Subject sector ID</th>
-        <th>Subject sector name</th>
-        <th></th>
-      </tr>
-      </thead>
+  <table class="table table-borders table-responsive">
+    <thead>
+    <tr>
+      <th>Subject sector ID</th>
+      <th>Subject sector name</th>
+      <th></th>
+    </tr>
+    </thead>
 
-      <tbody>
-      {% for subjectSector in subjectSectors %}
-        <tr>
-          <td><a href="{{ route('admin.subjectsectors.show', subjectSector.id) }}">{{ subjectSector.id }}</a></td>
-          <td><a href="{{ route('admin.subjectsectors.show', subjectSector.id) }}">{{ subjectSector.name }}</a></td>
-          <td>
-            <a href="{{ route('admin.subjectsectors.edit', subjectSector.id) }}" class="btn btn-default btn-sm">Edit</a>
-            <a href="{{ route('admin.subjectsectors.delete_confirm', subjectSector.id) }}" data-toggle="modal"
-               data-target="#web-modal" class="btn btn-danger btn-sm">Delete</a>
-          </td>
-        </tr>
-      {% else %}
-        <tr>
-          <td colspan="5">No subject sectors have been found.</td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-  </article>
+    <tbody>
+    {% for subjectSector in subjectSectors %}
+      <tr>
+        <td><a href="{{ route('admin.subjectsectors.show', subjectSector.id) }}">{{ subjectSector.id }}</a></td>
+        <td><a href="{{ route('admin.subjectsectors.show', subjectSector.id) }}">{{ subjectSector.name }}</a></td>
+        <td>
+          <a href="{{ route('admin.subjectsectors.edit', subjectSector.id) }}" class="btn btn-default btn-sm">Edit</a>
+          <a href="{{ route('admin.subjectsectors.delete_confirm', subjectSector.id) }}" data-toggle="modal"
+             data-target="#web-modal" class="btn btn-danger btn-sm">Delete</a>
+        </td>
+      </tr>
+    {% else %}
+      <tr>
+        <td colspan="5">No subject sectors have been found.</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}

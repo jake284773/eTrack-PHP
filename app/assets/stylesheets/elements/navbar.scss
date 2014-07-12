@@ -4,8 +4,6 @@
 
 .navbar .container .navbar-brand {
   background: url("../images/logo.png") 0 5px / 40px 40px no-repeat;
-  color: #fff;
-  font-family: $font-family-gill-sans;
   font-size: 20px;
   margin-left: 0;
   padding-left: 2.5em;
@@ -16,46 +14,6 @@
   }
 }
 
-@media (max-width: 768px) {
-  .navbar .container .navbar-brand {
-    margin-left: 15px;
-  }
-}
-
-.navbar .navbar-brand:hover,
-.navbar .navbar-brand:focus {
-  text-decoration: underline;
-}
-
-.navbar-text a {
-  color: $gray-light;
-  text-decoration: underline;
-}
-
-// Let's make these more specific to add the intended white colour
-.navbar-inverse .nav-collapse .nav a:hover,
-.navbar-inverse .nav-collapse .nav .active a,
-.navbar-inverse .nav-collapse .nav .active a:hover,
-.navbar-inverse .nav-collapse .nav .active a:focus {
-  color: #fff;
-}
-
-.lte-ie8 .navbar .container {
-  padding-left: 30px;
-  padding-right: 0;
-}
-
-.navbar-nav {
-  font-size: 14px;
-}
-
-.navbar-nav.navbar-right:last-child {
-  @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-    margin-right: -44px;
-  }
-}
-
-.navbar-inverse .navbar-toggle {
-  border-color: #fff;
-  color: #fff;
+.navbar-nav li:hover {
+  background: $gray-lighter;
 }

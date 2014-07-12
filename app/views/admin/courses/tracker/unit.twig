@@ -3,13 +3,26 @@
 {% block title %}Progress tracker{% endblock %}
 {% block mainclass %}col-md-12{% endblock %}
 
+{% block stylesheets %}
+  <style>
+    .unit-view > .tracker-table thead tr:first-child th:nth-last-child(2),
+    .unit-view > .tracker-table thead tr:last-child th:nth-last-child({{ totalDistinction }}),
+    .unit-view > .tracker-table tbody tr td:nth-last-child({{ totalDistinction + 1 }}),
+    .unit-view > .tracker-table thead tr:first-child th:nth-last-child(3),
+    .unit-view > .tracker-table thead tr:last-child th:nth-last-child({{ totalDistinction + totalMerit }}),
+    .unit-view > .tracker-table tbody tr td:nth-last-child({{ totalDistinction + totalMerit + 1 }}) {
+      border-left: 2px solid #000;
+    }
+  </style>
+{% endblock %}
+
 {% block content %}
   <header>
     <ol class="breadcrumb">
       <li><a href="{{ route('home') }}">Home</a></li>
       <li><a href="{{ route('admin.courses.index') }}">Courses</a></li>
       <li><a href="{{ route('admin.courses.show', course.id) }}">{{ course.name }}</a></li>
-      <li><a href="{{ route('admin.courses.tracker.index') }}">Progress tracker</a></li>
+      <li><a href="{{ route('admin.courses.tracker.index', course.id) }}">Progress tracker</a></li>
       <li class="active">Unit {{ unit.number }} &mdash; {{ unit.name }}</li>
     </ol>
     {% if session_has('successMessage') %}
@@ -69,16 +82,13 @@
       </thead>
 
       <tbody>
-      {% for student, grades in results %}
+      {% for result in results %}
         <tr>
-          <td>{{ student }}</td>
-          {% for grade in grades %}
-            {% if loop.last %}
-              <td class="grade-{{ grade|lower|slice(0, 1) }}">{{ grade }}</td>
-            {% else %}
-              <td class="criteria {{ grade }}"></td>
-            {% endif %}
+          <td class="student" title="{{ result.student.fullName }}">{{ result.student.shortName }}</td>
+          {% for criteria in result.criteria %}
+            <td class="{{ criteria.statusCssClass }}"></td>
           {% endfor %}
+          <td class="grade-{{ result.grade.slug }}">{{ result.grade.longName }}</td>
         </tr>
       {% endfor %}
       </tbody>

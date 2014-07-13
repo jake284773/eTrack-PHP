@@ -24,6 +24,22 @@ class StudentGroup extends Entity
      */
     protected $table = 'student_group';
 
+    protected $validationRules = [
+        'id' => 'required|unique:student_group,id,<id>',
+        'course_id' => 'required|exists:course,id',
+        'tutor_user_id' => 'required|exists:user,id,role,Tutor,role,Course Organiser',
+    ];
+
+    protected $validationAttributeNames = [
+        'id' => 'student group code',
+        'course_id' => 'course code',
+        'tutor_user_id' => 'group tutor',
+    ];
+
+    protected $fillable = [
+        'id', 'course_id', 'tutor_user_id',
+    ];
+
     public function course()
     {
         return $this->belongsTo('eTrack\Courses\Course');

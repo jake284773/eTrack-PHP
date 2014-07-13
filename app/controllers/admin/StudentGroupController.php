@@ -1,11 +1,14 @@
 <?php namespace eTrack\Controllers\Admin;
 
 use App;
+use DB;
 use eTrack\Accounts\UserRepository;
 use eTrack\Controllers\BaseController;
 use eTrack\Courses\CourseRepository;
 use eTrack\Courses\StudentGroupRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Input;
+use Redirect;
 use View;
 
 class StudentGroupController extends BaseController {
@@ -53,6 +56,35 @@ class StudentGroupController extends BaseController {
         return View::make('admin.courses.student_groups.create', ['course' => $course,
                                                                   'tutors' => $tutorsSelect,
                                                                   'students' => $studentsSelect]);
+    }
+
+    public function store($courseId)
+    {
+        try {
+            $course = $this->courseRepository->requireById($courseId);
+        } catch (ModelNotFoundException $e) {
+            App::abort(404);
+            return false;
+        }
+
+        $studentGroup = $this->studentGroupRepository->getNew(Input::all());
+        $studentGroup->course_id = $courseId;
+
+        if (! $studentGroup->isValid()) {
+            return Redirect::back()->withInput()->withErrors($studentGroup->getErrors());
+        }
+
+        try {
+            DB::transaction(function() use($studentGroup) {
+                $studentGroup->save();
+                $studentGroup->students()->sync(Input::get('students'));
+            });
+        } catch (\Exception $e) {
+            return Redirect::back()->withInput()->with('errorMessage',
+                'Unable to save new student group to database.');
+        }
+
+        return Redirect::route('admin.courses.show', [$course->id, '#groups']);
     }
 
     public function show($courseId, $groupId)

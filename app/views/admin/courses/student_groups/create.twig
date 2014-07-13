@@ -30,7 +30,7 @@
     {% endif %}
 
     {% autoescape false %}
-    {{ form_open({'route': 'admin.courses.student_groups.store'}) }}
+    {{ form_open({'route': ['admin.courses.student_groups.store', course.id]}) }}
     <div class="row">
       <div class="form-group col-md-5">
         {{ form_label('id', 'Student group code', {'id': 'student_group_id-label', 'class': 'control-label'}) }}
@@ -40,15 +40,15 @@
 
     <div class="row">
       <div class="form-group col-md-5">
-        {{ form_label('tutor', 'Group tutor', {'id': 'group_tutor-label', 'class': 'control-label'}) }}
-        {{ form_select('tutor', tutors, input.old('tutor'), {'id': 'group_tutor', 'class': 'form-control chosen-select', 'data-placeholder': 'Select a tutor'}) }}
+        {{ form_label('tutor_user_id', 'Group tutor', {'id': 'group_tutor-label', 'class': 'control-label'}) }}
+        {{ form_select('tutor_user_id', tutors, input.old('tutor_user_id'), {'id': 'group_tutor', 'class': 'form-control chosen-select', 'data-placeholder': 'Select a tutor'}) }}
       </div>
     </div>
 
     <div class="row">
       <div class="form-group col-md-5">
-        {{ form_label('students', 'Students', {'id': 'students-label', 'class': 'control-label'}) }}
-        {{ form_select('students', students, input.old('students'), {'id': 'students', 'class': 'form-control chosen-select', 'data-placeholder': 'Select students', 'multiple': 'true'}) }}
+        {{ form_label('students[]', 'Students', {'id': 'students-label', 'class': 'control-label'}) }}
+        {{ form_select('students[]', students, input.old('students'), {'id': 'students', 'class': 'form-control chosen-select', 'data-placeholder': 'Select students', 'multiple': 'true'}) }}
       </div>
     </div>
 

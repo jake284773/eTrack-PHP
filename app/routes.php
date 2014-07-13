@@ -21,7 +21,7 @@ Route::group(['namespace' => 'eTrack\Controllers'], function ()
 Route::group(['before' => 'auth', 'namespace' => 'eTrack\Controllers'], function ()
 {
     Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
-//    Route::resource('profile', 'ProfileController', array('only' => array('index', 'store')));
+    Route::resource('profile', 'ProfileController', array('only' => array('index', 'store')));
 });
 
 Route::group(['before' => 'auth|admin', 'prefix' => 'admin', 'namespace' => 'eTrack\Controllers\Admin'], function ()

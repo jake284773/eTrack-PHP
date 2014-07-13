@@ -43,7 +43,7 @@
 
         <ul class="nav navbar-nav navbar-right">
           {% if auth_check() %}
-            <li><a href="#">Your Profile</a></li>
+            <li><a href="{{ route('profile.index') }}">Your Profile</a></li>
             <li><a href="{{ route('logout') }}">Logout</a></li>
           {% endif %}
         </ul>

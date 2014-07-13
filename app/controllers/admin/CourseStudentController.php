@@ -92,7 +92,7 @@ class CourseStudentController extends BaseController {
             return Redirect::back()->withInput()->with('errorMessage', 'Unable add student to course.');
         }
 
-        return Redirect::route('admin.courses.show', [$course->id])->with('successMessage', 'Added student to course.');
+        return Redirect::route('admin.courses.show', [$course->id, '#students'])->with('successMessage', 'Added student to course.');
     }
 
     public function edit($courseId, $studentId)
@@ -158,6 +158,44 @@ class CourseStudentController extends BaseController {
         }
 
         return Redirect::route('admin.courses.show', [$course->id, '#students'])->with('successMessage', 'Updated target grade for student.');
+    }
+
+    public function deleteConfirm($courseId, $studentId)
+    {
+        try {
+            $course = $this->courseRepository->getById($courseId);
+            $student = $course->students()->where('student_user_id', '=', $studentId)->firstOrFail();
+        } catch (ModelNotFoundException $e) {
+            App::abort(404);
+            return false;
+        }
+
+        if (Request::ajax()) {
+            return View::make('admin.courses.students.delete.modal', ['course' => $course, 'student' => $student]);
+        }
+
+        return View::make('admin.courses.students.delete.fallback', ['course' => $course, 'student' => $student]);
+    }
+
+    public function destroy($courseId, $studentId)
+    {
+        try {
+            $course = $this->courseRepository->getById($courseId);
+            $course->students()->where('student_user_id', '=', $studentId)->firstOrFail();
+        } catch (ModelNotFoundException $e) {
+            App::abort(404);
+            return false;
+        }
+
+        try {
+            DB::transaction(function() use($course, $studentId) {
+                $course->students()->detach($studentId);
+            });
+        } catch (\Exception $e) {
+            return Redirect::route($courseId, '#students')->with('errorMessage', 'Unable to remove student from course.');
+        }
+
+        return Redirect::route('admin.courses.show', [$courseId, '#students'])->with('successMessage', 'Removed student from course.');
     }
 
     /**

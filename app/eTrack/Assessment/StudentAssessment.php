@@ -61,9 +61,14 @@ class StudentAssessment extends Entity
             ->where('unit_id', $this->criteria_unit_id);
     }
 
+    public function submission()
+    {
+        return $this->belongsTo('eTrack\Assignments\AssignmentSubmission');
+    }
+
     public function assignment()
     {
-        return $this->belongsTo('eTrack\Courses\Assignment', 'student_assignment_assignment_id');
+        return $this->belongsTo('eTrack\Assignments\Assignment', 'student_assignment_assignment_id');
     }
 
     public function student()

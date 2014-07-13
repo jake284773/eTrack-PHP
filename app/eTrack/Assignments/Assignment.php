@@ -107,6 +107,12 @@ class Assignment extends Entity
         return $this->hasMany('eTrack\Assignments\AssignmentSubmission');
     }
 
+    public function allAssessments()
+    {
+        return $this->hasMany('eTrack\Assessment\StudentAssessment',
+            'student_assignment_assignment_id', 'id');
+    }
+
     public function getAvailableDateStringAttribute()
     {
         $date = new DateTime($this->attributes['available_date']);

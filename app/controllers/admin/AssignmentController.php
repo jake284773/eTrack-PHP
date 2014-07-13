@@ -3,6 +3,7 @@
 use App;
 use DateTime;
 use DB;
+use eTrack\Assessment\StudentAssessmentRepository;
 use eTrack\Assignments\AssignmentRepository;
 use eTrack\Controllers\BaseController;
 use eTrack\Courses\CourseRepository;
@@ -20,14 +21,17 @@ class AssignmentController extends BaseController
     protected $courseRepository;
     protected $unitRepository;
     protected $assignmentRepository;
+    protected $studentAssessmentRepository;
 
     public function __construct(CourseRepository $courseRepository,
                                 UnitRepository $unitRepository,
-                                AssignmentRepository $assignmentRepository)
+                                AssignmentRepository $assignmentRepository,
+                                StudentAssessmentRepository $studentAssessmentRepository)
     {
         $this->courseRepository = $courseRepository;
         $this->unitRepository = $unitRepository;
         $this->assignmentRepository = $assignmentRepository;
+        $this->studentAssessmentRepository = $studentAssessmentRepository;
     }
 
     public function show($courseId, $unitId, $assignmentId)
@@ -187,7 +191,7 @@ class AssignmentController extends BaseController
         try {
             $course = $this->courseRepository->getWithStudentsAndUnits($courseId);
             $unit = $this->unitRepository->getWithCriteria($unitId);
-            $assignment = $this->assignmentRepository->getWithCriteria($assignmentId);
+            $assignment = $this->assignmentRepository->getWithSubmissionsAndCriteria($assignmentId);
         } catch (ModelNotFoundException $e) {
             App::abort(404);
             return false;
@@ -196,6 +200,8 @@ class AssignmentController extends BaseController
         try {
             DB::transaction(function() use($assignment) {
                 $assignment->criteria()->detach();
+                $assignment->allAssessments()->delete();
+                $assignment->submissions()->delete();
                 $assignment->delete();
             });
         } catch (\Exception $e) {

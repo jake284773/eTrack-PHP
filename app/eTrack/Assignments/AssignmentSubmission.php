@@ -48,4 +48,11 @@ class AssignmentSubmission extends Entity
         return $this->hasOne('eTrack\Accounts\Student', 'id', 'student_user_id');
     }
 
+    public function criteriaAssessments()
+    {
+        return $this->hasMany('eTrack\Assessment\StudentAssessment',
+            'student_assignment_assignment_id', 'assignment_id')
+            ->where('student_assignment_student_user_id', $this->student_user_id);
+    }
+
 }

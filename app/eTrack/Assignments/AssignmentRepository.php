@@ -32,7 +32,7 @@ class AssignmentRepository extends EloquentRepository
                     });
                     $query->where(DB::raw('ac2.assignment_id'), $id);
                 },
-            'submissions', 'submissions.student'
+            'submissions', 'submissions.criteriaAssessments', 'submissions.student'
         ])->find($id);
     }
 

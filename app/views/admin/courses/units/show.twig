@@ -77,15 +77,34 @@
           <tbody>
             {% for assignment in unit.assignments %}
               <tr>
-                <td><a href="{{ route('admin.courses.units.assignments.show', [course.id, unit.id, assignment.id]) }}">{{ assignment.id }}</a></td>
-                <td><a href="{{ route('admin.courses.units.assignments.show', [course.id, unit.id, assignment.id]) }}">{{ assignment.number }}</a></td>
-                <td><a href="{{ route('admin.courses.units.assignments.show', [course.id, unit.id, assignment.id]) }}">{{ assignment.name }}</a></td>
+                <td>
+                  <a href="{{ route('admin.courses.units.assignments.show',
+                    [course.id, unit.id, assignment.id]) }}">{{ assignment.id }}
+                  </a>
+                </td>
+                <td>
+                  <a href="{{ route('admin.courses.units.assignments.show',
+                    [course.id, unit.id, assignment.id]) }}">{{ assignment.number }}
+                  </a>
+                </td>
+                <td>
+                  <a href="{{ route('admin.courses.units.assignments.show',
+                  [course.id, unit.id, assignment.id]) }}">{{ assignment.name }}
+                  </a>
+                </td>
                 <td>{{ assignment.available_date|date("d/m/Y, H:i") }}</td>
                 <td>{{ assignment.deadline|date("d/m/Y, H:i") }}</td>
                 <td>{{ assignment.marking_deadline|date("d/m/Y, H:i") }}</td>
                 <td>
-                  <a href="#" class="btn btn-sm btn-default">Edit</a>
-                  <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                  <a href="{{ route('admin.courses.units.assignments.edit',
+                    [course.id, unit.id, assignment.id]) }}" class="btn btn-sm btn-default">
+                    Edit
+                  </a>
+                  <a href="{{ route('admin.courses.units.assignments.delete_confirm',
+                    [course.id, unit.id, assignment.id]) }}" class="btn btn-sm btn-danger"
+                     data-toggle="modal" data-target="#web-modal">
+                    Delete
+                  </a>
                 </td>
               </tr>
             {% else %}

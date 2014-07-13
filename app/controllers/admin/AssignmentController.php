@@ -10,6 +10,7 @@ use eTrack\Courses\UnitRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Redirect;
 use Input;
+use Request;
 use Validator;
 use View;
 
@@ -20,7 +21,8 @@ class AssignmentController extends BaseController
     protected $unitRepository;
     protected $assignmentRepository;
 
-    public function __construct(CourseRepository $courseRepository, UnitRepository $unitRepository,
+    public function __construct(CourseRepository $courseRepository,
+                                UnitRepository $unitRepository,
                                 AssignmentRepository $assignmentRepository)
     {
         $this->courseRepository = $courseRepository;
@@ -33,7 +35,7 @@ class AssignmentController extends BaseController
         try {
             $course = $this->courseRepository->getWithStudentsAndUnits($courseId);
             $unit = $this->unitRepository->getWithCriteria($unitId);
-            $assignment = $this->assignmentRepository->getWithSubmissions($assignmentId);
+            $assignment = $this->assignmentRepository->getWithSubmissionsAndCriteria($assignmentId);
         } catch (ModelNotFoundException $e) {
             App::abort(404);
             return false;
@@ -52,7 +54,6 @@ class AssignmentController extends BaseController
             $course = $this->courseRepository->getWithStudentsAndUnits($courseId);
             $unit = $this->unitRepository->getWithCriteria($unitId);
             $selectCriteria = $this->unitRepository->criteriaListForSelect($unitId, $unit);
-            $studentList = $this->courseRepository->studentListForSelect($courseId, $course);
         } catch (ModelNotFoundException $e) {
             App::abort(404);
             return false;
@@ -62,88 +63,147 @@ class AssignmentController extends BaseController
             'course'         => $course,
             'unit'           => $unit,
             'selectCriteria' => $selectCriteria,
-            'students'       => $studentList,
         ]);
     }
 
     public function store($courseId, $unitId)
     {
         try {
-            $this->courseRepository->getWithStudentsAndUnits($courseId);
-            $this->unitRepository->getWithCriteria($unitId);
+            $course = $this->courseRepository->getWithStudentsAndUnits($courseId);
+            $unit = $this->unitRepository->getWithCriteria($unitId);
         } catch (ModelNotFoundException $e) {
             App::abort(404);
             return false;
         }
 
-        $validationRules = [
-            'id'                 => 'required|unique:assignment,id|max:15',
-            'number'             => 'required|integer',
-            'name'               => 'required|max:150',
-            'available_date'     => 'required|after:yesterday|date',
-            'deadline'           => 'required|after:yesterday|date',
-            'marking_start_date' => 'required|after:yesterday|date',
-            'marking_deadline'   => 'required|after:yesterday|date',
-        ];
+        $assignment = $this->assignmentRepository->getNew(Input::all());
+        $assignment->unit_id = $unit->id;
 
-        $formData = [
-            'id'                 => Input::get('id'),
-            'unit_id'            => $unitId,
-            'number'             => Input::get('number'),
-            'name'               => Input::get('name'),
-            'available_date'     => $this->produceDate(
-                    Input::get('available_date'),
-                    Input::get('available_hour'),
-                    Input::get('available_minute')
-                ),
-            'deadline'           => $this->produceDate(
-                    Input::get('deadline_date'),
-                    Input::get('deadline_hour'),
-                    Input::get('deadline_minute')
-                ),
-            'marking_start_date' => $this->produceDate(
-                    Input::get('marking_start_date'),
-                    Input::get('marking_start_hour'),
-                    Input::get('marking_start_minute')
-                ),
-            'marking_deadline'   => $this->produceDate(
-                    Input::get('marking_deadline_date'),
-                    Input::get('marking_deadline_hour'),
-                    Input::get('marking_deadline_minute')
-                ),
-        ];
+        if (! $assignment->isValid()) {
+            return Redirect::back()->withInput()->withErrors($assignment->getErrors());
+        }
 
-        $validator = Validator::make($formData, $validationRules);
+        $criteriaRecords = [];
 
-        if ($validator->fails()) {
-            return Redirect::back()->withInput()->withErrors($validator->errors());
+        foreach (Input::get('criteria') as $criteria) {
+            $criteriaRecords[$criteria] = ['criteria_unit_id' => $assignment->unit_id];
         }
 
         try {
-            DB::transaction(function () use ($unitId, $formData) {
-                $assignment = $this->assignmentRepository->getNew($formData);
+            DB::transaction(function() use($assignment, $criteriaRecords) {
                 $assignment->save();
-
-                foreach (Input::get('criteria') as $criteria) {
-                    $assignment->criteria()->attach($assignment->id,
-                        ['criteria_id' => $criteria, 'criteria_unit_id' => $unitId]);
-                }
+                $assignment->criteria()->sync($criteriaRecords);
             });
         } catch (\Exception $e) {
-            return Redirect::back()->withInput()->with('errorMessage', 'Unable to save new assignment to database.');
+            return Redirect::back()->withInput()->with('errorMessage',
+                'Unable to save new assignment to database.');
         }
 
-        return Redirect::route('admin.courses.units.show', [$courseId, $unitId])
-            ->with('successMessage', 'Created new assignment');
+        return Redirect::route('admin.courses.units.show', [$course->id, $unit->id])
+            ->with('successMessage', 'Created new assignment.');
     }
 
-    private function produceDate($date, $hour, $minute)
+    public function edit($courseId, $unitId, $assignmentId)
     {
-        $dateSplit = explode('/', $date);
-        $dateString = $dateSplit[2] . '-' . $dateSplit[1] . '-' . $dateSplit[0] . ' ' . $hour . ':' . $minute . ':00';
+        try {
+            $course = $this->courseRepository->getWithStudentsAndUnits($courseId);
+            $unit = $this->unitRepository->getWithCriteria($unitId);
+            $selectCriteria = $this->unitRepository->criteriaListForSelect($unitId, $unit);
+            $assignment = $this->assignmentRepository->getWithCriteria($assignmentId);
+        } catch (ModelNotFoundException $e) {
+            App::abort(404);
+            return false;
+        }
 
-        $dateTime = new DateTime($dateString);
-        return $dateTime->format('Y-m-d H:i:s');
+        return View::make('admin.courses.units.assignments.edit', [
+            'course'         => $course,
+            'unit'           => $unit,
+            'selectCriteria' => $selectCriteria,
+            'assignment'     => $assignment,
+        ]);
+    }
+
+    public function update($courseId, $unitId, $assignmentId)
+    {
+        try {
+            $course = $this->courseRepository->getWithStudentsAndUnits($courseId);
+            $unit = $this->unitRepository->getWithCriteria($unitId);
+            $assignment = $this->assignmentRepository->getWithCriteria($assignmentId);
+        } catch (ModelNotFoundException $e) {
+            App::abort(404);
+            return false;
+        }
+
+        $assignment->fill(Input::all());
+
+        if (! $assignment->isValid()) {
+            return Redirect::back()->withInput()->withErrors($assignment->getErrors());
+        }
+
+        $criteriaRecords = [];
+
+        foreach (Input::get('criteria') as $criteria) {
+            $criteriaRecords[$criteria] = ['criteria_unit_id' => $assignment->unit_id];
+        }
+
+        try {
+            DB::transaction(function() use($assignment, $criteriaRecords) {
+                $assignment->save();
+                $assignment->criteria()->sync($criteriaRecords);
+            });
+        } catch (\Exception $e) {
+            return Redirect::back()->withInput()->with('errorMessage',
+                'Unable to save changes to the database.');
+        }
+
+        return Redirect::route('admin.courses.units.assignments.show', [$course->id, $unit->id, $assignment->id])
+            ->with('successMessage', 'Updated assignment');
+    }
+
+    public function deleteConfirm($courseId, $unitId, $assignmentId)
+    {
+        try {
+            $course = $this->courseRepository->getWithStudentsAndUnits($courseId);
+            $unit = $this->unitRepository->getWithCriteria($unitId);
+            $assignment = $this->assignmentRepository->getWithCriteria($assignmentId);
+        } catch (ModelNotFoundException $e) {
+            App::abort(404);
+            return false;
+        }
+
+        if (Request::ajax()) {
+            return View::make('admin.courses.units.assignments.delete.modal', [
+                'course' => $course, 'unit' => $unit, 'assignment' => $assignment
+            ]);
+        }
+
+        return View::make('admin.courses.units.assignments.delete.fallback', [
+            'course' => $course, 'unit' => $unit, 'assignment' => $assignment
+        ]);
+    }
+
+    public function destroy($courseId, $unitId, $assignmentId)
+    {
+        try {
+            $course = $this->courseRepository->getWithStudentsAndUnits($courseId);
+            $unit = $this->unitRepository->getWithCriteria($unitId);
+            $assignment = $this->assignmentRepository->getWithCriteria($assignmentId);
+        } catch (ModelNotFoundException $e) {
+            App::abort(404);
+            return false;
+        }
+
+        try {
+            DB::transaction(function() use($assignment) {
+                $assignment->criteria()->detach();
+                $assignment->delete();
+            });
+        } catch (\Exception $e) {
+            return Redirect::route('admin.courses.units.show', [$course->id, $unit->id])
+                ->with('errorMessage', 'Unable to delete assignment');
+        }
+
+        return Redirect::back()->with('successMessage', 'Deleted assignment');
     }
 
 } 

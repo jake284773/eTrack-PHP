@@ -32,6 +32,12 @@ class CourseRepository extends EloquentRepository
         return $this->queryAllRelated()->paginate($count);
     }
 
+    public function getForSubmission($id)
+    {
+        return $this->model->with('students', 'units', 'units.assignments')
+            ->where('id', $id)->firstOrFail();
+    }
+
     public function getWithRelated($id)
     {
         return $this->model->with('subject_sector', 'faculty', 'course_organiser',

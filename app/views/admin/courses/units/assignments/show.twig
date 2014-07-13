@@ -1,7 +1,7 @@
 {% extends "layouts.single" %}
 
 {% block title %}Assignment {{ assignment.number }} - {{ assignment.name }}{% endblock %}
-{% block mainclass %}col-md-8{% endblock %}
+{% block mainclass %}col-md-8 col-md-offset-2{% endblock %}
 
 {% block content %}
   <header>
@@ -97,41 +97,14 @@
           <tbody>
             {% for submission in assignment.submissions %}
               <tr>
-                <td>{{ submission.student.full_name }} ({{ submission.student.id }})</td>
-                <td>
-                  {% if submission.submission_date %}
-                    {% if submission.special_deadline %}
-                      {% if submission.submission_date > submission.special_deadline %}
-                        <span class="text-danger">{{ submission.submission_date|date("d/m/Y, H:i") }} <strong>(Late)</strong></span>
-                      {% else %}
-                        {{ submission.submission_date|date("d/m/Y, H:i") }}
-                      {% endif %}
-                    {% else %}
-                      {% if submission.submission_date > assignment.deadline %}
-                        <span class="text-danger">{{ submission.submission_date|date("d/m/Y, H:i") }} <strong>(Late)</strong></span>
-                      {% else %}
-                        {{ submission.submission_date|date("d/m/Y, H:i") }}
-                      {% endif %}
-                    {% endif %}
-                  {% else %}
-                    {% if "now"|date > assignment.deadline %}
-                      <span class="text-danger">Not yet submitted <strong>(Late)</strong></span>
-                    {% else %}
-                      Not yet submitted
-                    {% endif %}
-                  {% endif %}
-                </td>
-                <td>
-                  {% if submission.special_deadline %}
-                    {{ submission.special_deadline|date("d/m/Y, H:i") }}
-                  {% else %}
-                    N/A
-                  {% endif %}
-                </td>
+                <td>{{ submission.full_name }} ({{ submission.id }})</td>
+                <td>{{ submission.pivot.submission_date ? submission.pivot.submission_date|date("d/m/Y, H:i") : 'N/A' }} </td>
+                <td>{{ submission.pivot.special_deadline ? submission.pivot.special_deadline|date("d/m/Y, H:i") : 'N/A' }}</td>
                 <td>
                   <a href="#" class="btn btn-sm btn-default">Modify</a>
-                  <a href="#" class="btn btn-sm btn-default">Assess</a>
-                  <a href="#" class="btn btn-sm btn-danger">Remove</a>
+                  <a href="{{ route('admin.courses.units.assignments.submissions.assess', [course.id, unit.id, assignment.id, submission.id]) }}" class="btn btn-sm btn-default">Assess</a>
+                  <a href="{{ route('admin.courses.units.assignments.submissions.delete_confirm', [course.id, unit.id, assignment.id, submission.id]) }}"
+                     data-toggle="modal" data-target="#web-modal" class="btn btn-sm btn-danger">Delete</a>
                 </td>
               </tr>
             {% else %}
@@ -140,7 +113,8 @@
           </tbody>
         </table>
 
-        <a class="btn btn-default">
+        <a href="{{ route('admin.courses.units.assignments.submissions.add',
+        [course.id, unit.id, assignment.id]) }}" class="btn btn-default">
           <span class="glyphicon glyphicon-plus"></span>
           Add a submission
         </a>

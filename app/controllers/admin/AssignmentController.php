@@ -200,8 +200,8 @@ class AssignmentController extends BaseController
         try {
             DB::transaction(function() use($assignment) {
                 $assignment->criteria()->detach();
-                $assignment->allAssessments()->delete();
-                $assignment->submissions()->delete();
+                $assignment->assessments()->delete();
+                $assignment->submissions()->detach();
                 $assignment->delete();
             });
         } catch (\Exception $e) {

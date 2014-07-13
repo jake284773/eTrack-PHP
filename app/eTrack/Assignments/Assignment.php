@@ -104,10 +104,12 @@ class Assignment extends Entity
 
     public function submissions()
     {
-        return $this->hasMany('eTrack\Assignments\AssignmentSubmission');
+        return $this->belongsToMany('eTrack\Accounts\Student', 'student_assignment',
+            'assignment_id', 'student_user_id')
+            ->withPivot('submission_date', 'special_deadline');
     }
 
-    public function allAssessments()
+    public function assessments()
     {
         return $this->hasMany('eTrack\Assessment\StudentAssessment',
             'student_assignment_assignment_id', 'id');

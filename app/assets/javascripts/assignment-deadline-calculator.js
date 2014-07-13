@@ -21,3 +21,24 @@ $('#deadline_date_string').change(function() {
     $('#marking_start_date_string').val(markingStartDate).datepicker('update');
     $('#marking_deadline_date_string').val(markingDeadline).datepicker('update');
 });
+
+function showHideSpecialDeadlineBox()
+{
+    var specialDeadlineBox = $("#special-deadline-box");
+
+    if ($("#special_deadline_required").is(':checked')) {
+        specialDeadlineBox.show();
+        specialDeadlineBox.find(":input").attr("disabled", false);
+    } else {
+        specialDeadlineBox.hide();
+        specialDeadlineBox.find(":input").attr("disabled", true);
+    }
+}
+
+$(document).ready(function() {
+    showHideSpecialDeadlineBox();
+});
+
+$("#special_deadline_required").change(function() {
+    showHideSpecialDeadlineBox();
+});

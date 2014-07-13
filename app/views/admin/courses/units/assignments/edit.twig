@@ -229,7 +229,7 @@
   <div class="row">
     <div class="well">
       {{ form_button('Update assignment', {'type': 'submit', 'class': 'btn btn-primary'}) }}
-      or <a href="{{ route('admin.courses.units.show', [course.id, unit.id]) }}">cancel</a>
+      or <a href="{{ route('admin.courses.units.assignments.show', [course.id, unit.id, assignment.id]) }}">cancel</a>
     </div>
   </div>
   {{ form.close() }}

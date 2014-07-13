@@ -67,7 +67,7 @@
   </div>
 
   <div class="row">
-    <div class="col-md-5 form-group">
+    <div class="col-md-6 form-group">
       {{ form_label('number', 'Assignment number', {'id': 'assignment_number-label', 'class': 'control-label'}) }}
       {{ form_text('number', input.old('number'), {'id': 'assignment_number', 'class': 'form-control'}) }}
       <div class="help-block">
@@ -77,7 +77,7 @@
   </div>
 
   <div class="row">
-    <div class="col-md-5 form-group">
+    <div class="col-md-6 form-group">
       {{ form_label('name', 'Assignment name', {'id': 'assignment_name-label', 'class': 'control-label'}) }}
       {{ form_text('name', input.old('name'), {'id': 'assignment_name', 'class': 'form-control'}) }}
       <div class="help-block">
@@ -87,7 +87,7 @@
   </div>
 
   <div class="row">
-    <div class="col-md-5 form-group">
+    <div class="col-md-6 form-group">
       {{ form_label('criteria[]', 'Criteria', {'id': 'criteria-label', 'class': 'control-label'}) }}
       {{ form_select('criteria[]', selectCriteria, input.old('criteria[]'), {'id': 'criteria',
       'class': 'form-control chosen-select', 'multiple': '', 'data-placeholder': 'Select criteria'}) }}
@@ -95,7 +95,7 @@
   </div>
 
   <div class="row">
-    <div class="col-md-8 alert alert-info">
+    <div class="col-md-10 alert alert-info">
       <h4>
         <span class="glyphicon glyphicon-info-sign"></span>
         Extenuating circumstances deadlines
@@ -107,7 +107,7 @@
   </div>
 
   <div class="row">
-    <div class="well well-sidebyside col-md-4">
+    <div class="well well-sidebyside col-md-5">
       <h4>Assignment availability</h4>
       <div class="form-group">
         {{ form_label('available_date_string', 'Date', {'id': 'available_date_string-label', 'class': 'control-label'}) }}
@@ -130,7 +130,7 @@
       </div>
     </div>
 
-    <div class="well col-md-4">
+    <div class="well col-md-5">
       <h4>Submission deadline</h4>
 
       <div class="form-group">
@@ -156,7 +156,7 @@
   </div>
 
   <div class="row">
-    <div class="col-md-8 alert alert-info">
+    <div class="col-md-10 alert alert-info">
       <h4>
         <span class="glyphicon glyphicon-info-sign"></span>
         Marking deadline notes
@@ -191,7 +191,7 @@
   </div>
 
   <div class="row">
-    <div class="well well-sidebyside col-md-4">
+    <div class="well well-sidebyside col-md-5">
       <h4>Marking start date/time</h4>
 
       <div class="form-group">
@@ -216,7 +216,7 @@
       </div>
     </div>
 
-    <div class="well col-md-4">
+    <div class="well col-md-5">
       <h4>Marking deadline</h4>
 
       <div class="form-group">

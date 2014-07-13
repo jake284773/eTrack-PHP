@@ -5,6 +5,7 @@ use DB;
 use eTrack\Controllers\BaseController;
 use eTrack\Courses\CourseRepository;
 use eTrack\Courses\UnitRepository;
+use Event;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Input;
@@ -80,9 +81,16 @@ class CourseUnitController extends BaseController
         }
 
         try {
-            $course->units()->attach($course->id, ['unit_id'     => $formData['unit'],
-                                                   'unit_number' => $formData['unit_number']]);
-        } catch (QueryException $e) {
+            DB::transaction(function() use($course, $formData) {
+                $course->units()->attach($course->id, [
+                    'unit_id'     => $formData['unit'],
+                    'unit_number' => $formData['unit_number']
+                ]);
+
+                Event::fire('tracker.calcAllPredictedGrades', $course->id);
+                Event::fire('tracker.calcAllFinalGrades', $course->id);
+            });
+        } catch (\Exception $e) {
             return Redirect::back()->withInput()->with('errorMessage', 'Unable to add unit to course');
         }
 
@@ -99,16 +107,6 @@ class CourseUnitController extends BaseController
         $unit = $this->unitRepository->getWithAssignments($unitId);
 
         return View::make('admin.courses.units.show', ['course' => $course, 'unit' => $unit]);
-    }
-
-    public function edit($id)
-    {
-
-    }
-
-    public function update($id)
-    {
-
     }
 
     public function deleteConfirm($courseId, $unitId)
@@ -141,16 +139,18 @@ class CourseUnitController extends BaseController
 
             DB::transaction(function () use ($course, $unitId) {
                 $course->units()->detach($unitId);
+                Event::fire('tracker.calcAllPredictedGrades', $course->id);
+                Event::fire('tracker.calcAllFinalGrades', $course->id);
             });
-
-            return Redirect::route('admin.courses.show', [$course->id])->with('successMessage', 'Removed unit from course');
         } catch (ModelNotFoundException $e) {
             App::abort(404);
+            return false;
         } catch (\Exception $e) {
             return Redirect::back()->with('errorMessage', 'Unable to remove unit from course.');
         }
 
-
+        return Redirect::route('admin.courses.show', [$course->id])
+            ->with('successMessage', 'Removed unit from course');
     }
 
 } 

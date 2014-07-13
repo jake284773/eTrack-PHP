@@ -1,0 +1,44 @@
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <h4 class="modal-title">Delete student group ({{ studentGroup.id }}</h4>
+</div>
+<div class="modal-body">
+  <p>Are you sure you want to delete the student group with the group code
+    <strong>{{ studentGroup.id }}</strong>?
+  </p>
+
+  <div class="alert alert-info">
+    <h4><span class="glyphicon glyphicon-info-sign"></span> Important note</h4>
+
+    <p>
+      Removing a student group won't remove the students from the course or any of
+      their submissions and assessments. It will just remove the group.
+    </p>
+  </div>
+
+  <p>Please check the details as shown in the table before continuing:</p>
+
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Group code</th>
+      <th>Group tutor</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+      <td>{{ studentGroup.id }}</td>
+      <td>{{ studentGroup.tutor.full_name }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  {% autoescape false %}
+  {{ form_open({'route': ['admin.courses.student_groups.destroy', course.id, studentGroup.id], 'method': 'delete'}) }}
+  {{ form_button('Delete student group', {'type': 'submit', 'class': 'btn btn-danger'}) }}
+  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+  {{ form_close() }}
+  {% endautoescape %}
+</div>

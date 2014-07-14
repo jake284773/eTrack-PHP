@@ -73,7 +73,7 @@ class UserRepository extends EloquentRepository {
      */
     public function getByRole($role)
     {
-        return $this->queryByRole($role)->all();
+        return $this->queryByRole($role)->get();
     }
 
     /**

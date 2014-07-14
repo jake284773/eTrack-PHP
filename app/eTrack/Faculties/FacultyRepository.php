@@ -15,4 +15,9 @@ class FacultyRepository extends EloquentRepository {
             ->where('id', '=', $id)->firstOrFail();
     }
 
-} 
+    public function getAllOrdered()
+    {
+        return $this->model->orderBy('name')->get()->all();
+    }
+
+}

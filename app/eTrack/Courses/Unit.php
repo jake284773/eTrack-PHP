@@ -38,7 +38,8 @@ class Unit extends Entity
     protected $fillable = [
         'id', 'number', 'name', 'credit_value', 'glh',
         'level', 'subject_sector_id',
-        'number_of_pass_criteria', 'number_of_merit_criteria', 'number_of_distinction_criteria',
+        'number_of_pass_criteria', 'number_of_merit_criteria',
+        'number_of_distinction_criteria',
     ];
 
 

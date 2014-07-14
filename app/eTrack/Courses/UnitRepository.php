@@ -20,6 +20,16 @@ class UnitRepository extends EloquentRepository
         $this->criteriaModel = $criteriaModel;
     }
 
+    public function getAllWithSubjectSector()
+    {
+        return $this->model->select('unit.*')
+            ->with('subject_sector')
+            ->join('subject_sector', 'unit.subject_sector_id', '=', 'subject_sector.id')
+            ->orderBy('subject_sector.name')
+            ->orderBy('unit.number')
+            ->get();
+    }
+
     public function getAllNotInCourse($courseId)
     {
         return $this->model->select('unit.*')
@@ -100,7 +110,8 @@ class UnitRepository extends EloquentRepository
 
     public function getWithSubjectSector($id)
     {
-        return $this->model->with('subject_sector')->findOrFail($id);
+        return $this->model->with('subject_sector')
+          ->findOrFail($id);
     }
 
     public function criteriaListForSelect($id, $unit = null)

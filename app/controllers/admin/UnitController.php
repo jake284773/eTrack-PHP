@@ -22,7 +22,8 @@ class UnitController extends BaseController
 
     protected $subjectSectorRepository;
 
-    public function __construct(UnitRepository $unitRepository, SubjectSectorRepository $subjectSectorRepository)
+    public function __construct(UnitRepository $unitRepository,
+                                SubjectSectorRepository $subjectSectorRepository)
     {
         $this->unitRepository = $unitRepository;
         $this->subjectSectorRepository = $subjectSectorRepository;
@@ -82,7 +83,7 @@ class UnitController extends BaseController
         } catch (\Exception $e) {
             return Redirect::back()
                 ->withInput()
-                ->with('errorMessage', 'Unable to save new unit. If the problem persists contact IT services.');
+                ->with('errorMessage', 'Unable to save new unit.');
         }
 
         return Redirect::route('admin.units.index')

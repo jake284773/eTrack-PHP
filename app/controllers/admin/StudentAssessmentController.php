@@ -86,7 +86,7 @@ class StudentAssessmentController extends BaseController {
             App::abort(404);
             return false;
         }
-        
+
         return dd($criteriaAssessments->toArray());
 
         return dd(Input::all());

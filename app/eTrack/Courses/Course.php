@@ -49,7 +49,7 @@ class Course extends Entity
      * @var array
      * @static
      */
-    protected static $validTypes = [
+    public static $validTypes = [
         'BTEC National Certificate',
         'BTEC National Subsidiary Diploma',
         'BTEC National 90 Credit Diploma',
@@ -70,7 +70,7 @@ class Course extends Entity
      * @var array
      * @static
      */
-    protected static $courseTypeClassMap = [
+    public static $courseTypeClassMap = [
         'BTEC National Certificate' => 'eTrack\Courses\BTEC\National\NationalCertificate',
         'BTEC National Subsidiary Diploma' => 'eTrack\Courses\BTEC\National\NationalSubsidiaryDiploma',
         'BTEC National 90 Credit Diploma' => 'eTrack\Courses\BTEC\National\National90CreditDiploma',
@@ -103,7 +103,7 @@ class Course extends Entity
      */
     protected $fillable = [
         'id', 'name', 'level', 'type', 'pathway',
-        'subject_sector', 'faculty', 'course_organiser'
+        'subject_sector_id', 'faculty_id', 'course_organiser_user_id'
     ];
 
     /**
@@ -289,6 +289,11 @@ class Course extends Entity
         }
 
         return $relationship;
+    }
+
+    public function getValidTypesAttribute()
+    {
+        return $this->validTypes;
     }
 
 }

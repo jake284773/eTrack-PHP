@@ -72,6 +72,10 @@ Route::group(['before' => 'auth|admin', 'prefix' => 'admin', 'namespace' => 'eTr
         'as' => 'admin.courses.units.assignments.submissions.assess',
         'uses' => 'StudentAssessmentController@index'
     ]);
+    Route::post('courses/{courseId}/units/{unitId}/assignments/{assignmentId}/submissions/{studentId}/assess', [
+        'as' => 'admin.courses.units.assignments.submissions.assess.store',
+        'uses' => 'StudentAssessmentController@store'
+    ]);
 
     Route::get('courses/{courseId}/students/delete/{id}', ['as' => 'admin.courses.student_groups.delete_confirm', 'uses' => 'StudentGroupController@deleteConfirm']);
     Route::resource('courses.student_groups', 'StudentGroupController');

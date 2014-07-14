@@ -57,6 +57,21 @@ class CourseRepository extends EloquentRepository
             ->where('id', $id)->firstOrFail();
     }
 
+    public function getAssessmentRelated($id, $assignmentId)
+    {
+        return $this->model
+            ->with([
+                'units', 'units.assignments', 'units.assignments.submissions',
+                'units.assignments.criteria' => function ($query) use ($assignmentId) {
+                    $query->join(DB::raw('assignment_criteria ac2'), function ($join) {
+                        $join->on('criteria.id', '=', DB::raw('ac2.criteria_id'))
+                            ->on('criteria.unit_id', '=', DB::raw('ac2.criteria_unit_id'));
+                    });
+                    $query->where(DB::raw('ac2.assignment_id'), $assignmentId);
+                }
+           ])->firstOrFail();
+    }
+
     public function studentListForSelect($id, $course = null)
     {
         if (! $course) {

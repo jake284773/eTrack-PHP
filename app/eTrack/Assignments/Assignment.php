@@ -112,7 +112,9 @@ class Assignment extends Entity
     public function assessments()
     {
         return $this->hasMany('eTrack\Assessment\StudentAssessment',
-            'student_assignment_assignment_id', 'id');
+            'student_assignment_assignment_id', 'id')
+            ->orderBy(DB::raw('left(criteria_id, 1)'), 'desc')
+            ->orderBy(DB::raw('left(criteria_id, 2)'));
     }
 
     public function getAvailableDateStringAttribute()

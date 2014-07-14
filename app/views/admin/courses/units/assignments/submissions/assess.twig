@@ -93,19 +93,18 @@
   </ul>
 
   {% autoescape false %}
-  {#{{ form_open({'route': ['admin.courses.units.assignments.submissions.store', course.id, unit.id, assignment.id]}) }}#}
-  {{ form_open() }}
+  {{ form_open({'route': ['admin.courses.units.assignments.submissions.assess.store', course.id, unit.id, assignment.id, student.id]}) }}
   <h4>Assessment Criteria</h4>
 
   <hr>
 
-  {% for criteria in assignment.criteria %}
+  {% for criteria, assessmentStatus in assessmentRecords %}
     <div class="row">
       <div class=" form-group col-md-4">
-        <h4>Criterion: {{ criteria.id }}</h4>
-        {{ form_label('criteria[' ~ criteria.id ~ '][assessment_status]', 'Assessment status', {'class': 'control-label'}) }}
+        <h4>Criterion: {{ criteria }}</h4>
+        {{ form_label('criteria[' ~ criteria ~ '][assessment_status]', 'Assessment status', {'class': 'control-label'}) }}
         <div class="input-group">
-          {{ form_text(criteria[' ~ criteria.id ~ '][assessment_status], criteria[' ~ criteria.id ~ '][assessment_status],
+          {{ form_text('criteria[' ~ criteria ~ '][assessment_status]', assessmentStatus,
           {'class': 'form-control'}) }}
           <span class="input-group-btn">
             <button type="button" class="btn btn-default" data-toggle="modal"

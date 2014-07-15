@@ -2,6 +2,13 @@
 
 use eTrack\Core\EloquentRepository;
 
+/**
+ * Subject sector repository class
+ *
+ * Abstraction layer for database operations
+ *
+ * @package eTrack\SubjectSectors
+ */
 class SubjectSectorRepository extends EloquentRepository {
 
     public function __construct(SubjectSector $model)
@@ -9,23 +16,43 @@ class SubjectSectorRepository extends EloquentRepository {
         $this->model = $model;
     }
 
-    public function getWithRelated($id)
+    /**
+     * Finds a record with the specified relations eager loaded.
+     *
+     * @param float $id ID to find
+     * @param array $relations The relations to eager load
+     * @param array $columns Specify which columns to retrieve
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|static
+     */
+    public function findEagerLoaded($id, array $relations, $columns = ['*'])
     {
-        return $this->model->with('courses', 'courses.course_organiser', 'units')
-            ->where('id', $id)->firstOrFail();
+        return $this->model->with($relations)
+            ->findOrFail($id, $columns);
     }
 
-    public function getAllOrdered()
+    /**
+     * Retrieve all records ordered by the name field ascending.
+     *
+     * @return mixed
+     */
+    public function allOrderByName()
     {
-        return $this->model->orderBy('name')->get()->all();
+        return $this->model->nameAscending()->get();
     }
 
-    public function getAllWithUnits()
+    /**
+     * Retrieves all subject sectors that have units.
+     *
+     * @param bool $orderByName True to order records by name ascending
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function allWithUnits($orderByName = true)
     {
-        return $this->model->join('unit', 'unit.subject_sector_id', '=', 'subject_sector.id')
-            ->select('subject_sector.id', 'subject_sector.name')
-            ->groupBy('subject_sector.name')
-            ->get();
+        if ($orderByName) {
+            return $this->model->nameAscending()->has('units')->get();
+        }
+
+        return $this->model->has('units')->get();
     }
 
 } 

@@ -31,7 +31,7 @@ class StudentGroupController extends BaseController
     public function create($courseId)
     {
         try {
-            $course = $this->courseRepository->requireById($courseId);
+            $course = $this->courseRepository->find($courseId);
         } catch (ModelNotFoundException $e) {
             App::abort(404);
             return false;
@@ -61,13 +61,13 @@ class StudentGroupController extends BaseController
     public function store($courseId)
     {
         try {
-            $course = $this->courseRepository->requireById($courseId);
+            $course = $this->courseRepository->find($courseId);
         } catch (ModelNotFoundException $e) {
             App::abort(404);
             return false;
         }
 
-        $studentGroup = $this->studentGroupRepository->getNew(Input::all());
+        $studentGroup = $this->studentGroupRepository->newInstance(Input::all());
         $studentGroup->course_id = $courseId;
 
         if (!$studentGroup->isValid()) {
@@ -91,7 +91,7 @@ class StudentGroupController extends BaseController
     public function edit($courseId, $groupId)
     {
         try {
-            $course = $this->courseRepository->requireById($courseId);
+            $course = $this->courseRepository->find($courseId);
             $studentGroup = $this->studentGroupRepository->getWithRelated($groupId);
         } catch (ModelNotFoundException $e) {
             App::abort(404);
@@ -130,7 +130,7 @@ class StudentGroupController extends BaseController
     public function show($courseId, $groupId)
     {
         try {
-            $course = $this->courseRepository->requireById($courseId);
+            $course = $this->courseRepository->find($courseId);
             $student_group = $this->studentGroupRepository->getWithRelated($groupId);
             return View::make('admin.courses.student_groups.show',
                 ['course' => $course, 'student_group' => $student_group]);
@@ -143,7 +143,7 @@ class StudentGroupController extends BaseController
     public function deleteConfirm($courseId, $groupId)
     {
         try {
-            $course = $this->courseRepository->requireById($courseId);
+            $course = $this->courseRepository->find($courseId);
             $studentGroup = $this->studentGroupRepository->getWithRelated($groupId);
         } catch (ModelNotFoundException $e) {
             App::abort(404);
@@ -162,7 +162,7 @@ class StudentGroupController extends BaseController
     public function destroy($courseId, $groupId)
     {
         try {
-            $this->courseRepository->requireById($courseId);
+            $this->courseRepository->find($courseId);
             $studentGroup = $this->studentGroupRepository->getWithRelated($groupId);
         } catch (ModelNotFoundException $e) {
             App::abort(404);

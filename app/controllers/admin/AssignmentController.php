@@ -80,7 +80,7 @@ class AssignmentController extends BaseController
             return false;
         }
 
-        $assignment = $this->assignmentRepository->getNew(Input::all());
+        $assignment = $this->assignmentRepository->newInstance(Input::all());
         $assignment->unit_id = $unit->id;
 
         if (! $assignment->isValid()) {

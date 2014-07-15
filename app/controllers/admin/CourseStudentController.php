@@ -30,7 +30,7 @@ class CourseStudentController extends BaseController {
     public function add($courseId)
     {
         try {
-            $course = $this->courseRepository->getById($courseId);
+            $course = $this->courseRepository->find($courseId);
         } catch (ModelNotFoundException $e) {
             App::abort(404);
             return false;
@@ -57,7 +57,7 @@ class CourseStudentController extends BaseController {
     public function store($courseId)
     {
         try {
-            $course = $this->courseRepository->getById($courseId);
+            $course = $this->courseRepository->find($courseId);
         } catch (ModelNotFoundException $e) {
             App::abort(404);
             return false;
@@ -98,7 +98,7 @@ class CourseStudentController extends BaseController {
     public function edit($courseId, $studentId)
     {
         try {
-            $course = $this->courseRepository->getById($courseId);
+            $course = $this->courseRepository->find($courseId);
             $student = $course->students()->where('student_user_id', '=', $studentId)
                 ->withPivot('target_grade')->firstOrFail();
         } catch (ModelNotFoundException $e) {
@@ -122,7 +122,7 @@ class CourseStudentController extends BaseController {
     public function update($courseId, $studentId)
     {
         try {
-            $course = $this->courseRepository->getById($courseId);
+            $course = $this->courseRepository->find($courseId);
             $student = $course->students()->where('student_user_id', '=', $studentId)
                 ->withPivot('target_grade')->firstOrFail();
         } catch (ModelNotFoundException $e) {
@@ -163,7 +163,7 @@ class CourseStudentController extends BaseController {
     public function deleteConfirm($courseId, $studentId)
     {
         try {
-            $course = $this->courseRepository->getById($courseId);
+            $course = $this->courseRepository->find($courseId);
             $student = $course->students()->where('student_user_id', '=', $studentId)->firstOrFail();
         } catch (ModelNotFoundException $e) {
             App::abort(404);
@@ -180,7 +180,7 @@ class CourseStudentController extends BaseController {
     public function destroy($courseId, $studentId)
     {
         try {
-            $course = $this->courseRepository->getById($courseId);
+            $course = $this->courseRepository->find($courseId);
             $course->students()->where('student_user_id', '=', $studentId)->firstOrFail();
         } catch (ModelNotFoundException $e) {
             App::abort(404);

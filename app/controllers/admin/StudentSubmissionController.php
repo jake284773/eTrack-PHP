@@ -28,7 +28,7 @@ class StudentSubmissionController extends BaseController
     public function add($courseId, $unitId, $assignmentId)
     {
         try {
-            $course = $this->courseRepository->getById($courseId);
+            $course = $this->courseRepository->find($courseId);
             $unit = $course->units()->where('id', $unitId)->firstOrFail();
             $assignment = $unit->assignments()->where('id', $assignmentId)->firstOrFail();
         } catch (ModelNotFoundException $e) {
@@ -68,7 +68,7 @@ class StudentSubmissionController extends BaseController
     public function store($courseId, $unitId, $assignmentId)
     {
         try {
-            $course = $this->courseRepository->getById($courseId);
+            $course = $this->courseRepository->find($courseId);
             $unit = $course->units()->where('id', $unitId)->firstOrFail();
             $assignment = $unit->assignments()->where('id', $assignmentId)->firstOrFail();
         } catch (ModelNotFoundException $e) {
@@ -90,7 +90,7 @@ class StudentSubmissionController extends BaseController
             $formData = array_diff($formData, $specialDeadlineFields);
         }
 
-        $submission = $this->submissionRepository->getNew($formData);
+        $submission = $this->submissionRepository->newInstance($formData);
         $submission->assignment_id = $assignmentId;
 
         if (!$submission->isValid()) {
@@ -114,7 +114,7 @@ class StudentSubmissionController extends BaseController
     public function edit($courseId, $unitId, $assignmentId, $studentId)
     {
         try {
-            $course = $this->courseRepository->getById($courseId);
+            $course = $this->courseRepository->find($courseId);
             $unit = $course->units()->where('id', $unitId)->firstOrFail();
             $assignment = $unit->assignments()->where('id', $assignmentId)->firstOrFail();
             $submission = $assignment->submissions()->where('student_user_id', '=', $studentId)->firstOrFail();
@@ -138,7 +138,7 @@ class StudentSubmissionController extends BaseController
     public function deleteConfirm($courseId, $unitId, $assignmentId, $studentId)
     {
         try {
-            $course = $this->courseRepository->getById($courseId);
+            $course = $this->courseRepository->find($courseId);
             $unit = $course->units()->where('id', $unitId)->firstOrFail();
             $assignment = $unit->assignments()->where('id', $assignmentId)->firstOrFail();
             $student = $assignment->submissions()->where('student_user_id', '=', $studentId)->firstOrFail();
@@ -167,7 +167,7 @@ class StudentSubmissionController extends BaseController
     public function destroy($courseId, $unitId, $assignmentId, $studentId)
     {
         try {
-            $course = $this->courseRepository->getById($courseId);
+            $course = $this->courseRepository->find($courseId);
             $unit = $course->units()->where('id', $unitId)->firstOrFail();
             $assignment = $unit->assignments()->where('id', $assignmentId)->firstOrFail();
             $criteriaAssessments = $assignment->assessments()

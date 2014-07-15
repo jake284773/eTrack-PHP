@@ -27,7 +27,7 @@ class FacultyController extends BaseController
 
     public function index()
     {
-        $faculties = $this->facultyRepository->getAll();
+        $faculties = $this->facultyRepository->all();
 
         return View::make('admin.faculties.index', ['faculties' => $faculties]);
     }
@@ -39,7 +39,7 @@ class FacultyController extends BaseController
 
     public function store()
     {
-        $faculty = $this->facultyRepository->getNew(Input::all());
+        $faculty = $this->facultyRepository->newInstance(Input::all());
 
         if (!$faculty->isValid()) {
             return Redirect::back()->withInput()->withErrors($faculty->getErrors());
@@ -53,7 +53,7 @@ class FacultyController extends BaseController
 
     public function edit($id)
     {
-        $faculty = $this->facultyRepository->getById($id);
+        $faculty = $this->facultyRepository->find($id);
 
         if (!$faculty) App::abort(404);
 
@@ -74,7 +74,7 @@ class FacultyController extends BaseController
 
     public function update($id)
     {
-        $faculty = $this->facultyRepository->getById($id);
+        $faculty = $this->facultyRepository->find($id);
         $faculty->fill(Input::all());
 
         if (!$faculty->isValid()) {
@@ -89,7 +89,7 @@ class FacultyController extends BaseController
 
     public function deleteConfirm($id)
     {
-        $faculty = $this->facultyRepository->getById($id);
+        $faculty = $this->facultyRepository->find($id);
 
         if (Request::ajax()) {
             return View::make('admin.faculties.delete.modal', ['faculty' => $faculty]);
@@ -101,7 +101,7 @@ class FacultyController extends BaseController
     public function destroy($id)
     {
         try {
-            $faculty = $this->facultyRepository->getById($id);
+            $faculty = $this->facultyRepository->find($id);
             $faculty->delete();
         } catch (QueryException $ex) {
             return Redirect::route('admin.faculties.index')

@@ -28,8 +28,8 @@ class StudentAssessmentController extends BaseController {
     public function index($courseId, $unitId, $assignmentId, $studentId)
     {
         try {
-            $course = $this->courseRepository->getById($courseId);
-            $unit = $this->unitRepository->getById($unitId);
+            $course = $this->courseRepository->find($courseId);
+            $unit = $this->unitRepository->find($unitId);
             $assignment = $this->assignmentRepository
                 ->getWithSubmissionsAndCriteria($assignmentId);
             $student = $assignment->submissions()
@@ -73,8 +73,8 @@ class StudentAssessmentController extends BaseController {
     public function store($courseId, $unitId, $assignmentId, $studentId)
     {
         try {
-            $course = $this->courseRepository->getById($courseId);
-            $unit = $this->unitRepository->getById($unitId);
+            $course = $this->courseRepository->find($courseId);
+            $unit = $this->unitRepository->find($unitId);
             $assignment = $this->assignmentRepository
                 ->getWithSubmissionsAndCriteria($assignmentId);
             $student = $assignment->submissions()

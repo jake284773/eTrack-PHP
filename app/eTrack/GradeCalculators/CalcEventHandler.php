@@ -236,7 +236,7 @@ class CalcEventHandler
     public function onUnitGradeStudent($unitId, $studentId)
     {
         $unit = $this->unitRepository->getWithCriteriaAndAssessments($unitId);
-        $student = $this->userRepository->getById($studentId);
+        $student = $this->userRepository->find($studentId);
 
         $studentUnitGrade = $this->getCalculatedStudentUnit($unit, $student);
 

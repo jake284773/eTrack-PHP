@@ -31,7 +31,7 @@ class CourseUnitController extends BaseController
     public function add($courseId)
     {
         try {
-            $course = $this->courseRepository->getById($courseId);
+            $course = $this->courseRepository->find($courseId);
         } catch (ModelNotFoundException $e) {
             App::abort(404);
             return false;
@@ -57,8 +57,8 @@ class CourseUnitController extends BaseController
     public function store($courseId)
     {
         try {
-            $course = $this->courseRepository->getById($courseId);
-            $unit = $this->unitRepository->getById(Input::get('unit'));
+            $course = $this->courseRepository->find($courseId);
+            $unit = $this->unitRepository->find(Input::get('unit'));
         } catch (ModelNotFoundException $e) {
             App::abort(404);
             return false;
@@ -103,7 +103,7 @@ class CourseUnitController extends BaseController
             App::abort(404);
         }
 
-        $course = $this->courseRepository->getById($courseId);
+        $course = $this->courseRepository->find($courseId);
         $unit = $this->unitRepository->getWithAssignments($unitId);
 
         return View::make('admin.courses.units.show', ['course' => $course, 'unit' => $unit]);
@@ -112,7 +112,7 @@ class CourseUnitController extends BaseController
     public function deleteConfirm($courseId, $unitId)
     {
         try {
-            $course = $this->courseRepository->requireById($courseId);
+            $course = $this->courseRepository->find($courseId);
             $unit = $course->units()->where('id', $unitId)->firstOrFail();
 
             $this->unitRepository->checkUnitBelongsToCourse($courseId, $unitId);
@@ -133,7 +133,7 @@ class CourseUnitController extends BaseController
     public function destroy($courseId, $unitId)
     {
         try {
-            $course = $this->courseRepository->requireById($courseId);
+            $course = $this->courseRepository->find($courseId);
 
             $this->unitRepository->checkUnitBelongsToCourse($courseId, $unitId);
 

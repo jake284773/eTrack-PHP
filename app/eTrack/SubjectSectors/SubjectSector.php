@@ -1,16 +1,16 @@
 <?php namespace eTrack\SubjectSectors;
+
 use eTrack\Core\Entity;
 use eTrack\Courses\Course;
 use eTrack\Courses\Unit;
 
 /**
- * Subject sector model
+ * Subject sector eloquent model
  *
  * @property float $id
  * @property string $name
  * @property-read \Illuminate\Database\Eloquent\Collection|Course[] $courses
  * @property-read \Illuminate\Database\Eloquent\Collection|Unit[] $units
- * @method static SubjectSector allWithUnits()
  */
 class SubjectSector extends Entity
 {
@@ -20,13 +20,6 @@ class SubjectSector extends Entity
      * @var string
      */
     protected $table = 'subject_sector';
-
-    /**
-     * The attributes that can be mass-assigned.
-     *
-     * @var array
-     */
-    protected $fillable = ['id', 'name'];
 
     /**
      * Validation rules for model.
@@ -48,11 +41,25 @@ class SubjectSector extends Entity
         'name' => 'subject sector name',
     ];
 
+    /**
+     * One-to-many relationship with subject sectors and courses.
+     *
+     * (One subject sector has many courses)
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function courses()
     {
         return $this->hasMany('eTrack\Courses\Course');
     }
 
+    /**
+     * One-to-many relationship with subject sectors and units.
+     *
+     * (One subject sector has many units)
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function units()
     {
         return $this->hasMany('eTrack\Courses\Unit')
@@ -60,11 +67,14 @@ class SubjectSector extends Entity
             ->orderBy('id', 'asc');
     }
 
-//    public function scopeAllWithUnits($query)
-//    {
-//        return $query->join('unit', 'unit.subject_sector_id', '=', 'subject_sector.id')
-//            ->select('subject_sector.id', 'subject_sector.name')
-//            ->groupBy('subject_sector.name');
-//    }
-
+    /**
+     * Query scope for ordering records by the name field in ascending order.
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopeNameAscending($query)
+    {
+        return $query->orderBy('name');
+    }
 }

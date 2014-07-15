@@ -34,7 +34,7 @@ class UnitController extends BaseController
         $units = $this->unitRepository->getPaginatedBySubjectAndSearch(Input::get('search'),
             Input::get('subjectsector'));
 
-        $subjectSectors = $this->subjectSectorRepository->getAllWithUnits();
+        $subjectSectors = $this->subjectSectorRepository->allWithUnits();
         $subjectSectorsForm = ['' => 'All subject sectors'];
 
         foreach ($subjectSectors as $subjectSector) {
@@ -49,7 +49,7 @@ class UnitController extends BaseController
 
     public function create()
     {
-        $subjectSectors = $this->subjectSectorRepository->getAllOrdered();
+        $subjectSectors = $this->subjectSectorRepository->allOrderByName();
         $subjectSectorsForm = ['' => ''];
 
         foreach ($subjectSectors as $subjectSector) {
@@ -61,7 +61,7 @@ class UnitController extends BaseController
 
     public function store()
     {
-        $unit = $this->unitRepository->getNew(Input::all());
+        $unit = $this->unitRepository->newInstance(Input::all());
 
         if (! $unit->isValid())
         {
@@ -120,7 +120,7 @@ class UnitController extends BaseController
     public function destroy($id)
     {
         try {
-            $unit = $this->unitRepository->getById($id);
+            $unit = $this->unitRepository->find($id);
             $unit->delete();
         } catch (ModelNotFoundException $e) {
             App::abort(404);

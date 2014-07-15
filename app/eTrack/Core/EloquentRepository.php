@@ -1,9 +1,6 @@
 <?php namespace eTrack\Core;
 
 use Eloquent;
-use Illuminate\Database\Eloquent\Model;
-use eTrack\Core\Exceptions\EntityNotFoundException;
-use Symfony\Component\Process\Exception\InvalidArgumentException;
 
 abstract class EloquentRepository {
 
@@ -19,76 +16,34 @@ abstract class EloquentRepository {
         return $this->model;
     }
 
-    public function setModel($model)
-    {
-        $this->model = $model;
-    }
-
-    public function getAll()
-    {
-        return $this->model->all();
-    }
-
-    public function getAllPaginated($count = 15)
-    {
-        return $this->model->paginate($count);
-    }
-
-    public function getById($id)
-    {
-        return $this->model->find($id);
-    }
-
-    public function requireById($id)
-    {
-        $model = $this->getById($id);
-
-        if (! $model) {
-            throw new EntityNotFoundException;
-        }
-
-        return $model;
-    }
-
-    public function create($attributes = array())
+    public function create(array $attributes)
     {
         return $this->model->create($attributes);
     }
 
-    public function getNew($attributes = array())
+    public function newInstance(array $attributes = [])
     {
         return $this->model->newInstance($attributes);
     }
 
-    public function save($data)
+    public function all()
     {
-        if ($data instanceof Model) {
-            return $this->storeEloquentModel($data);
-        } elseif (is_array($data)) {
-            return $this->storeArray($data);
-        } else {
-            throw new InvalidArgumentException;
-        }
+        return $this->model->all();
     }
 
-    public function delete(Eloquent $model)
+    public function paginate($perPage = 15, $columns = ['*'])
     {
-        return $model->delete();
+        return $this->model->paginate($perPage, $columns);
     }
 
-    protected function storeEloquentModel(Model $model)
+    public function find($id, $columns = ['*'])
     {
-        if ($model->getDirty()) {
-            return $model->save();
-        } else {
-            return $model->touch();
-        }
+        return $this->model->findOrFail($id, $columns);
     }
 
-    protected function storeArray($data)
+    public function destroy($id)
     {
-        $model = $this->getNew($data);
-        return $this->storeEloquentModel($model);
+        return $this->model->destroy($id);
     }
 
 } 

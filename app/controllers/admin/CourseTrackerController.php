@@ -51,7 +51,7 @@ class CourseTrackerController extends BaseController
             App::abort(404);
         }
 
-        $course = $this->courseRepository->getById($courseId);
+        $course = $this->courseRepository->find($courseId);
         $unit = $this->unitRepository->getWithCriteriaAndAssessments($unitId);
 
         $results = $this->unitRepository->renderUnitCriteriaAssessmentForTracker($course, $unit);

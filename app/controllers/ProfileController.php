@@ -2,7 +2,6 @@
 
 use Auth;
 use DB;
-use Hash;
 use Input;
 use Redirect;
 use Validator;

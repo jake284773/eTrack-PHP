@@ -37,7 +37,7 @@ class UserController extends BaseController {
         } elseif ($role = Input::get('role')) {
             $users = $this->userRepository->getPaginatedByRole($role);
         } else {
-            $users = $this->userRepository->getAllPaginated();
+            $users = $this->userRepository->paginate();
         }
 
         $roles = $this->userRepository->getValidRoles();
@@ -54,7 +54,7 @@ class UserController extends BaseController {
 
     public function store()
     {
-        $user = $this->userRepository->getNew(Input::all());
+        $user = $this->userRepository->newInstance(Input::all());
 
         if (! $user->isValid())
         {
@@ -69,7 +69,7 @@ class UserController extends BaseController {
 
     public function edit($id)
     {
-        $user = $this->userRepository->getById($id);
+        $user = $this->userRepository->find($id);
 
         if (! $user) App::abort(404);
 
@@ -80,7 +80,7 @@ class UserController extends BaseController {
 
     public function update($id)
     {
-        $user = $this->userRepository->getById($id);
+        $user = $this->userRepository->find($id);
         $user->fill(Input::all());
 
         if (! $user->isValid())
@@ -96,7 +96,7 @@ class UserController extends BaseController {
 
     public function deleteConfirm($id)
     {
-        $user = $this->userRepository->getById($id);
+        $user = $this->userRepository->find($id);
 
         if (Request::ajax())
         {
@@ -109,7 +109,7 @@ class UserController extends BaseController {
     public function destroy($id)
     {
         try {
-            $user = $this->userRepository->requireById($id);
+            $user = $this->userRepository->find($id);
             $user->delete();
         } catch (\Exception $ex) {
             return Redirect::route('admin.users.index')->with('errorMessage', 'Unable to delete user');

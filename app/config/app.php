@@ -120,7 +120,7 @@ return [
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 
-        'TwigBridge\ServiceProvider',
+        'TwigBridge\TwigServiceProvider',
         'Barryvdh\DomPDF\ServiceProvider',
 
         'eTrack\Validation\CustomValidatorServiceProvider',

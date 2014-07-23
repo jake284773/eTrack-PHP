@@ -3,252 +3,266 @@
 {% block title %}Create a new assignment{% endblock %}
 
 {% block content %}
-  <header>
-    <ol class="breadcrumb">
-      <li><a href="{{ route('home') }}">Home</a></li>
-      <li><a href="{{ route('admin.courses.index') }}">Courses</a></li>
-      <li><a href="{{ route('admin.courses.show', course.id) }}">{{ course.name }}</a></li>
-      <li>
-        <a href="{{ route('admin.courses.units.show', [course.id, unit.id]) }}">
-          Unit {{ unit.number }} &mdash; {{ unit.name }}
-        </a>
-      </li>
-      <li class="active">{{ block("title") }}</li>
-    </ol>
-    {% if session_has('successMessage') %}
-      <div class="alert alert-success">
-        {{ session_get('successMessage') }}
-      </div>
-    {% endif %}
-
-    {% if session_has('infoMessage') %}
-      <div class="alert alert-info">
-        {{ session_get('infoMessage') }}
-      </div>
-    {% endif %}
-
-    {% if session_has('errorMessage') %}
-      <div class="alert alert-danger">
-        {{ session_get('errorMessage') }}
-      </div>
-    {% endif %}
-
-    {% if errors is not empty %}
-      <div class="alert alert-danger">
-        <h4>There was a problem submitting the form</h4>
-
-        <p>Because of the following problems:</p>
-
-        <ol>
-          {% for error in errors.all %}
-            <li>{{ error }}</li>
-          {% endfor %}
+    <header>
+        <ol class="breadcrumb">
+            <li><a href="{{ route('home') }}">Home</a></li>
+            <li><a href="{{ route('admin.courses.index') }}">Courses</a></li>
+            <li>
+                <a href="{{ route('admin.courses.show', course.id) }}">{{ course.name }}</a>
+            </li>
+            <li>
+                <a href="{{ route('admin.courses.units.show', [course.id, unit.id]) }}">
+                    Unit {{ unit.number }} &mdash; {{ unit.name }}
+                </a>
+            </li>
+            <li class="active">{{ block("title") }}</li>
         </ol>
-      </div>
-    {% endif %}
+        {% if session_has('successMessage') %}
+            <div class="alert alert-success">
+                {{ session_get('successMessage') }}
+            </div>
+        {% endif %}
 
-    <h1 class="page-header">{{ block('title') }}</h1>
-  </header>
+        {% if session_has('infoMessage') %}
+            <div class="alert alert-info">
+                {{ session_get('infoMessage') }}
+            </div>
+        {% endif %}
 
-  {% autoescape false %}
-  {{ form_open({'route': ['admin.courses.units.assignments.store', course.id, unit.id]}) }}
-  <div class="row">
-    <div class="col-md-5 form-group">
-      {{ form_label('id', 'Assignment ID', {'id': 'assignment_id-label', 'class': 'control-label'}) }}
-      {{ form_text('id', input.old('id'), {'id': 'assignment_id', 'class': 'form-control'}) }}
-      <div class="help-block">
-        This should be in the standardised assignment ID format:
-        <br>
-        Initials of Moderator-Year of intake-Unit number-Assignment number
-        <br>
-        i.e. AB-2014-1-1
-      </div>
-    </div>
-  </div>
+        {% if session_has('errorMessage') %}
+            <div class="alert alert-danger">
+                {{ session_get('errorMessage') }}
+            </div>
+        {% endif %}
 
-  <div class="row">
-    <div class="col-md-6 form-group">
-      {{ form_label('number', 'Assignment number', {'id': 'assignment_number-label', 'class': 'control-label'}) }}
-      {{ form_text('number', input.old('number'), {'id': 'assignment_number', 'class': 'form-control'}) }}
-      <div class="help-block">
-        Each assignment in a unit has a number. This is used as a simple identifier within the scope of the unit.
-      </div>
-    </div>
-  </div>
+        {% if errors is not empty %}
+            <div class="alert alert-danger">
+                <h4>There was a problem submitting the form</h4>
 
-  <div class="row">
-    <div class="col-md-6 form-group">
-      {{ form_label('name', 'Assignment name', {'id': 'assignment_name-label', 'class': 'control-label'}) }}
-      {{ form_text('name', input.old('name'), {'id': 'assignment_name', 'class': 'form-control'}) }}
-      <div class="help-block">
-        Give the assignment a suitable name which briefly describes what the assignment is about.
-      </div>
-    </div>
-  </div>
+                <p>Because of the following problems:</p>
 
-  <div class="row">
-    <div class="col-md-6 form-group">
-      {{ form_label('criteria[]', 'Criteria', {'id': 'criteria-label', 'class': 'control-label'}) }}
-      {{ form_select('criteria[]', selectCriteria, input.old('criteria[]'), {'id': 'criteria',
-      'class': 'form-control chosen-select', 'multiple': '', 'data-placeholder': 'Select criteria'}) }}
-    </div>
-  </div>
+                <ol>
+                    {% for error in errors.all %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+        {% endif %}
 
-  <div class="row">
-    <div class="col-md-10 alert alert-info">
-      <h4>
-        <span class="glyphicon glyphicon-info-sign"></span>
-        Extenuating circumstances deadlines
-      </h4>
+        <h1 class="page-header">{{ block('title') }}</h1>
+    </header>
 
-      Different deadlines for extenuating circumstances on specific students
-      can be added once the assignment has been created.
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="well well-sidebyside col-md-5">
-      <h4>Assignment availability</h4>
-      <div class="form-group">
-        {{ form_label('available_date_string', 'Date', {'id': 'available_date_string-label', 'class': 'control-label'}) }}
-        {{ form_text('available_date_string', input.old('available_date') ?: "now"|date('d/m/Y'),
-        {'id': 'available_date_string', 'class': 'form-control datepicker'}) }}
-      </div>
-
-      <div class="form-group">
-        {{ form_label('available_time', 'Time', {'id': 'available_date-label', 'class': 'control-label'}) }}
-        <div class="form-inline">
-          {{ form_select('available_hour', {
-          '00':'00', '01':'01', '02':'02', '03':'03', '04':'04', '05':'05', '06':'06', '07':'07', '08':'08', '09':'09',
-          '10':'10', '11':'11', '12':'12', '13':'13', '14':'14', '15':'15', '16':'16', '17':'17', '18':'18', '19':'19',
-          '20':'20', '21':'21', '22':'22', '23':'23'}, input.old('available_hour'),
-          {'id': 'available_hour', 'class': 'form-control'}) }}
-          {{ form_select('available_minute', {
-          '00':'00', '05':'05', '10':'10', '15':'15', '20':'20', '25':'25', '30':'30', '35':'35', '40':'40', '45':'45',
-          '50':'50', '55':'55'}, input.old('available_minute'), {'id': 'available_minute', 'class': 'form-control'}) }}
+    {% autoescape false %}
+    {{ form_open({'route': ['admin.courses.units.assignments.store', course.id, unit.id]}) }}
+    <div class="row">
+        <div class="col-md-5 form-group">
+            {{ form_label('assignment_id', 'Assignment ID', {'id': 'assignment_id-label', 'class': 'control-label'}) }}
+            {{ form_text('assignment_id', input.old('assignment_id'), {'id': 'assignment_id', 'class': 'form-control'}) }}
+            <div class="help-block">
+                This should be in the standardised assignment ID format:
+                <br>
+                Initials of Moderator-Year of intake-Unit number-Assignment
+                number
+                <br>
+                i.e. AB-2014-1-1
+            </div>
         </div>
-      </div>
     </div>
 
-    <div class="well col-md-5">
-      <h4>Submission deadline</h4>
-
-      <div class="form-group">
-        {{ form_label('deadline_date_string', 'Date', {'id': 'deadline_date_string-label', 'class': 'control-label'}) }}
-        {{ form_text('deadline_date_string', input.old('deadline_date') ?: "+2 weeks"|date('d/m/Y'),
-        {'id': 'deadline_date_string', 'class': 'form-control datepicker'}) }}
-      </div>
-
-      <div class="form-group">
-        {{ form_label('deadline_time', 'Time', {'id': 'deadline_time-label', 'class': 'control-label'}) }}
-        <div class="form-inline">
-          {{ form_select('deadline_hour', {
-          '00':'00', '01':'01', '02':'02', '03':'03', '04':'04', '05':'05', '06':'06', '07':'07', '08':'08', '09':'09',
-          '10':'10', '11':'11', '12':'12', '13':'13', '14':'14', '15':'15', '16':'16', '17':'17', '18':'18', '19':'19',
-          '20':'20', '21':'21', '22':'22', '23':'23'}, input.old('deadline_hour') ?: '16',
-          {'id': 'deadline_hour', 'class': 'form-control'}) }}
-          {{ form_select('deadline_minute', {
-          '00':'00', '05':'05', '10':'10', '15':'15', '20':'20', '25':'25', '30':'30', '35':'35', '40':'40', '45':'45',
-          '50':'50', '55':'55'}, input.old('deadline_minute'), {'id': 'deadline_minute', 'class': 'form-control'}) }}
+    <div class="row">
+        <div class="col-md-6 form-group">
+            {{ form_label('assignment_number', 'Assignment number', {'id': 'assignment_number-label', 'class': 'control-label'}) }}
+            {{ form_text('assignment_number', input.old('assignment_number'), {'id': 'assignment_number', 'class': 'form-control'}) }}
+            <div class="help-block">
+                Each assignment in a unit has a number. This is used as a simple
+                identifier within the scope of the unit.
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <div class="row">
-    <div class="col-md-10 alert alert-info">
-      <h4>
-        <span class="glyphicon glyphicon-info-sign"></span>
-        Marking deadline notes
-      </h4>
-
-      <p>
-        The marking start and deadline dates are calculated automatically
-        for your convenience based on the assignment availability and
-        submission deadline dates.
-        <br>
-        See below for details.
-      </p>
-
-      <h4 class="alert-subheading">How they are calculated</h4>
-
-      <ul class="list-group">
-        <li class="list-group-item"><strong>Marking Start date:</strong> 1 day after the submission deadline</li>
-        <li class="list-group-item"><strong>Marking Deadline:</strong> 1 week after the marking start date</li>
-      </ul>
-
-
-      <p>If you think additional time will be needed to mark all submissions, then
-        you can adjust them below.</p>
-
-      <hr>
-
-      <p class="text-warning">
-        <span class="glyphicon glyphicon-warning-sign"></span>
-        <strong>For your information:</strong> Students will be able to see these dates.
-      </p>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="well well-sidebyside col-md-5">
-      <h4>Marking start date/time</h4>
-
-      <div class="form-group">
-        {{ form_label('marking_start_date_string', 'Date', {'id': 'marking_start_date_string-label', 'class': 'control-label'}) }}
-        {{ form_text('marking_start_date_string', input.old('marking_start_date') ?: "+2 weeks 1 day"|date('d/m/Y'),
-        {'id': 'marking_start_date_string', 'class': 'form-control datepicker'}) }}
-      </div>
-
-      <div class="form-group">
-        {{ form_label('marking_start_time', 'Time', {'id': 'marking_start_date-label', 'class': 'control-label'}) }}
-        <div class="form-inline">
-          {{ form_select('marking_start_hour', {
-          '00':'00', '01':'01', '02':'02', '03':'03', '04':'04', '05':'05', '06':'06', '07':'07', '08':'08', '09':'09',
-          '10':'10', '11':'11', '12':'12', '13':'13', '14':'14', '15':'15', '16':'16', '17':'17', '18':'18', '19':'19',
-          '20':'20', '21':'21', '22':'22', '23':'23'}, input.old('marking_start_hour'),
-          {'id': 'marking_start_hour', 'class': 'form-control'}) }}
-          {{ form_select('marking_start_minute', {
-          '00':'00', '05':'05', '10':'10', '15':'15', '20':'20', '25':'25', '30':'30', '35':'35', '40':'40', '45':'45',
-          '50':'50', '55':'55'}, input.old('marking_start_minute'),
-          {'id': 'marking_start_minute', 'class': 'form-control'}) }}
+    <div class="row">
+        <div class="col-md-6 form-group">
+            {{ form_label('assignment_name', 'Assignment name', {'id': 'assignment_name-label', 'class': 'control-label'}) }}
+            {{ form_text('assignment_name', input.old('assignment_name'), {'id': 'assignment_name', 'class': 'form-control'}) }}
+            <div class="help-block">
+                Give the assignment a suitable name which briefly describes what
+                the assignment is about.
+            </div>
         </div>
-      </div>
     </div>
 
-    <div class="well col-md-5">
-      <h4>Marking deadline</h4>
-
-      <div class="form-group">
-        {{ form_label('marking_deadline_date_string', 'Date', {'id': 'marking_deadline_date_string-label', 'class': 'control-label'}) }}
-        {{ form_text('marking_deadline_date_string', input.old('marking_deadline_date') ?: "+3 weeks 1 day"|date('d/m/Y'),
-        {'id': 'marking_deadline_date_string', 'class': 'form-control datepicker'}) }}
-      </div>
-
-      <div class="form-group">
-        {{ form_label('marking_deadline_time', 'Time', {'id': 'marking_deadline_time-label', 'class': 'control-label'}) }}
-        <div class="form-inline">
-          {{ form_select('marking_deadline_hour', {
-          '00':'00', '01':'01', '02':'02', '03':'03', '04':'04', '05':'05', '06':'06', '07':'07', '08':'08', '09':'09',
-          '10':'10', '11':'11', '12':'12', '13':'13', '14':'14', '15':'15', '16':'16', '17':'17', '18':'18', '19':'19',
-          '20':'20', '21':'21', '22':'22', '23':'23'}, input.old('marking_deadline_hour'),
-          {'id': 'marking_deadline_hour', 'class': 'form-control'}) }}
-          {{ form_select('marking_deadline_minute', {
-          '00':'00', '05':'05', '10':'10', '15':'15', '20':'20', '25':'25', '30':'30', '35':'35', '40':'40', '45':'45',
-          '50':'50', '55':'55'}, input.old('marking_deadline_minute'),
-          {'id': 'marking_deadline_minute', 'class': 'form-control'}) }}
+    <div class="row">
+        <div class="col-md-6 form-group">
+            {{ form_label('criteria[]', 'Criteria', {'id': 'criteria-label', 'class': 'control-label'}) }}
+            {{ form_select('criteria[]', selectCriteria, input.old('criteria[]'), {'id': 'criteria',
+            'class': 'form-control chosen-select', 'multiple': '', 'data-placeholder': 'Select criteria'}) }}
         </div>
-      </div>
     </div>
-  </div>
 
-  <div class="row">
-    <div class="well">
-      {{ form_button('Create assignment', {'type': 'submit', 'class': 'btn btn-primary'}) }}
-      or <a href="{{ route('admin.courses.units.show', [course.id, unit.id]) }}">cancel</a>
+    <div class="row">
+        <div class="col-md-10 alert alert-info">
+            <h4>
+                <span class="glyphicon glyphicon-info-sign"></span>
+                Extenuating circumstances deadlines
+            </h4>
+
+            Different deadlines for extenuating circumstances on specific
+            students
+            can be added once the assignment has been created.
+        </div>
     </div>
-  </div>
-  {{ form.close() }}
-  {% endautoescape %}
+
+    <div class="row">
+        <div class="well well-sidebyside col-md-5">
+            <h4>Assignment availability</h4>
+
+            <div class="form-group">
+                {{ form_label('available_date', 'Date', {'id': 'available_date-label', 'class': 'control-label'}) }}
+                {{ form_text('available_date', input.old('available_date') ?: "now"|date('d/m/Y'),
+                {'id': 'available_date', 'class': 'form-control datepicker'}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label('available_time', 'Time', {'id': 'available_date-label', 'class': 'control-label'}) }}
+                <div class="form-inline">
+                    {{ form_select('available_hour', {
+                    '00':'00', '01':'01', '02':'02', '03':'03', '04':'04', '05':'05', '06':'06', '07':'07', '08':'08', '09':'09',
+                    '10':'10', '11':'11', '12':'12', '13':'13', '14':'14', '15':'15', '16':'16', '17':'17', '18':'18', '19':'19',
+                    '20':'20', '21':'21', '22':'22', '23':'23'}, input.old('available_hour'),
+                    {'id': 'available_hour', 'class': 'form-control'}) }}
+                    {{ form_select('available_minute', {
+                    '00':'00', '05':'05', '10':'10', '15':'15', '20':'20', '25':'25', '30':'30', '35':'35', '40':'40', '45':'45',
+                    '50':'50', '55':'55'}, input.old('available_minute'), {'id': 'available_minute', 'class': 'form-control'}) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="well col-md-5">
+            <h4>Submission deadline</h4>
+
+            <div class="form-group">
+                {{ form_label('deadline_date', 'Date', {'id': 'deadline_date_string-label', 'class': 'control-label'}) }}
+                {{ form_text('deadline_date', input.old('deadline_date') ?: "+2 weeks"|date('d/m/Y'),
+                {'id': 'deadline_date', 'class': 'form-control datepicker'}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label('deadline_time', 'Time', {'id': 'deadline_time-label', 'class': 'control-label'}) }}
+                <div class="form-inline">
+                    {{ form_select('deadline_hour', {
+                    '00':'00', '01':'01', '02':'02', '03':'03', '04':'04', '05':'05', '06':'06', '07':'07', '08':'08', '09':'09',
+                    '10':'10', '11':'11', '12':'12', '13':'13', '14':'14', '15':'15', '16':'16', '17':'17', '18':'18', '19':'19',
+                    '20':'20', '21':'21', '22':'22', '23':'23'}, input.old('deadline_hour') ?: '16',
+                    {'id': 'deadline_hour', 'class': 'form-control'}) }}
+                    {{ form_select('deadline_minute', {
+                    '00':'00', '05':'05', '10':'10', '15':'15', '20':'20', '25':'25', '30':'30', '35':'35', '40':'40', '45':'45',
+                    '50':'50', '55':'55'}, input.old('deadline_minute'), {'id': 'deadline_minute', 'class': 'form-control'}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10 alert alert-info">
+            <h4>
+                <span class="glyphicon glyphicon-info-sign"></span>
+                Marking deadline notes
+            </h4>
+
+            <p>The marking start and deadline dates are calculated automatically
+                for your convenience based on the assignment availability and
+                submission deadline dates.
+                <br>
+                See below for details.</p>
+
+            <h4 class="alert-subheading">How they are calculated</h4>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <strong>Marking Start date:</strong>
+                    1 day after the submission deadline
+                </li>
+                <li class="list-group-item">
+                    <strong>Marking Deadline:</strong>
+                    2 weeks after the marking start date
+                </li>
+            </ul>
+
+
+            <p>If you think additional time will be needed to mark all
+                submissions, then
+                you can adjust them below.</p>
+
+            <hr>
+
+            <p class="text-warning">
+                <span class="glyphicon glyphicon-warning-sign"></span>
+                <strong>For your information:</strong> Students will be able to
+                see these dates.
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="well well-sidebyside col-md-5">
+            <h4>Marking start date/time</h4>
+
+            <div class="form-group">
+                {{ form_label('marking_start_date', 'Date', {'id': 'marking_start_date_string-label', 'class': 'control-label'}) }}
+                {{ form_text('marking_start_date', input.old('marking_start_date') ?: "+3 weeks 1 day"|date('d/m/Y'),
+                {'id': 'marking_start_date', 'class': 'form-control datepicker'}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label('marking_start_time', 'Time', {'id': 'marking_start_date-label', 'class': 'control-label'}) }}
+                <div class="form-inline">
+                    {{ form_select('marking_start_hour', {
+                    '00':'00', '01':'01', '02':'02', '03':'03', '04':'04', '05':'05', '06':'06', '07':'07', '08':'08', '09':'09',
+                    '10':'10', '11':'11', '12':'12', '13':'13', '14':'14', '15':'15', '16':'16', '17':'17', '18':'18', '19':'19',
+                    '20':'20', '21':'21', '22':'22', '23':'23'}, input.old('marking_start_hour'),
+                    {'id': 'marking_start_hour', 'class': 'form-control'}) }}
+                    {{ form_select('marking_start_minute', {
+                    '00':'00', '05':'05', '10':'10', '15':'15', '20':'20', '25':'25', '30':'30', '35':'35', '40':'40', '45':'45',
+                    '50':'50', '55':'55'}, input.old('marking_start_minute'),
+                    {'id': 'marking_start_minute', 'class': 'form-control'}) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="well col-md-5">
+            <h4>Marking deadline</h4>
+
+            <div class="form-group">
+                {{ form_label('marking_deadline_date_', 'Date', {'id': 'marking_deadline_date_string-label', 'class': 'control-label'}) }}
+                {{ form_text('marking_deadline_date', input.old('marking_deadline_date') ?: "+3 weeks 1 day"|date('d/m/Y'),
+                {'id': 'marking_deadline_date', 'class': 'form-control datepicker'}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label('marking_deadline_time', 'Time', {'id': 'marking_deadline_time-label', 'class': 'control-label'}) }}
+                <div class="form-inline">
+                    {{ form_select('marking_deadline_hour', {
+                    '00':'00', '01':'01', '02':'02', '03':'03', '04':'04', '05':'05', '06':'06', '07':'07', '08':'08', '09':'09',
+                    '10':'10', '11':'11', '12':'12', '13':'13', '14':'14', '15':'15', '16':'16', '17':'17', '18':'18', '19':'19',
+                    '20':'20', '21':'21', '22':'22', '23':'23'}, input.old('marking_deadline_hour'),
+                    {'id': 'marking_deadline_hour', 'class': 'form-control'}) }}
+                    {{ form_select('marking_deadline_minute', {
+                    '00':'00', '05':'05', '10':'10', '15':'15', '20':'20', '25':'25', '30':'30', '35':'35', '40':'40', '45':'45',
+                    '50':'50', '55':'55'}, input.old('marking_deadline_minute'),
+                    {'id': 'marking_deadline_minute', 'class': 'form-control'}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="well">
+            {{ form_button('Create assignment', {'type': 'submit', 'class': 'btn btn-primary'}) }}
+            or
+            <a href="{{ route('admin.courses.units.show', [course.id, unit.id]) }}">cancel</a>
+        </div>
+    </div>
+    {{ form.close() }}
+    {% endautoescape %}
 
 {% endblock %}

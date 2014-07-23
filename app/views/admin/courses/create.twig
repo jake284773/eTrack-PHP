@@ -30,8 +30,8 @@
 {{ form_open({'route': 'admin.courses.store'}) }}
 <div class="row">
   <div class="form-group col-md-5">
-    {{ form_label('id', 'Course Code', {'id': 'id-label', 'class': 'control-label'}) }}
-    {{ form_text('id', input_old('id'), {'id': 'id', 'class': 'form-control'}) }}
+    {{ form_label('course_id', 'Course Code', {'id': 'course_id-label', 'class': 'control-label'}) }}
+    {{ form_text('course_id', input_old('course_id'), {'id': 'course_id', 'class': 'form-control'}) }}
   </div>
 </div>
 
@@ -73,24 +73,24 @@
 
 <div class="row">
   <div class="form-group col-md-5">
-    {{ form_label('faculty_id', 'Faculty', {'id': 'faculty-label', 'class': 'form-label'}) }}
-    {{ form_select('faculty_id', faculties, input_old('faculty_id'), {'id': 'faculty',
+    {{ form_label('faculty', 'Faculty', {'id': 'faculty-label', 'class': 'form-label'}) }}
+    {{ form_select('faculty', faculties, input_old('faculty'), {'id': 'faculty',
     'class': 'form-control chosen-select', 'data-placeholder': 'Select a faculty'}) }}
   </div>
 </div>
 
 <div class="row">
   <div class="form-group col-md-5">
-    {{ form_label('subject_sector_id', 'Subject sector', {'id': 'subject_sector-label', 'class': 'form-label'}) }}
-    {{ form_select('subject_sector_id', subjectSectors, input_old('subject_sector_id'), {'id': 'subject_sector',
+    {{ form_label('subject_sector', 'Subject sector', {'id': 'subject_sector-label', 'class': 'form-label'}) }}
+    {{ form_select('subject_sector', subjectSectors, input_old('subject_sector'), {'id': 'subject_sector',
     'class': 'form-control chosen-select', 'data-placeholder': 'Select a subject sector'}) }}
   </div>
 </div>
 
 <div class="row">
   <div class="form-group col-md-5">
-    {{ form_label('course_organiser_user_id', 'Course organiser', {'id': 'course_organiser-label', 'class': 'form-label'}) }}
-    {{ form_select('course_organiser_user_id', courseOrganisers, input_old('course_organiser_user_id'), {'id': 'course_organiser', 'class': 'form-control chosen-select', 'data-placeholder': 'Select a course organiser'}) }}
+    {{ form_label('course_organiser', 'Course organiser', {'id': 'course_organiser-label', 'class': 'form-label'}) }}
+    {{ form_select('course_organiser', courseOrganisers, input_old('course_organiser'), {'id': 'course_organiser', 'class': 'form-control chosen-select', 'data-placeholder': 'Select a course organiser'}) }}
   </div>
 </div>
 

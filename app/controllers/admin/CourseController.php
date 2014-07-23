@@ -9,6 +9,7 @@ use eTrack\SubjectSectors\SubjectSectorRepository;
 use eTrack\Faculties\FacultyRepository;
 use eTrack\Accounts\UserRepository;
 use eTrack\Courses\Course;
+use Event;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use View;
 use Input;
@@ -62,12 +63,21 @@ class CourseController extends BaseController {
 
     public function store()
     {
-        $formData = Input::all();
+        $formData = [
+            'id' => Input::get('course_id'),
+            'name' => Input::get('name'),
+            'type' => Input::get('type'),
+            'pathway' => Input::get('pathway'),
+            'level' => Input::get('level'),
+            'faculty_id' => Input::get('faculty'),
+            'subject_sector_id' => Input::get('subject_sector'),
+            'course_organiser_user_id' => Input::get('course_organiser'),
+            'units' => Input::get('units'),
+            'students' => Input::get('students'),
+        ];
 
         $course = $this->courseRepository->newInstance($formData);
         $units = $this->unitRepository->getAllWithSubjectSector();
-
-        $course->id = Input::get('id');
 
         if (! $course->isValid()) {
             return Redirect::back()->withInput()->withErrors($course->getErrors());
@@ -85,7 +95,10 @@ class CourseController extends BaseController {
                 return false;
             })->find(0);
 
-            $selectedUnits[$unit] = ['unit_number' => $unitRecord->number];
+            if (isset($unitRecord))
+            {
+                $selectedUnits[$unit] = ['unit_number' => $unitRecord->number];
+            }
         }
 
         try {
@@ -94,6 +107,11 @@ class CourseController extends BaseController {
                 $course->units()->sync($selectedUnits);
                 $course->students()->sync($formData['students']);
             });
+
+
+            // Calculate final and predicted grades for new students
+            Event::fire('tracker.calcFinalGrades', [$course->id]);
+            Event::fire('tracker.calcPredictedGrades', [$course->id]);
         } catch (\Exception $e) {
             return Redirect::back()
                 ->withInput()
@@ -198,7 +216,7 @@ class CourseController extends BaseController {
     private function getStudentsSelectList()
     {
         $students = $this->userRepository->getByRole('Student');
-        $studentsForm = ['' => ''];
+        $studentsForm = [];
 
         foreach ($students as $student) {
             $studentsForm[$student->id] = $student->full_name . ' (' . $student->id . ')';
@@ -212,7 +230,7 @@ class CourseController extends BaseController {
     private function getUnitsSelectList()
     {
         $units = $this->unitRepository->getAllWithSubjectSector();
-        $unitsForm = ['' => ''];
+        $unitsForm = [];
 
         foreach ($units as $unit) {
             $unitsForm[$unit->subject_sector->name][$unit->id] = $unit->full_name;
@@ -220,4 +238,4 @@ class CourseController extends BaseController {
         return $unitsForm;
     }
 
-} 
+}

@@ -73,7 +73,7 @@ class SubjectSectorController extends BaseController {
     {
         // Store the accepted form data into an array
         $formData = [
-            'id' => Input::get('subject_sector_id'),
+            'id'   => Input::get('subject_sector_id'),
             'name' => Input::get('subject_sector_name')
         ];
 
@@ -87,24 +87,30 @@ class SubjectSectorController extends BaseController {
         // Validate the model
         // If this fails redirect the user back to the form with the validation
         // errors.
-        if (! $subjectSector->isValid()) {
-            return Redirect::back()->withInput()->withErrors($subjectSector->getErrors());
+        if (! $subjectSector->isValid())
+        {
+            return Redirect::back()->withInput()->withErrors($subjectSector
+                ->getErrors());
         }
 
-        // Validation was successful so try to insert the record into the database.
-        // If any error occurs then the changes will be reversed and the user
-        // will be notified that it cannot be created.
-        try {
-            DB::transaction(function() use($subjectSector) {
+        // Validation was successful so try to insert the record into the
+        // database. If any error occurs then the changes will be reversed and
+        // the user will be notified that it cannot be created.
+        try
+        {
+            DB::transaction(function () use ($subjectSector)
+            {
                 $subjectSector->save();
             });
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             return Redirect::back()->withInput()
                 ->with('errorMessage', 'Unable to create new subject sector');
         }
 
-        // The record was inserted successfully, so redirect the user back to the
-        // subject sector list with a success message.
+        // The record was inserted successfully, so redirect the user back to
+        // the subject sector list with a success message.
         return Redirect::route('admin.subjectsectors.index')
             ->with('successMessage', 'Created new subject sector');
     }
@@ -115,18 +121,21 @@ class SubjectSectorController extends BaseController {
      * Also shows related courses and units
      *
      * @param $id
+     *
      * @return bool|\Illuminate\View\View
      */
     public function show($id)
     {
         // Try to find subject sector record
         // If it can't be found return a 404 error.
-        try {
-            $subjectSector = $this->subjectSectorRepository->findEagerLoaded($id, [
-                'courses', 'courses.course_organiser', 'units'
-            ]);
-        } catch (ModelNotFoundException $e) {
+        try
+        {
+            $subjectSector = $this->subjectSectorRepository->findEagerLoaded($id, ['courses', 'courses.course_organiser', 'units']);
+        }
+        catch (ModelNotFoundException $e)
+        {
             App::abort(404);
+
             return false;
         }
 
@@ -140,9 +149,12 @@ class SubjectSectorController extends BaseController {
     {
         // Try to find subject sector record
         // If it can't be found return a 404 error.
-        try {
+        try
+        {
             $subjectSector = $this->subjectSectorRepository->find($id);
-        } catch (ModelNotFoundException $e) {
+        }
+        catch (ModelNotFoundException $e)
+        {
             App::abort(404);
             return false;
         }
@@ -163,10 +175,14 @@ class SubjectSectorController extends BaseController {
 
         // Try to find subject sector record
         // If it can't be found return a 404 error.
-        try {
+        try
+        {
             $subjectSector = $this->subjectSectorRepository->find($id);
-        } catch (ModelNotFoundException $e) {
+        }
+        catch (ModelNotFoundException $e)
+        {
             App::abort(404);
+
             return false;
         }
 
@@ -176,18 +192,23 @@ class SubjectSectorController extends BaseController {
         // Validate the model
         // If validation fails redirect the user back with the validation errors
         // included.
-        if (!$subjectSector->isValid()) {
+        if (! $subjectSector->isValid())
+        {
             return Redirect::back()->withInput()->withErrors($subjectSector->getErrors());
         }
 
         // Validation was successful so try to update the record in the database.
         // If any error occurs then the changes will be reversed and the user
         // will be notified that it cannot be updated.
-        try {
-            DB::transaction(function() use($subjectSector) {
+        try
+        {
+            DB::transaction(function () use ($subjectSector)
+            {
                 $subjectSector->save();
             });
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             return Redirect::back()->withInput()->with('errorMessage', 'Unable to update subject sector.');
         }
 
@@ -201,15 +222,20 @@ class SubjectSectorController extends BaseController {
     {
         // Try to find subject sector record
         // If it can't be found return a 404 error.
-        try {
+        try
+        {
             $subjectSector = $this->subjectSectorRepository->find($id);
-        } catch (ModelNotFoundException $e) {
+        }
+        catch (ModelNotFoundException $e)
+        {
             App::abort(404);
+
             return false;
         }
 
         // If the request is made via AJAX then show the modal view
-        if (Request::ajax()) {
+        if (Request::ajax())
+        {
             return View::make('admin.subjectsectors.delete.modal',
                 ['subjectSector' => $subjectSector]);
         }
@@ -223,21 +249,29 @@ class SubjectSectorController extends BaseController {
     {
         // Try to find subject sector record
         // If it can't be found return a 404 error.
-        try {
+        try
+        {
             $subjectSector = $this->subjectSectorRepository->find($id);
-        } catch(ModelNotFoundException $e) {
+        }
+        catch (ModelNotFoundException $e)
+        {
             App::abort(404);
+
             return false;
         }
 
         // Try to delete the subject sector record
         // If any error occurs the changes will be rolled back and the user
         // will be notified that the subject sector cannot be deleted.
-        try {
-            DB::transaction(function() use($subjectSector) {
+        try
+        {
+            DB::transaction(function () use ($subjectSector)
+            {
                 $subjectSector->delete();
             });
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             return Redirect::route('admin.subjectsectors.index')
                 ->with('errorMessage', 'Unable to delete subject sector');
         }

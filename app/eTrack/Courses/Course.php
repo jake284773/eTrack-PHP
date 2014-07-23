@@ -102,8 +102,14 @@ class Course extends Entity
      * @var array
      */
     protected $fillable = [
-        'id', 'name', 'level', 'type', 'pathway',
-        'subject_sector_id', 'faculty_id', 'course_organiser_user_id'
+        'id',
+        'name',
+        'level',
+        'type',
+        'pathway',
+        'subject_sector_id',
+        'faculty_id',
+        'course_organiser_user_id'
     ];
 
     /**
@@ -117,9 +123,9 @@ class Course extends Entity
         'level' => 'required|in:2,3',
         'type' => 'required|max:100',
         'pathway' => 'max:100',
-        'subject_sector' => 'required|exists:subject_sector,id,<id>',
-        'faculty' => 'required|exists:faculty,id,<id>',
-        'course_organiser' => 'required|exists:user,id,<id>,role,Course Organiser',
+        'subject_sector_id' => 'required|exists:subject_sector,id',
+        'faculty_id' => 'required|exists:faculty,id',
+        'course_organiser_user_id' => 'required|exists:user,id,role,Course Organiser',
     ];
 
     /**
@@ -133,11 +139,14 @@ class Course extends Entity
         'level' => 'qualification level',
         'type' => 'course type',
         'pathway' => 'course pathway',
+        'subject_sector_id' => 'subject sector',
+        'faculty_id' => 'faculty',
+        'course_organiser_user_id' => 'course organiser',
     ];
 
-    public function __construct()
+    public function __construct($attributes = array())
     {
-        parent::__construct();
+        parent::__construct($attributes);
 
         // Make sure that only supported course types can be entered
         $validTypesList = implode(",", Course::$validTypes);

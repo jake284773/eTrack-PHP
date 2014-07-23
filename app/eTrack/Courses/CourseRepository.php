@@ -1,7 +1,6 @@
 <?php namespace eTrack\Courses;
 
 use DB;
-use eTrack\Assignments\CambridgeTechnical\Grade;
 use eTrack\Core\EloquentRepository;
 use eTrack\Tracker\CourseStudentStructure;
 use eTrack\Tracker\GradeStructure;
@@ -158,4 +157,4 @@ class CourseRepository extends EloquentRepository
 
         return $results;
     }
-} 
+}

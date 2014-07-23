@@ -174,14 +174,27 @@ class UnitRepository extends EloquentRepository
      *
      * @param Course $course The course model object with the course_students
      *                       records eager loaded.
-     * @param Unit $unit The unit model object to generate from.
+     * @param Unit   $unit   The unit model object to generate from.
+     * @param null   $group The group code to filter by group (optional).
+     *
      * @return array The results array
      */
-    public function renderUnitCriteriaAssessmentForTracker(Course $course, Unit $unit)
+    public function renderUnitCriteriaAssessmentForTracker(Course $course,
+                                                           Unit $unit,
+                                                           $group = null)
     {
         $results = new Collection();
 
-        foreach ($course->students as $student) {
+        if ($group) {
+            $students = $course->students()
+                ->leftJoin('student_group_student', 'student_group_student.student_user_id', '=', 'course_student.student_user_id')
+                ->where('student_group_student.student_group_id', $group)
+                ->get();
+        } else {
+            $students = $course->students;
+        }
+
+        foreach ($students as $student) {
             $criteriaResult = new Collection();
 
             foreach ($unit->criteria as $criteria) {
@@ -300,4 +313,4 @@ class UnitRepository extends EloquentRepository
         ])->findOrFail($id);
     }
 
-} 
+}

@@ -22,7 +22,7 @@ class SubjectSectorRepository extends EloquentRepository {
      * @param float $id ID to find
      * @param array $relations The relations to eager load
      * @param array $columns Specify which columns to retrieve
-     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|static
+     * @return \Illuminate\Database\Eloquent\Collection|SubjectSector[]|SubjectSector
      */
     public function findEagerLoaded($id, array $relations, $columns = ['*'])
     {
@@ -33,7 +33,7 @@ class SubjectSectorRepository extends EloquentRepository {
     /**
      * Retrieve all records ordered by the name field ascending.
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Collection|SubjectSector[]
      */
     public function allOrderByName()
     {
@@ -44,7 +44,7 @@ class SubjectSectorRepository extends EloquentRepository {
      * Retrieves all subject sectors that have units.
      *
      * @param bool $orderByName True to order records by name ascending
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @return \Illuminate\Database\Eloquent\Collection|SubjectSector[]
      */
     public function allWithUnits($orderByName = true)
     {

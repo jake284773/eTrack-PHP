@@ -1,9 +1,8 @@
 <?php namespace eTrack\Controllers\Admin;
 
 use App;
+use Cache;
 use eTrack\Controllers\BaseController;
-use eTrack\GradeCalculators\CourseGradeCalcFactory;
-use eTrack\GradeCalculators\CoursePointsCalc;
 use eTrack\Courses\CourseRepository;
 use eTrack\GradeCalculators\UnitGradeCalc;
 use eTrack\Assessment\StudentAssessmentRepository;
@@ -13,7 +12,9 @@ use Event;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Input;
 use Redirect;
+use Validator;
 use View;
+use LRedis;
 
 class CourseTrackerController extends BaseController
 {
@@ -33,12 +34,26 @@ class CourseTrackerController extends BaseController
 
     public function index($courseId)
     {
+        if (Input::has('group'))
+        {
+            $filterValidator = Validator::make(
+                ['group' => Input::get('group')],
+                ['group' => 'exists:student_group,id']
+            );
+
+            if ($filterValidator->fails())
+            {
+                return Redirect::route('admin.courses.tracker.index', $courseId);
+            }
+        }
+
         $course = $this->courseRepository->getTrackerRelated($courseId);
+        $results = $this->courseRepository
+            ->renderCourseUnitGradesForTracker($course, Input::get('group'));
 
-        $results = $this->courseRepository->renderCourseUnitGradesForTracker($course, Input::get('group'));
-
-        return View::make('admin.courses.tracker.index', ['course' => $course,
-                                                          'results' => $results]);
+        return View::make('admin.courses.tracker.index', [
+            'course' => $course, 'results' => $results
+        ]);
     }
 
     public function unit($courseId, $unitId)
@@ -51,10 +66,25 @@ class CourseTrackerController extends BaseController
             App::abort(404);
         }
 
+        // Validate student group parameter to make sure the group actually
+        // exists.
+        $filterValidator = Validator::make(
+            ['group' => Input::get('group')],
+            ['group' => 'exists:student_group,id']
+        );
+
+        if ($filterValidator->fails())
+        {
+            return Redirect::route('admin.courses.tracker.unit',
+                [$courseId, $unitId]);
+        }
+
         $course = $this->courseRepository->find($courseId);
         $unit = $this->unitRepository->getWithCriteriaAndAssessments($unitId);
 
-        $results = $this->unitRepository->renderUnitCriteriaAssessmentForTracker($course, $unit);
+        $results = $this->unitRepository
+            ->renderUnitCriteriaAssessmentForTracker($course, $unit,
+                Input::get('group'));
 
         $totalPassCriteria = $this->unitRepository->getTotalCriteria($unit, 'P');
         $totalMeritCriteria = $this->unitRepository->getTotalCriteria($unit, 'M');;

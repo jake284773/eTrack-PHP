@@ -79,7 +79,7 @@ thead .table-header-secondary td {
 
 .table-responsive {
   @media(max-width: $screen-xs-max) {
-    display: block;
+    border: 2px solid #000;
   }
 }
 

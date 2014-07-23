@@ -12,7 +12,7 @@ class CreateCourseTutorTable extends Migration {
      */
     public function up()
     {
-        Schema::create('course_unit', function(Blueprint $table) {
+        Schema::create('course_tutor', function(Blueprint $table) {
             $table->string("course_id", 15);
             $table->string("tutor_user_id", 25);
 

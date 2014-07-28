@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
 	/*
 	|--------------------------------------------------------------------------
@@ -11,7 +11,7 @@ return [
 	| API, giving you convenient access to each back-end using the same
 	| syntax for each one. Here you may set the default queue driver.
 	|
-	| Supported: "sync", "beanstalkd", "sqs", "iron"
+	| Supported: "sync", "beanstalkd", "sqs", "iron", "redis"
 	|
 	*/
 
@@ -28,41 +28,42 @@ return [
 	|
 	*/
 
-	'connections' => [
+	'connections' => array(
 
-		'sync' => [
+		'sync' => array(
 			'driver' => 'sync',
-		],
+		),
 
-		'beanstalkd' => [
+		'beanstalkd' => array(
 			'driver' => 'beanstalkd',
 			'host'   => 'localhost',
 			'queue'  => 'default',
 			'ttr'    => 60,
-		],
+		),
 
-		'sqs' => [
+		'sqs' => array(
 			'driver' => 'sqs',
 			'key'    => 'your-public-key',
 			'secret' => 'your-secret-key',
 			'queue'  => 'your-queue-url',
 			'region' => 'us-east-1',
-		],
+		),
 
-		'iron' => [
+		'iron' => array(
 			'driver'  => 'iron',
 			'host'    => 'mq-aws-us-east-1.iron.io',
 			'token'   => 'your-token',
 			'project' => 'your-project-id',
 			'queue'   => 'your-queue-name',
-		],
+			'encrypt' => true,
+		),
 
-		'redis' => [
+		'redis' => array(
 			'driver' => 'redis',
 			'queue'  => 'default',
-		],
+		),
 
-	],
+	),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -75,10 +76,10 @@ return [
 	|
 	*/
 
-	'failed' => [
+	'failed' => array(
 
 		'database' => 'mysql', 'table' => 'failed_jobs',
 
-	],
+	),
 
-];
+);

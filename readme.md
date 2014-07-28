@@ -33,4 +33,3 @@ are studying BTEC and Cambridge Technical qualifications.
 
 eTrack is copyright to City College Plymouth. See the LICENSE file for further
 details.
-

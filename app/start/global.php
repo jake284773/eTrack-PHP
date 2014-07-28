@@ -11,14 +11,14 @@
 |
 */
 
-ClassLoader::addDirectories([
+ClassLoader::addDirectories(array(
 
 	app_path().'/commands',
 	app_path().'/controllers',
 	app_path().'/models',
 	app_path().'/database/seeds',
 
-]);
+));
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +32,21 @@ ClassLoader::addDirectories([
 */
 
 Log::useFiles(storage_path().'/logs/laravel.log');
+
+/**
+ * Render an error page with the specified title and HTTP status code
+ *
+ * @param string $title Page title
+ * @param integer $code HTTP status code
+ * @return \Illuminate\Http\Response
+ */
+function errorPage($title, $code)
+{
+    $layout = View::make('layouts.article');
+    $layout->title = $title;
+    $layout->content = View::make('errors.' . $code);
+    return Response::make($layout, $code);
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +64,16 @@ Log::useFiles(storage_path().'/logs/laravel.log');
 App::error(function(Exception $exception, $code)
 {
 	Log::error($exception);
+
+    if (! Config::get('app.debug'))
+    {
+        return errorPage("eTrack has experienced an error", 500);
+    }
+});
+
+App::missing(function($exception)
+{
+    return errorPage("eTrack can't find that page", 404);
 });
 
 /*
@@ -64,7 +89,7 @@ App::error(function(Exception $exception, $code)
 
 App::down(function()
 {
-	return Response::view('errors.maintenance', [], 503);
+    return errorPage("eTrack is currently being updated", 503);
 });
 
 /*
@@ -79,6 +104,3 @@ App::down(function()
 */
 
 require app_path().'/filters.php';
-
-/* Load events file */
-require app_path().'/events.php';

@@ -1,0 +1,6 @@
+.error, .errors {
+  border: 3px solid $error-border;
+  background: $error-bg;
+  box-sizing: border-box;
+  padding: 0.25em 1em 0.25em 1em;
+}

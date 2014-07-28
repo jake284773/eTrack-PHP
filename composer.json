@@ -1,48 +1,45 @@
 {
-    "name": "jmoreman/etrack",
-    "description": "Student tracker application for monitoring student progress.",
-    "keywords": ["framework", "laravel"],
-    "license": "MIT",
-    "require": {
-        "laravel/framework": "4.1.*",
-        "rcrowe/twigbridge": "0.5.*",
-        "goodby/csv": "1.*",
-        "barryvdh/laravel-dompdf": "0.3.*"
-    },
+	"name": "jmoreman/etrack",
+	"description": "Tracking application for monitoring progress of students.",
+	"keywords": ["student", "tracking", "btec", "ocr cambridge national", "web"],
+	"license": "MIT",
+	"require": {
+		"laravel/framework": "4.2.*"
+	},
     "require-dev": {
-        "barryvdh/laravel-debugbar": "1.*",
+        "way/generators": "2.*",
+        "fzaninotto/faker": "v1.4.0",
         "barryvdh/laravel-ide-helper": "1.*",
-        "doctrine/dbal": "~2.3",
-        "phpunit/phpunit": "3.7.*",
-        "mockery/mockery": "0.9.1"
+        "barryvdh/laravel-debugbar": "1.*"
     },
-    "autoload": {
-        "classmap": [
-            "app/commands",
-            "app/controllers",
-            "app/database/migrations",
-            "app/database/seeds",
-            "app/tests/TestCase.php"
-        ],
-        "psr-0": {
-            "eTrack\\": "app/"
+	"autoload": {
+		"classmap": [
+			"app/commands",
+			"app/controllers",
+			"app/models",
+			"app/database/migrations",
+			"app/database/seeds",
+			"app/tests/TestCase.php"
+		],
+        "psr-4": {
+            "eTrack\\": "app/eTrack"
         }
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "php artisan clear-compiled",
-            "php artisan optimize"
-        ],
-        "post-update-cmd": [
-            "php artisan clear-compiled",
-            "php artisan optimize"
-        ],
-        "post-create-project-cmd": [
-            "php artisan key:generate"
-        ]
-    },
-    "config": {
-        "preferred-install": "dist"
-    },
-    "minimum-stability": "stable"
+	},
+	"scripts": {
+		"post-install-cmd": [
+			"php artisan clear-compiled",
+			"php artisan optimize"
+		],
+		"post-update-cmd": [
+			"php artisan clear-compiled",
+			"php artisan optimize"
+		],
+		"post-create-project-cmd": [
+			"php artisan key:generate"
+		]
+	},
+	"config": {
+		"preferred-install": "dist"
+	},
+	"minimum-stability": "stable"
 }

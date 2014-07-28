@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
 	/*
 	|--------------------------------------------------------------------------
@@ -52,7 +52,7 @@ return [
 	|
 	*/
 
-	'locale' => 'en-gb',
+	'locale' => 'en',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -78,7 +78,9 @@ return [
 	|
 	*/
 
-	'key' => 'HqNRUmYJPOFktfJxh9IQKYlGTYpJOIdy',
+	'key' => 'PleaseChangeThisToSomethingMoreSecure',
+
+	'cipher' => MCRYPT_RIJNDAEL_128,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -91,7 +93,7 @@ return [
 	|
 	*/
 
-	'providers' => [
+	'providers' => array(
 
 		'Illuminate\Foundation\Providers\ArtisanServiceProvider',
 		'Illuminate\Auth\AuthServiceProvider',
@@ -118,14 +120,11 @@ return [
 		'Illuminate\Translation\TranslationServiceProvider',
 		'Illuminate\Validation\ValidationServiceProvider',
 		'Illuminate\View\ViewServiceProvider',
-//		'Illuminate\Workbench\WorkbenchServiceProvider',
+		'Illuminate\Workbench\WorkbenchServiceProvider',
 
-        'TwigBridge\TwigServiceProvider',
-        'Barryvdh\DomPDF\ServiceProvider',
+        'eTrack\Extensions\Html\HtmlServiceProvider',
 
-        'eTrack\Validation\CustomValidatorServiceProvider',
-
-	],
+	),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -151,7 +150,7 @@ return [
 	|
 	*/
 
-	'aliases' => [
+	'aliases' => array(
 
 		'App'             => 'Illuminate\Support\Facades\App',
 		'Artisan'         => 'Illuminate\Support\Facades\Artisan',
@@ -176,7 +175,6 @@ return [
 		'Mail'            => 'Illuminate\Support\Facades\Mail',
 		'Paginator'       => 'Illuminate\Support\Facades\Paginator',
 		'Password'        => 'Illuminate\Support\Facades\Password',
-        'PDF'             => 'Barryvdh\DomPDF\Facade',
 		'Queue'           => 'Illuminate\Support\Facades\Queue',
 		'Redirect'        => 'Illuminate\Support\Facades\Redirect',
 		'Redis'           => 'Illuminate\Support\Facades\Redis',
@@ -186,12 +184,13 @@ return [
 		'Schema'          => 'Illuminate\Support\Facades\Schema',
 		'Seeder'          => 'Illuminate\Database\Seeder',
 		'Session'         => 'Illuminate\Support\Facades\Session',
+		'SoftDeletingTrait' => 'Illuminate\Database\Eloquent\SoftDeletingTrait',
 		'SSH'             => 'Illuminate\Support\Facades\SSH',
 		'Str'             => 'Illuminate\Support\Str',
 		'URL'             => 'Illuminate\Support\Facades\URL',
 		'Validator'       => 'Illuminate\Support\Facades\Validator',
 		'View'            => 'Illuminate\Support\Facades\View',
 
-	],
+	),
 
-];
+);

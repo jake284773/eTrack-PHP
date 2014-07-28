@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
 	/*
 	|--------------------------------------------------------------------------
@@ -26,18 +26,18 @@ return [
 	|
 	*/
 
-	'connections' => [
+	'connections' => array(
 
-		'production' => [
+		'production' => array(
 			'host'      => '',
 			'username'  => '',
 			'password'  => '',
 			'key'       => '',
 			'keyphrase' => '',
 			'root'      => '/var/www',
-		],
+		),
 
-	],
+	),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -50,10 +50,10 @@ return [
 	|
 	*/
 
-	'groups' => [
+	'groups' => array(
 
-		'web' => ['production']
+		'web' => array('production')
 
-	],
+	),
 
-];
+);

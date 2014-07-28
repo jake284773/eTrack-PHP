@@ -1,0 +1,32 @@
+#wrapper {
+	@include outer-container;
+}
+
+.page-header {
+	hgroup {
+		display: block;
+		padding: 1em 2em 0.5em 2em;
+
+		h1 {
+			font-size: golden-ratio(25px, 1);
+			line-height: 1.1;
+		}
+
+		@media (min-width: $tablet) {
+			font-size: golden-ratio(32px, 1);
+		}
+	}
+}
+
+.article-container {
+  max-width: 38em;
+}
+
+article .inner {
+	padding: 0 10em 2em 2em;
+}
+
+article p,
+article ul, article ol {
+	margin: 0.75em 0;
+}

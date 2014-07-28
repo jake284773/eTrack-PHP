@@ -1,39 +1,29 @@
-<?php namespace eTrack\Controllers;
-
-use Auth;
-use Input;
-use Redirect;
-use Session;
-use View;
+<?php
 
 class UserController extends BaseController {
 
+    protected $layout = 'layouts.article';
+
     public function login()
     {
-        return View::make('user.login');
+        $this->layout->title = 'Login';
+        $this->layout->content = View::make('user.login');
     }
 
-    public function authenticate()
+    public function auth()
     {
-        $credentials = [
-            'id' => Input::get('userid'),
-            'password' => Input::get('password')
-        ];
+        $credentials = Input::only(array('username', 'password'));
+        $auth = Auth::attempt($credentials);
 
-        if (Auth::attempt($credentials)) {
-            return Redirect::intended('/');
+        if ($auth)
+        {
+            return Redirect::intended();
         }
-
-        return Redirect::back()->with('authError', 'You\'ve entered the wrong ' .
-            'user ID or password. Please check your details and try again.');
+        else
+        {
+            $error = "You've entered the wrong username or password. " .
+                "Please check your details and try again.";
+            return Redirect::back()->with('error', $error);
+        }
     }
-
-    public function logout()
-    {
-        Auth::logout();
-        Session::flush();
-
-        return Redirect::route('login');
-    }
-
 }

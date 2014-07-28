@@ -1,0 +1,42 @@
+.group:before,
+.group:after {
+	content: "\0020";
+	display: block;
+	height: 0;
+	overflow: hidden;
+}
+
+strong {
+	font-weight: bold;
+}
+
+.beta-indicator {
+	background-color: #f47738;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+	.wrapper {
+		@include outer-container;
+
+		p {
+			@include span-columns(8);
+			margin: 5px;
+			font-size: 16px;
+		}
+	}
+}
+
+a:link {
+  color: #005ea5
+}
+
+a:visited {
+  color: #2e8aca
+}
+
+a:hover {
+  color: #2e8aca
+}
+
+a:active {
+  color: #2e8aca
+}

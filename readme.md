@@ -54,13 +54,13 @@ mysql> grant all on `etrack`.* to etrack@localhost identified by 'etrack';
 
 This will also create an admin user account with the default credentials:
 
-**Username** `admin`
+**Username:** `admin`
 
-**Password** `password`
+**Password:** `password`
 
 ### Building the assets
 
-First make sure that Gulp, Bower and the Sass gem is installed on your machine.
+First make sure that Gulp, Bower and the Sass gem are installed on your machine.
 
 ```
 npm install

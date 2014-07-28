@@ -78,7 +78,7 @@ return array(
 	|
 	*/
 
-	'key' => 'PleaseChangeThisToSomethingMoreSecure',
+	'key' => 'PleaseChangeThis',
 
 	'cipher' => MCRYPT_RIJNDAEL_128,
 
@@ -123,6 +123,7 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 
         'eTrack\Extensions\Html\HtmlServiceProvider',
+        'eTrack\Extensions\App\ErrorServiceProvider',
 
 	),
 

@@ -33,65 +33,6 @@ ClassLoader::addDirectories(array(
 
 Log::useFiles(storage_path().'/logs/laravel.log');
 
-/**
- * Render an error page with the specified title and HTTP status code
- *
- * @param string $title Page title
- * @param integer $code HTTP status code
- * @return \Illuminate\Http\Response
- */
-function errorPage($title, $code)
-{
-    $layout = View::make('layouts.article');
-    $layout->title = $title;
-    $layout->content = View::make('errors.' . $code);
-    return Response::make($layout, $code);
-}
-
-/*
-|--------------------------------------------------------------------------
-| Application Error Handler
-|--------------------------------------------------------------------------
-|
-| Here you may handle any errors that occur in your application, including
-| logging them or displaying custom views for specific errors. You may
-| even register several error handlers to handle different types of
-| exceptions. If nothing is returned, the default error view is
-| shown, which includes a detailed stack trace during debug.
-|
-*/
-
-App::error(function(Exception $exception, $code)
-{
-	Log::error($exception);
-
-    if (! Config::get('app.debug'))
-    {
-        return errorPage("eTrack has experienced an error", 500);
-    }
-});
-
-App::missing(function($exception)
-{
-    return errorPage("eTrack can't find that page", 404);
-});
-
-/*
-|--------------------------------------------------------------------------
-| Maintenance Mode Handler
-|--------------------------------------------------------------------------
-|
-| The "down" Artisan command gives you the ability to put an application
-| into maintenance mode. Here, you will define what is displayed back
-| to the user if maintenance mode is in effect for the application.
-|
-*/
-
-App::down(function()
-{
-    return errorPage("eTrack is currently being updated", 503);
-});
-
 /*
 |--------------------------------------------------------------------------
 | Require The Filters File

@@ -14,5 +14,5 @@
 Route::get('/', array('before' => 'auth', 'as' => 'home', 'uses' => 'HomeController@index'));
 
 Route::get('user/login', array('before' => 'guest', 'as' => 'user.login', 'uses' => 'UserController@login'));
-Route::post('user/login', array('before' => 'guest', 'as' => 'user.auth', 'uses' => 'UserController@auth'));
+Route::post('user/login', array('before' => 'guest|csrf', 'as' => 'user.auth', 'uses' => 'UserController@auth'));
 

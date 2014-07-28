@@ -4,7 +4,7 @@
   "authors": [
     "Jake Moreman <mail@jakemoreman.co.uk>"
   ],
-  "description": "Tracking application for monitoring progress of students.",
+  "description": "Web application for tracking the progress of FE students.",
   "main": "public/index.php",
   "license": "MIT",
   "private": true,

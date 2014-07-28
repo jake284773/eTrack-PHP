@@ -1,10 +1,10 @@
 
-## eTrack
+# eTrack
 
 eTrack is a web application for tracking the academic progress of students who
 are studying BTEC and Cambridge Technical qualifications.
 
-### Features
+## Features
 
 - Manage courses, course units and unit assignments.
 - Manage student groups in courses to organise different assignments, and
@@ -23,13 +23,64 @@ are studying BTEC and Cambridge Technical qualifications.
 - UCAS Tariff points are automatically calculated for Level 3 courses.
 - All users are classed under roles to determine what privileges they have.
 
-### Supported Courses
+## Supported Courses
 
 - BTEC Nationals
 - BTEC Firsts
 - OCR Cambridge Technicals
 
-### License
+## Getting set-up locally
+
+### Prerequisites
+
+- Ruby >= 1.9.3
+- Node.js
+  - Gulp
+  - Bower
+- PHP >= 5.4
+- Composer
+- MySQL
+
+### Creating the database and MySQL user
+
+```
+mysql> create database etrack;
+mysql> grant all on `etrack`.* to etrack@localhost identified by 'etrack';
+```
+
+### Set-up the database
+
+`php artisan migrate --seed`
+
+This will also create an admin user account with the default credentials:
+
+**Username** `admin`
+
+**Password** `password`
+
+### Building the assets
+
+First make sure that Gulp, Bower and the Sass gem is installed on your machine.
+
+```
+npm install
+bower install
+gulp
+```
+
+### Run server
+
+PHP comes with an embedded web server. This is the quickest way of running the application
+locally without having to set-up a web server such as Apache or nginx.
+
+`php artisan serve`
+
+This will listen on localhost at port 8000 by default.
+
+You may optionally add the `--host` and `--port` options to override this.
+
+
+## License
 
 eTrack is copyright to City College Plymouth. See the LICENSE file for further
 details.

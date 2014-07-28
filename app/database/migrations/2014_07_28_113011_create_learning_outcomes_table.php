@@ -20,7 +20,7 @@ class CreateLearningOutcomesTable extends Migration {
 			$table->unsignedInteger('unit_id');
 			$table->timestamps();
 
-			// $table->unique(array('number', 'unit_id'));
+			 $table->unique(array('number', 'unit_id'));
 
 			$table->foreign('unit_id')
 				->references('id')->on('units')

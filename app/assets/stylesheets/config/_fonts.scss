@@ -1,11 +1,8 @@
 body {
-  font-family: Lato, Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   font-size: 19px;
   line-height: 1.14286;
 }
-
-@include font-face(Lato, '../fonts/Lato-Regular');
-@include font-face(Lato, '../fonts/Lato-Bold', bold);
 
 @include media($mobile) {
   body {

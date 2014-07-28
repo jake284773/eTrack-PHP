@@ -13,16 +13,16 @@ class UserController extends BaseController {
     public function auth()
     {
         $credentials = Input::only(array('username', 'password'));
-        $auth = Auth::attempt($credentials);
+        $authAttempt = Auth::attempt($credentials);
 
-        if ($auth)
+        if ($authAttempt)
         {
             return Redirect::intended();
         }
         else
         {
             $error = "You've entered the wrong username or password. " .
-                "Please check your details and try again.";
+                     "Please check your details and try again.";
             return Redirect::back()->with('error', $error);
         }
     }

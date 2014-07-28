@@ -1,20 +1,20 @@
 .form {
-	@include span-columns(7);
+  @include span-columns(7);
 }
 
 .form .group {
-	margin: 0.75em 0;
+  margin: 0.75em 0;
 }
 
 .form label {
-	display: block;
-	color: $text-colour;
-	vertical-align: top;
-	padding: 0.25em 0;
+  display: block;
+  color: $text-colour;
+  vertical-align: top;
+  padding: 0.25em 0;
 }
 
 .form input[type="password"], .form input[type="text"] {
-	width: 15em;
+  width: 15em;
 }
 
 .form input[type="text"],
@@ -33,37 +33,37 @@
 .form input[type="week"],
 .form select[size],
 .form textarea {
-	border: 1px solid #bfc1c3;
-	font-weight: 400;
-	line-height: 1.31579;
-	padding: 0.1em 0 0.1em 0.4em;
+  border: 1px solid #bfc1c3;
+  font-weight: 400;
+  line-height: 1.31579;
+  padding: 0.1em 0 0.1em 0.4em;
 }
 
 p.action {
-	@include span-columns(1);
+  @include span-columns(1);
 }
 
 .button {
-	background-color: $button-colour;
-	position: relative;
-	top: 0;
-	display: inline-block;
-	padding: 0.35em 0.5em 0.15em 0.5em;
-	border: none;
-	border-radius: 0;
-	box-shadow: 0 2px 0 #003518;
-	font-size: 1em;
-	font-weight: 300;
-	line-height: 1.25em;
-	color: $white;
+  background-color: $button-colour;
+  position: relative;
+  top: 0;
+  display: inline-block;
+  padding: 0.35em 0.5em 0.15em 0.5em;
+  border: none;
+  border-radius: 0;
+  box-shadow: 0 2px 0 #003518;
+  font-size: 1em;
+  font-weight: 300;
+  line-height: 1.25em;
+  color: $white;
 }
 
 .button:active {
-	box-shadow: none;
-	position: relative;
-	top: 3px;
+  box-shadow: none;
+  position: relative;
+  top: 3px;
 }
 
 input:focus, textarea:focus, select:focus, #global-header input:focus {
-	outline: 3px solid $yellow;
+  outline: 3px solid $yellow;
 }

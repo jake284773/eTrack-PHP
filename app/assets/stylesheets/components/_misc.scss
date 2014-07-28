@@ -1,28 +1,28 @@
 .group:before,
 .group:after {
-	content: "\0020";
-	display: block;
-	height: 0;
-	overflow: hidden;
+  content: "\0020";
+  display: block;
+  height: 0;
+  overflow: hidden;
 }
 
 strong {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 .beta-indicator {
-	background-color: #f47738;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  background-color: #f47738;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
-	.wrapper {
-		@include outer-container;
+  .wrapper {
+    @include outer-container;
 
-		p {
-			@include span-columns(8);
-			margin: 5px;
-			font-size: 16px;
-		}
-	}
+    p {
+      @include span-columns(8);
+      margin: 5px;
+      font-size: 16px;
+    }
+  }
 }
 
 a:link {

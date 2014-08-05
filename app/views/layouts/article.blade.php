@@ -7,17 +7,7 @@
         </hgroup>
     </header>
 
-    <div class="article-container">
-        <article>
-            <div class="inner">
-                @if (Session::has('error'))
-                    <div class="error">
-                        <h4>{{ Session::get('error') }}</h4>
-                    </div>
-                @endif
-
-                {{ $content }}
-            </div>
-        </article>
-    </div>
+    <article>
+        {{ $content }}
+    </article>
 @stop

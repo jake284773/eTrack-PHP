@@ -1,6 +1,6 @@
-<?php
+<?php namespace eTrack\Models;
 
-class Unit extends Eloquent {
+class Unit extends \Eloquent {
 	protected $fillable = [];
 
 	public function criteria()

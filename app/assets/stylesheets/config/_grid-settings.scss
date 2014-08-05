@@ -9,5 +9,9 @@ $grid-columns: 10;
 $max-width: em(860);
 
 // Define your breakpoints
-$tablet: new-breakpoint(max-width 768px 8);
-$mobile: new-breakpoint(max-width 480px 4);
+$desktop: new-breakpoint(min-width 769px, 8);
+$tablet: new-breakpoint(min-width 641px 8);
+$mobile: new-breakpoint(max-width 640px 4);
+
+$nav-collapse: new-breakpoint(max-width 848px 8);
+$nav-expand: new-breakpoint(min-width 849px 8);

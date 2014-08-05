@@ -124,6 +124,7 @@ return array(
 
         'eTrack\Extensions\Html\HtmlServiceProvider',
         'eTrack\Extensions\App\ErrorServiceProvider',
+        'Laracasts\Validation\ValidationServiceProvider'
 
 	),
 
@@ -193,5 +194,7 @@ return array(
 		'View'            => 'Illuminate\Support\Facades\View',
 
 	),
+
+    'version' => '0.0.1',
 
 );

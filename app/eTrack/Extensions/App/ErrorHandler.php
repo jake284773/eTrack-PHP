@@ -1,6 +1,7 @@
 <?php namespace eTrack\Extensions\App;
 
 use Config;
+use eTrack\Auth\AuthenticationException;
 use Exception;
 use Illuminate\Session\TokenMismatchException;
 use Laracasts\Validation\FormValidationException;
@@ -40,9 +41,14 @@ class ErrorHandler {
         return $this->errorPage("eTrack is currently being updated", 503);
     }
 
-    public function handleValidationFailure(FormValidationException $exception)
+    public function handleValidation(FormValidationException $exception)
     {
         return Redirect::back()->withInput()->withErrors($exception->getErrors());
+    }
+
+    public function handleAuthentication(AuthenticationException $exception)
+    {
+        return Redirect::back()->withInput()->with('authError', $exception->getMessage());
     }
 
     /**

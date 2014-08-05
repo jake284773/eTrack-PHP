@@ -1,6 +1,6 @@
-<?php
+<?php namespace eTrack\Models;
 
-class LearningOutcome extends Eloquent {
+class LearningOutcome extends \Eloquent {
 	protected $fillable = [];
 
 	public function unit()

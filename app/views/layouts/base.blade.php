@@ -21,6 +21,25 @@
                 eTrack
             </a>
         </div>
+
+        <nav class="main">
+            <a href="#" class="toggle-nav">Menu</a>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Courses</a></li>
+                <li><a href="#">Units</a></li>
+                <li><a href="#">Users</a></li>
+                <li><a href="#">Maintenance</a></li>
+            </ul>
+        </nav>
+
+        <nav class="minor">
+            <ul>
+                <li class="text">Hello Jake Moreman</li>
+<!--                <li><a href="#">Your details</a></li>-->
+                <li><a href="#">Logout</a></li>
+            </ul>
+        </nav>
     </div>
 </header>
 
@@ -36,7 +55,7 @@
     <div class="wrapper">
         <p>&copy; Copyright 2014 City College Plymouth</p>
 
-        <p>Developed by Jake Moreman</p>
+        <p>Version {{ Config::get('app.version') }}</p>
     </div>
 </footer>
 </body>

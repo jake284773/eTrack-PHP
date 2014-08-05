@@ -1,6 +1,6 @@
-<?php
+<?php namespace eTrack\Models;
 
-class Criteria extends Eloquent {
+class Criteria extends \Eloquent {
 	protected $fillable = [];
 
 	protected $table = 'criteria';

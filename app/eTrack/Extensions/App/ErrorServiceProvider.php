@@ -1,5 +1,6 @@
 <?php namespace eTrack\Extensions\App;
 
+use eTrack\Auth\AuthenticationException;
 use Exception;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\ServiceProvider;
@@ -32,6 +33,7 @@ class ErrorServiceProvider extends ServiceProvider {
         $this->registerTokenMismatchHandler();
         $this->registerMissingHandler();
         $this->registerValidationHandler();
+        $this->registerAuthenticationHandler();
 
         parent::boot();
     }
@@ -78,6 +80,15 @@ class ErrorServiceProvider extends ServiceProvider {
         $this->app->error(function(FormValidationException $exception) use($app)
         {
             return $app['errorHandler']->handleValidation($exception);
+        });
+    }
+
+    private function registerAuthenticationHandler()
+    {
+        $app = $this->app;
+        $this->app->error(function(AuthenticationException $exception) use ($app)
+        {
+            return $app['errorHandler']->handleAuthentication($exception);
         });
     }
 

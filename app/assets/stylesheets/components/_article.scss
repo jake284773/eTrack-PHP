@@ -1,15 +1,23 @@
 #wrapper {
   @include outer-container;
+  padding: 0 2em 2em 2em;
 }
 
 .page-header {
+  @include fill-parent;
+
   hgroup {
     display: block;
-    padding: 1em 2em 0.5em 2em;
+    padding-top: 1em;
 
     h1 {
       font-size: golden-ratio(25px, 1);
       line-height: 1.1;
+
+      @include media($mobile) {
+        font-size: golden-ratio(18px, 1);
+        margin-bottom: 0.5em;
+      }
     }
 
     @media (min-width: $tablet) {
@@ -18,12 +26,8 @@
   }
 }
 
-.article-container {
-  max-width: 38em;
-}
-
-article .inner {
-  padding: 0 10em 2em 2em;
+article {
+  @include fill-parent;
 }
 
 article p,

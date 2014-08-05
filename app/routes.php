@@ -15,4 +15,3 @@ Route::get('/', array('before' => 'auth', 'as' => 'home', 'uses' => 'HomeControl
 
 Route::get('user/login', array('before' => 'guest', 'as' => 'user.login', 'uses' => 'UserController@login'));
 Route::post('user/login', array('before' => 'guest|csrf', 'as' => 'user.auth', 'uses' => 'UserController@auth'));
-

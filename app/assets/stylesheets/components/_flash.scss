@@ -3,4 +3,14 @@
   background: $error-bg;
   box-sizing: border-box;
   padding: 0.25em 1em 0.25em 1em;
+
+  ol {
+    color: $error-border;
+    padding-left: 22px;
+    font-size: 0.85em;
+
+    li {
+      line-height: 1.4;
+    }
+  }
 }

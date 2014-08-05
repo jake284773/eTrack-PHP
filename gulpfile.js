@@ -39,7 +39,7 @@ gulp.task('clean', function () {
 
 gulp.task('watch', function () {
     // Watch .scss files
-    gulp.watch('app/assets/sass/**/*.scss', ['sass']);
+    gulp.watch('app/assets/stylesheets/**/*.scss', ['sass']);
 
     // Create LiveReload server
     var server = livereload();

@@ -1,30 +1,45 @@
 <?php namespace eTrack\Extensions\Html;
 
 use Illuminate\Html\FormBuilder as IlluminateFormBuilder;
+use Illuminate\Support\ViewErrorBag;
 
 class FormBuilder extends IlluminateFormBuilder
 {
-    /**
-     * @param string $name
-     * @param string $label
-     * @param null   $value
-     * @param array  $options
-     * @return string
-     */
-    public function textField($name, $label, $value = null, $options = array())
+    public function formOpen(ViewErrorBag $errors, array $options = array())
     {
-        return $this->field('text', $name, $label, $value, $options);
+        $html = parent::open($options);
+
+        if ($errors->has())
+        {
+            $html = $this->makeErrorBox($errors, $html);
+        }
+
+        return $html;
     }
 
     /**
      * @param string $name
      * @param string $label
-     * @param array  $options
+     * @param null $value
+     * @param \Illuminate\Support\ViewErrorBag $errors
+     * @param array $options
      * @return string
      */
-    public function passwordField($name, $label, $options = array())
+    public function textField($name, $label, $value = null, ViewErrorBag $errors, $options = array())
     {
-        return $this->field('password', $name, $label, '', $options);
+        return $this->field('text', $name, $label, $value, $errors, $options);
+    }
+
+    /**
+     * @param string $name
+     * @param string $label
+     * @param \Illuminate\Support\ViewErrorBag $errors
+     * @param array $options
+     * @return string
+     */
+    public function passwordField($name, $label, ViewErrorBag $errors, $options = array())
+    {
+        return $this->field('password', $name, $label, '', $errors, $options);
     }
 
     /**
@@ -42,10 +57,16 @@ class FormBuilder extends IlluminateFormBuilder
 
     /**
      * @param $html
+     * @param $error
      * @return string
      */
-    private function wrap($html)
+    private function wrap($html, $error)
     {
+        if ($error)
+        {
+            return "<div class=\"group validation\">{$html}</div>";
+        }
+
         return "<div class=\"group\">{$html}</div>";
     }
 
@@ -63,15 +84,27 @@ class FormBuilder extends IlluminateFormBuilder
      * @param string $name
      * @param string $label
      * @param string $value
-     * @param array  $options
+     * @param \Illuminate\Support\ViewErrorBag $errors
+     * @param array $options
      * @return string
      */
-    private function field($type, $name, $label, $value, $options = array())
+    private function field($type, $name, $label, $value, ViewErrorBag $errors, $options = array())
     {
         $html = $this->label($name, ucwords($label));
+
+        if ($errors->has($name))
+        {
+            $error = $errors->get($name)[0];
+            $html .= "<span class=\"validation-message\">{$error}</span>";
+        }
+        else
+        {
+            $error = null;
+        }
+
         $html .= $this->input($type, $name, $value, $options);
 
-        return $this->wrap($html);
+        return $this->wrap($html, $error);
     }
 
     /**
@@ -87,5 +120,28 @@ class FormBuilder extends IlluminateFormBuilder
         $html = $this->submit($value, $options);
 
         return $this->actionWrap($html);
+    }
+
+    /**
+     * @param ViewErrorBag $errors
+     * @param $html
+     * @return string
+     */
+    private function makeErrorBox(ViewErrorBag $errors, $html)
+    {
+        $html .= "<div class=\"error\">";
+        $html .= "<h3>There was a problem submitting the form</h3>";
+        $html .= "<p>Because of the following problems:</p>";
+
+        $html .= "<ol>";
+
+        foreach ($errors->all() as $error)
+        {
+            $html .= "<li>{$error}</li>";
+        }
+
+        $html .= "</ol>";
+        $html .= "</div>";
+        return $html;
     }
 }

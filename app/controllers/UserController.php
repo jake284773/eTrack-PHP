@@ -1,8 +1,17 @@
 <?php
 
+use eTrack\Forms\LoginForm;
+
 class UserController extends BaseController {
 
     protected $layout = 'layouts.article';
+
+    protected $loginForm;
+
+    public function __construct(LoginForm $loginForm)
+    {
+        $this->loginForm = $loginForm;
+    }
 
     public function login()
     {
@@ -13,17 +22,8 @@ class UserController extends BaseController {
     public function auth()
     {
         $credentials = Input::only(array('username', 'password'));
-        $authAttempt = Auth::attempt($credentials);
-
-        if ($authAttempt)
-        {
-            return Redirect::intended();
-        }
-        else
-        {
-            $error = "You've entered the wrong username or password. " .
-                     "Please check your details and try again.";
-            return Redirect::back()->with('error', $error);
-        }
+        $this->loginForm->validate($credentials);
+        $this->loginForm->authenticate($credentials);
+        return Redirect::intended();
     }
 }

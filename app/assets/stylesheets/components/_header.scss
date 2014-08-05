@@ -1,19 +1,72 @@
 header#global-header {
-  width: 100%;
   border-bottom: 7px solid $logo-green;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    @include media($nav-collapse) {
+      display: none;
+    }
+  }
+
+  nav {
+    ul li a, ul li.text, .toggle-nav {
+      text-decoration: none;
+      display: block;
+      font-size: 14px;
+      padding: 15px 15px 18px 15px;
+      color: $black;
+    }
+
+    ul li a, ul li.text {
+      float: left;
+    }
+
+    .toggle-nav {
+      float: right;
+    }
+
+    a:hover {
+      background: $highlight-colour;
+    }
+  }
+
+  nav.main {
+    @include span-columns(5);
+
+    .toggle-nav {
+      @include media($nav-expand) {
+        display: none;
+      }
+    }
+
+    @include media($nav-collapse) {
+      @include span-columns(1);
+    }
+  }
+
+  nav.minor {
+    @include span-columns(3);
+  }
 }
 
 .header-wrapper {
   @include outer-container;
-  padding: 10px;
 }
 
 .header-logo {
-  @include span-columns(8);
+  @include span-columns(2);
+  padding: 10px 0 10px 10px;
+  margin-right: 0 !important;
+
+  @include media($nav-collapse) {
+    @include span-columns(7);
+  }
 
   #logo {
-    margin-right: 40px;
     text-decoration: none;
     color: $text-colour;
     float: left;
